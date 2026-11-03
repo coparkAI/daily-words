@@ -56,46 +56,164 @@
   }
 
   // ---------- 소리 (TTS) ----------
+  // 영어 원어민 음성만 쓴다. 한국어 음성이 영어를 읽으면 '콩글리시'처럼 들리므로 절대 대체하지 않는다.
+  const ACCENTS = {
+    us: { lang: 'en-US', label: '미국식', test: 'Hello! I can say water, tomato, and schedule.',
+      prefer: ['Google US English', 'Samantha', 'Ava', 'Allison', 'Microsoft Aria', 'Microsoft Jenny', 'Microsoft Guy', 'Microsoft Ana', 'Alex'] },
+    uk: { lang: 'en-GB', label: '영국식', test: 'Hello! I can say water, tomato, and schedule.',
+      prefer: ['Google UK English Female', 'Google UK English Male', 'Daniel', 'Serena', 'Kate', 'Martha', 'Arthur', 'Microsoft Sonia', 'Microsoft Libby', 'Microsoft Ryan'] },
+  };
+  // macOS·iOS 의 장난스러운 효과음 음성은 제외
+  const NOVELTY = /Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Deranged|Good News|Hysterical|Jester|Junior|Organ|Pipe|Ralph|Superstar|Trinoids|Whisper|Wobble|Zarvox|Fred|Kathy|Grandma|Grandpa|Eddy|Flo|Reed|Rocko|Sandy|Shelley/i;
+  const VOICE_KEY = 'twins-voice';
   const tts = {
-    voice: null,
-    pick() {
-      const vs = speechSynthesis.getVoices().filter((v) => /^en[-_]US/i.test(v.lang));
-      tts.voice = vs.find((v) => /Google|Samantha|Aria|Jenny|Natural/i.test(v.name)) || vs[0] || null;
+    settings: (() => { try { return { accent: 'us', name: '', ...JSON.parse(localStorage.getItem(VOICE_KEY)) }; } catch { return { accent: 'us', name: '' }; } })(),
+    save() { try { localStorage.setItem(VOICE_KEY, JSON.stringify(tts.settings)); } catch { /* 저장 불가 환경 */ } },
+    // 선택한 억양에 맞는 영어 음성 목록 (좋은 음성 먼저)
+    list(accent = tts.settings.accent) {
+      const want = ACCENTS[accent];
+      const score = (v) => {
+        let s = 0;
+        const i = want.prefer.findIndex((p) => v.name.startsWith(p));
+        if (i >= 0) s += 100 - i;
+        if (/Natural|Neural|Online|Premium|Enhanced/i.test(v.name)) s += 50;
+        if (v.localService === false) s += 5;
+        return s;
+      };
+      return speechSynthesis.getVoices()
+        .filter((v) => v.lang.replace('_', '-').toLowerCase() === want.lang.toLowerCase() && !NOVELTY.test(v.name))
+        .sort((a, b) => score(b) - score(a));
     },
+    current() {
+      const vs = tts.list();
+      return vs.find((v) => v.name === tts.settings.name) || vs[0] || null;
+    },
+    warned: false,
     say(text, slow = false, btn) {
       if (!('speechSynthesis' in window)) return toast('이 브라우저는 소리 듣기를 지원하지 않아요');
+      const voice = tts.current();
+      if (!voice) {
+        // 음성 목록이 아직 안 불러와졌으면 잠시 뒤 한 번 더 시도
+        if (!tts.retried) { tts.retried = true; return setTimeout(() => tts.say(text, slow, btn), 400); }
+        if (!tts.warned) { tts.warned = true; toast(`이 기기에 ${ACCENTS[tts.settings.accent].label} 영어 음성이 없어요. 🔊 발음 설정을 확인해 주세요`); }
+        return;
+      }
+      tts.retried = false;
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'en-US'; u.rate = slow ? 0.6 : 0.9;
-      if (tts.voice) u.voice = tts.voice;
+      u.voice = voice; u.lang = voice.lang; u.rate = slow ? 0.6 : 0.9;
       if (btn) { btn.classList.add('playing'); u.onend = u.onerror = () => btn.classList.remove('playing'); }
       speechSynthesis.speak(u);
     },
   };
-  if ('speechSynthesis' in window) { tts.pick(); speechSynthesis.onvoiceschanged = tts.pick; }
+  if ('speechSynthesis' in window) speechSynthesis.getVoices(); // 일부 브라우저는 첫 호출 때 목록을 불러오기 시작한다
+
+  // 발음 설정 창
+  function openVoiceSettings() {
+    let dlg = document.getElementById('voiceDlg');
+    if (!dlg) { dlg = document.createElement('dialog'); dlg.id = 'voiceDlg'; dlg.className = 'voice-dlg'; document.body.append(dlg); }
+    const draw = () => {
+      const s = tts.settings;
+      const vs = 'speechSynthesis' in window ? tts.list() : [];
+      const cur = vs.length ? tts.current() : null;
+      dlg.innerHTML = `
+        <h3>🔊 발음 설정</h3>
+        <div class="accent-pick">
+          ${Object.entries(ACCENTS).map(([k, a]) => `<button class="btn ${s.accent === k ? 'primary' : ''}" data-accent="${k}">${a.label}</button>`).join('')}
+        </div>
+        ${vs.length ? `
+          <label class="voice-pick">음성
+            <select id="voiceSel">${vs.map((v) => `<option value="${esc(v.name)}" ${cur && v.name === cur.name ? 'selected' : ''}>${esc(v.name)}</option>`).join('')}</select>
+          </label>
+          <p class="voice-note">맨 위가 이 기기에서 가장 자연스러운 음성이에요. 들어 보고 바꿀 수 있어요.</p>`
+        : `<p class="voice-note warn">이 기기에는 ${ACCENTS[s.accent].label} 영어 음성이 없어요.<br>
+            아이패드: 설정 → 손쉬운 사용 → 읽기 및 말하기 → 음성 → 영어에서 음성을 내려받아 주세요.<br>
+            윈도우: 설정 → 시간 및 언어 → 음성에서 영어 음성을 추가해 주세요.</p>`}
+        <p class="voice-note">발음기호는 미국식 기준이에요.</p>
+        <div class="done-actions">
+          <button class="btn soft" id="voiceTest" ${vs.length ? '' : 'disabled'}>▶ 들어 보기</button>
+          <button class="btn primary" id="voiceClose">닫기</button>
+        </div>`;
+      dlg.querySelectorAll('[data-accent]').forEach((b) => (b.onclick = () => { s.accent = b.dataset.accent; s.name = ''; tts.save(); draw(); tts.say(ACCENTS[s.accent].test); }));
+      const sel = dlg.querySelector('#voiceSel');
+      if (sel) sel.onchange = () => { s.name = sel.value; tts.save(); tts.say(ACCENTS[s.accent].test); };
+      dlg.querySelector('#voiceTest').onclick = () => tts.say(ACCENTS[s.accent].test);
+      dlg.querySelector('#voiceClose').onclick = () => { dlg.close(); route(); };
+    };
+    draw();
+    if ('speechSynthesis' in window && !tts.list().length) speechSynthesis.onvoiceschanged = () => dlg.open && draw();
+    dlg.showModal();
+  }
+  const voiceBtn = () => `<button class="btn ghost small voice-btn" data-voice>🔊 ${ACCENTS[tts.settings.accent].label}</button>`;
+  document.addEventListener('click', (e) => { if (e.target.closest('[data-voice]')) openVoiceSettings(); });
 
   // ---------- 따라 읽기 (음성 인식) ----------
   const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  // 음성 인식은 숫자를 아라비아 숫자로 돌려주기도 하므로 단어로 맞춰 비교한다
+  const NUM_WORDS = { 0: 'zero', 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven', 8: 'eight', 9: 'nine', 10: 'ten', 11: 'eleven', 12: 'twelve', 13: 'thirteen', 20: 'twenty', 30: 'thirty', 100: 'hundred' };
+  const speechWords = (s) => norm(s).split(' ').filter(Boolean).map((w) => NUM_WORDS[w] || w);
+  let activeRec = null;
+
   function listen(target, btn, out) {
+    // 듣는 중에 다시 누르면 그만 듣기
+    if (activeRec) { activeRec.stop(); return; }
+    const isSentence = /\s/.test(target.trim());
+    const MAX_MS = isSentence ? 15000 : 8000; // 최대 듣는 시간
+    const SILENCE_MS = 2500;                    // 말이 끝난 뒤 이만큼 조용하면 채점
     const rec = new Recognition();
-    rec.lang = 'en-US'; rec.interimResults = false; rec.maxAlternatives = 3;
-    btn.classList.add('listening'); btn.disabled = true;
-    out.className = 'mic-result'; out.textContent = '말해 보세요…';
-    const stop = setTimeout(() => rec.stop(), 6000);
+    rec.lang = ACCENTS[tts.settings.accent].lang;
+    rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 3;
+    activeRec = rec;
+    btn.classList.add('listening');
+    const label = btn.innerHTML;
+    btn.innerHTML = '■ 그만';
+    out.className = 'mic-result'; out.textContent = '말해 보세요… (다 읽었으면 ■ 그만)';
+
+    const heard = new Set();   // 모든 후보 문장에서 들린 단어
+    let shown = '';            // 화면에 보여 줄 들린 문장
+    let silence = null;
+    const maxTimer = setTimeout(() => rec.stop(), MAX_MS);
     rec.onresult = (e) => {
-      const want = norm(target).split(' ');
-      const best = [...e.results[0]].map((alt) => {
-        const got = norm(alt.transcript).split(' ');
-        return { text: alt.transcript, score: want.filter((w) => got.includes(w)).length / want.length };
-      }).sort((a, b) => b.score - a.score)[0];
-      if (best.score >= 0.75) { out.className = 'mic-result ok'; out.textContent = '✓ 잘 읽었어요!'; }
-      else { out.className = 'mic-result retry'; out.innerHTML = `다시 해 볼까요? <span class="en">(들린 말: “${esc(best.text)}”)</span>`; }
+      clearTimeout(silence);
+      let finalText = ''; let interim = '';
+      for (const r of e.results) {
+        if (r.isFinal) { finalText += r[0].transcript + ' '; [...r].forEach((alt) => speechWords(alt.transcript).forEach((w) => heard.add(w))); }
+        else interim += r[0].transcript + ' ';
+      }
+      shown = (finalText + interim).trim();
+      out.className = 'mic-result'; out.innerHTML = `듣는 중… <span class="en">“${esc(shown)}”</span>`;
+      silence = setTimeout(() => rec.stop(), SILENCE_MS);
     };
     rec.onerror = (e) => {
+      if (e.error === 'no-speech' || e.error === 'aborted') return;
       out.className = 'mic-result retry';
       out.textContent = e.error === 'not-allowed' ? '마이크를 허용하면 따라 읽기를 확인할 수 있어요' : '잘 안 들렸어요. 다시 해 볼까요?';
+      heard.clear(); shown = '__error__';
     };
-    rec.onend = () => { clearTimeout(stop); btn.classList.remove('listening'); btn.disabled = false; if (out.textContent === '말해 보세요…') out.textContent = ''; };
+    rec.onend = () => {
+      clearTimeout(maxTimer); clearTimeout(silence);
+      activeRec = null;
+      btn.classList.remove('listening'); btn.innerHTML = label;
+      if (shown === '__error__') return;
+      if (!shown) { out.className = 'mic-result retry'; out.textContent = '아무 소리도 안 들렸어요. 마이크 가까이에서 다시 읽어 볼까요?'; return; }
+      // 단어마다 들렸는지 표시
+      const parts = target.split(/\s+/);
+      const marks = parts.map((p) => {
+        const key = speechWords(p)[0];
+        const ok = !key || heard.has(key);
+        return { p, ok };
+      });
+      const total = marks.filter((m) => speechWords(m.p).length).length;
+      const right = marks.filter((m) => m.ok && speechWords(m.p).length).length;
+      const msg = right === total ? '✓ 완벽해요!'
+        : right / total >= 0.75 ? '잘 읽었어요! 주황색 단어만 한 번 더 연습해요'
+        : '다시 해 볼까요? 주황색 단어를 또박또박 읽어 봐요';
+      out.className = `mic-result ${right / total >= 0.75 ? 'ok' : 'retry'}`;
+      out.innerHTML = `
+        <div class="word-check en">${marks.map((m) => `<span class="${m.ok ? 'hit' : 'miss'}">${m.ok ? '' : '✗'}${esc(m.p)}</span>`).join(' ')}</div>
+        <div><b>${msg}</b> (${total}개 중 ${right}개)</div>
+        <div class="heard">들린 말: <span class="en">“${esc(shown)}”</span></div>`;
+    };
     rec.start();
   }
   const micButton = (target, label) => Recognition
@@ -114,7 +232,7 @@
           <div class="counter">${total ? `${Math.min(idx + 1, total)} / ${total}` : ''}</div>
         </div>
         <div class="row2">
-          <span>${lv.emoji} ${lv.name} · Day ${day} · ${esc(topics)}</span>
+          <span>${lv.emoji} ${lv.name} · Day ${day} · ${esc(topics)} ${voiceBtn()}</span>
           <span class="steps">${STEPS.map(([s, label], i) => `<button data-step="${s}" class="${i < stepIdx ? 'done' : ''} ${i === stepIdx ? 'current' : ''}" ${i > stepIdx ? 'disabled' : ''}>${i < stepIdx ? '✓ ' : ''}${label}</button>`).join('')}</span>
         </div>
       </div>`;
@@ -163,7 +281,7 @@
             ${last[lv.code] ? `<button class="resume" data-go="#/${lv.code}/${last[lv.code]}/read">▶ 이어서 Day ${last[lv.code]}</button>` : ''}
           </div>`).join('')}
       </section>
-      <p class="home-foot">✏️ 진도는 출력한 진도표에 직접 체크해요 <button class="btn ghost small" id="how">사용 방법</button></p>`;
+      <p class="home-foot">✏️ 진도는 출력한 진도표에 직접 체크해요 <button class="btn ghost small" id="how">사용 방법</button> ${voiceBtn()}</p>`;
     $$('[data-go]').forEach((el) => {
       el.onclick = (e) => { e.stopPropagation(); go(el.dataset.go); };
       el.onkeydown = (e) => { if (e.key === 'Enter') go(el.dataset.go); };
@@ -203,6 +321,7 @@
       <div class="topbar">
         <button class="close-x" onclick="location.hash='#/'" aria-label="홈으로">◀</button>
         <h2>${lv.emoji} ${lv.name} <span class="badge">${lv.totalWords.toLocaleString()}단어 · ${lv.totalDays}일</span></h2>
+        ${voiceBtn()}
         <button class="btn soft small" onclick="location.hash='#/${lv.code}/print'">🖨 진도표 출력</button>
       </div>
       ${last && isReady(lv, last) ? `<div class="resume-bar"><span>▶ 이어서 하기: <b>Day ${last}</b> · ${esc(topicsOf(lv.days[last]).join(' · '))}</span><button class="btn primary small" onclick="location.hash='#/${lv.code}/${last}/read'">시작</button></div>` : ''}
@@ -707,6 +826,7 @@
   // ---------- 라우터 ----------
   function route() {
     window.speechSynthesis?.cancel();
+    if (activeRec) activeRec.abort();
     keyHandler = null;
     const [code, a, b] = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
     const lv = data[code];
