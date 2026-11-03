@@ -413,22 +413,27 @@
     const dpr = window.devicePixelRatio || 1;
     const w = el.clientWidth; const h = el.clientHeight;
     [bg, ink].forEach((c) => { c.width = w * dpr; c.height = h * dpr; c.getContext('2d').scale(dpr, dpr); });
-    // 영어 공책 4선
+    // 영어 공책 4선 — 색은 테마(라이트/다크)에서 가져온다
+    const style = getComputedStyle(document.body);
+    const css = (name) => style.getPropertyValue(name).trim();
     const g = bg.getContext('2d');
     const top = h * 0.18; const bottom = h * 0.86; const gap = (bottom - top) / 3;
-    [[top, '#c9c2b8', []], [top + gap, '#d8d2c9', [6, 6]], [top + gap * 2, '#e9a0a0', []], [bottom, '#c9c2b8', []]].forEach(([y, c, dash]) => {
-      g.strokeStyle = c; g.lineWidth = 1.2; g.setLineDash(dash); g.beginPath(); g.moveTo(10, y); g.lineTo(w - 10, y); g.stroke();
+    [[top, 1, []], [top + gap, 0.7, [6, 6]], [top + gap * 2, 1, []], [bottom, 1, []]].forEach(([y, alpha, dash], k) => {
+      g.strokeStyle = k === 2 ? '#e9a0a0' : css('--pad-line');
+      g.globalAlpha = alpha; g.lineWidth = 1.2; g.setLineDash(dash); g.beginPath(); g.moveTo(10, y); g.lineTo(w - 10, y); g.stroke();
     });
+    g.globalAlpha = 1;
     if (guideText) {
-      const style = getComputedStyle(document.body);
       g.setLineDash([]);
-      g.font = `500 ${gap * 2.35}px ${style.getPropertyValue('--font-en')}`;
-      g.fillStyle = 'rgba(120, 110, 100, .22)';
+      g.font = `500 ${gap * 2.35}px ${css('--font-en')}`;
+      g.fillStyle = css('--muted');
+      g.globalAlpha = 0.35;
       g.textBaseline = 'alphabetic';
       g.fillText(guideText, 24, top + gap * 2, w - 48);
+      g.globalAlpha = 1;
     }
     const ctx = ink.getContext('2d');
-    ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#2b2722';
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = css('--ink');
     let drawing = false; let last = null; let strokes = 0;
     const pt = (e) => { const r = ink.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top, p: e.pressure || 0.5 }; };
     ink.addEventListener('pointerdown', (e) => { drawing = true; last = pt(e); ink.setPointerCapture(e.pointerId); strokes++; e.preventDefault(); });
