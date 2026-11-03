@@ -127,6 +127,7 @@
           </label>
           <p class="voice-note">맨 위가 이 기기에서 가장 자연스러운 음성이에요. 들어 보고 바꿀 수 있어요.</p>`
         : `<p class="voice-note warn">이 기기에는 ${ACCENTS[s.accent].label} 영어 음성이 없어요.<br>
+            안드로이드(갤럭시탭): 설정 → 일반 → 텍스트 음성 변환 → 기본 엔진을 <b>Google 음성 인식 및 합성</b>으로 바꾸고, 엔진 설정 → 음성 데이터 설치 → 영어(미국/영국)를 내려받아 주세요.<br>
             아이패드: 설정 → 손쉬운 사용 → 읽기 및 말하기 → 음성 → 영어에서 음성을 내려받아 주세요.<br>
             윈도우: 설정 → 시간 및 언어 → 음성에서 영어 음성을 추가해 주세요.</p>`}
         <p class="voice-note">발음기호는 미국식 기준이에요.</p>
@@ -175,12 +176,19 @@
     const maxTimer = setTimeout(() => rec.stop(), MAX_MS);
     rec.onresult = (e) => {
       clearTimeout(silence);
-      let finalText = ''; let interim = '';
+      // 안드로이드 크롬은 앞 결과를 포함한 문장을 다시 보내기도 해서("I eat" → "I eat an apple")
+      // 앞 문장이 다음 문장에 그대로 들어 있으면 긴 쪽만 남긴다
+      const finals = []; let interim = '';
       for (const r of e.results) {
-        if (r.isFinal) { finalText += r[0].transcript + ' '; [...r].forEach((alt) => speechWords(alt.transcript).forEach((w) => heard.add(w))); }
-        else interim += r[0].transcript + ' ';
+        if (r.isFinal) {
+          const t = r[0].transcript.trim();
+          const prev = finals[finals.length - 1];
+          if (prev && norm(t).startsWith(norm(prev))) finals[finals.length - 1] = t;
+          else if (!prev || !norm(prev).endsWith(norm(t))) finals.push(t);
+          [...r].forEach((alt) => speechWords(alt.transcript).forEach((w) => heard.add(w)));
+        } else interim += r[0].transcript + ' ';
       }
-      shown = (finalText + interim).trim();
+      shown = [...finals, interim.trim()].filter(Boolean).join(' ');
       out.className = 'mic-result'; out.innerHTML = `듣는 중… <span class="en">“${esc(shown)}”</span>`;
       silence = setTimeout(() => rec.stop(), SILENCE_MS);
     };
