@@ -330,6 +330,8 @@
     let i = 0;
     let phase = isTouch ? 'trace' : 'spell';
     let hints = 0;
+    let misses = 0;       // 이 단어에서 틀린 횟수
+    let revealed = false; // 정답 보기 상태
     const drawTrace = () => {
       const w = words[i];
       app.innerHTML = `
@@ -358,7 +360,9 @@
     };
     const drawSpell = () => {
       const w = words[i];
-      const boxes = hints >= 2 ? `<div class="spell-boxes">${[...w.word].map((c, k) => `<span class="${k === 0 ? 'given' : ''}">${k === 0 ? esc(c) : ''}</span>`).join('')}</div>`
+      // 정답 보기: 모든 칸 공개 / 힌트 2: 글자 수 + 첫 글자 / 힌트 1: 첫 글자
+      const boxes = revealed ? `<div class="spell-boxes">${[...w.word].map((c) => `<span class="given">${esc(c)}</span>`).join('')}</div>`
+        : hints >= 2 ? `<div class="spell-boxes">${[...w.word].map((c, k) => `<span class="${k === 0 ? 'given' : ''}">${k === 0 ? esc(c) : ''}</span>`).join('')}</div>`
         : hints === 1 ? `<div class="spell-boxes"><span class="given">${esc(w.word[0])}</span><span>…</span></div>` : '';
       app.innerHTML = `
         ${studyBar(lv, day, 'write', i, words.length)}
@@ -368,20 +372,28 @@
             <div class="write-head"><span class="meaning">${esc(w.meaning)}</span><span class="pos">${esc(w.pos)}</span>${audioBtns(w.word)}</div>
             ${boxes}
             <input class="spell-input" id="spell" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="latin" aria-label="영단어 입력" placeholder="영어로 써 보세요">
-            <div class="feedback" id="fb"></div>
+            <div class="feedback" id="fb">${revealed ? '👀 위 철자를 보고 똑같이 써 보세요' : ''}</div>
             <div class="blank-ex">${blankOut(w.example, w.word)}</div>
             <div class="hint-row">
-              <button class="btn soft small" id="hint" ${hints >= 2 ? 'disabled' : ''}>💡 ${hints === 0 ? '첫 글자' : '글자 수'} 보기</button>
+              ${revealed ? '' : `<button class="btn soft small" id="hint" ${hints >= 2 ? 'disabled' : ''}>💡 ${hints === 0 ? '첫 글자' : '글자 수'} 보기</button>
+              <button class="btn soft small" id="reveal">👀 정답 보기</button>`}
               <button class="btn primary" id="check">확인 ⏎</button>
+              ${revealed ? '<button class="btn ghost small" id="skipWord">다음 단어로 ▶</button>' : ''}
             </div>
           </article>
-          <div class="nav-row"><span></span><span class="speak-hint">${i + 1}번째 단어 · 10개 모두 맞히면 암기 단계로 가요</span><span></span></div>
+          <div class="nav-row"><span></span><span class="speak-hint">${i + 1}번째 단어 · 모르겠으면 👀 정답 보기를 눌러요</span><span></span></div>
         </div>`;
       bindStudyBar(lv, day); bindAudio();
       const input = $('#spell');
       input.focus();
       if ($('#toTrace')) $('#toTrace').onclick = () => { phase = 'trace'; draw(); };
-      $('#hint').onclick = () => { hints++; drawSpell(); };
+      if ($('#hint')) $('#hint').onclick = () => { hints++; drawSpell(); };
+      if ($('#reveal')) $('#reveal').onclick = () => { revealed = true; drawSpell(); };
+      const nextWord = () => {
+        if (i < words.length - 1) { i++; hints = 0; misses = 0; revealed = false; phase = isTouch ? 'trace' : 'spell'; draw(); }
+        else finish();
+      };
+      if ($('#skipWord')) $('#skipWord').onclick = nextWord;
       const check = () => {
         const val = input.value.trim().toLowerCase();
         if (!val) return input.focus();
@@ -389,15 +401,17 @@
           input.classList.add('ok'); input.disabled = true;
           $('#fb').innerHTML = '<b style="color:var(--good)">✓ 정답!</b>';
           tts.say(w.word);
-          setTimeout(() => {
-            if (i < words.length - 1) { i++; hints = 0; phase = isTouch ? 'trace' : 'spell'; draw(); }
-            else finish();
-          }, 1100);
+          setTimeout(nextWord, 1100);
         } else {
+          misses++;
           const diff = [...w.word].map((c, k) => `<span class="${val[k] === c.toLowerCase() ? '' : 'x'}">${esc(c)}</span>`).join('');
           input.classList.remove('no'); void input.offsetWidth; input.classList.add('no');
           $('#fb').innerHTML = `정답은 <span class="diff">${diff}</span> — 다시 써 볼까요?`;
-          setTimeout(() => { input.value = ''; input.classList.remove('no'); input.focus(); }, 2000);
+          // 두 번 틀리면 정답을 계속 보여 주고 '다음 단어로' 버튼을 연다
+          setTimeout(() => {
+            if (misses >= 2 && !revealed) { revealed = true; drawSpell(); return; }
+            input.value = ''; input.classList.remove('no'); input.focus();
+          }, 2000);
         }
       };
       $('#check').onclick = check;
@@ -410,7 +424,7 @@
         <div class="stage"><article class="card" style="text-align:center">
           <div style="font-size:56px">✍️</div>
           <h2 style="font-family:var(--font-display);font-weight:400;margin:6px 0">쓰기 완료!</h2>
-          <p style="color:var(--muted)">10단어 철자를 모두 맞혔어요. 이제 외웠는지 확인해 볼까요?</p>
+          <p style="color:var(--muted)">10단어 쓰기 연습을 마쳤어요. 이제 외웠는지 확인해 볼까요?</p>
           <button class="btn primary" id="nextStep">③ 암기 확인으로 ▶</button>
         </article></div>`;
       bindStudyBar(lv, day);
