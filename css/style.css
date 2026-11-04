@@ -370,26 +370,25 @@ body[data-level="high"] .sheet-head h3 { font-weight: 900; font-size: 15pt; }
 .sheet-head .fields { font-size: 11pt; white-space: nowrap; }
 .sheet table { width: 100%; border-collapse: collapse; }
 .sheet th { background: color-mix(in srgb, var(--accent) 14%, #fff); font-size: 10.5pt; }
-.sheet th, .sheet td { border: 1px solid #bbb; padding: 0 6px; text-align: center; }
+.sheet th, .sheet td { border: 1px solid #777; padding: 0 6px; text-align: center; }
 .prog td { height: 6.1mm; font-size: 10pt; }
 .prog .box { width: 13px; height: 13px; }
 .prog td.topic { text-align: left; font-size: 10pt; color: #444; }
-.box { display: inline-block; width: 15px; height: 15px; border: 1.5px solid #555; border-radius: 3px; vertical-align: middle; }
-.sheet .foot { text-align: right; font-size: 9pt; color: #777; margin-top: 6px; }
+.box { display: inline-block; width: 15px; height: 15px; border: 1.5px solid #333; border-radius: 3px; vertical-align: middle; }
+.sheet .foot { text-align: right; font-size: 9pt; color: #555; margin-top: 6px; }
 .daysheet td { text-align: left; padding: 3px 8px; vertical-align: top; line-height: 1.35; }
 .daysheet td.n { text-align: center; width: 8mm; }
 .daysheet td.w { font-family: var(--font-en); font-size: 14pt; font-weight: 600; width: 34mm; }
 .daysheet td.m { width: 40mm; }
-.daysheet .ko { color: #666; font-size: 10pt; }
-.daysheet .blank { color: transparent; border-bottom: 1px solid #999; display: inline-block; min-width: 26mm; }
+.daysheet .ko { color: #444; font-size: 10pt; }
+.daysheet .blank { color: transparent; border-bottom: 1px solid #555; display: inline-block; min-width: 26mm; }
 .trace-lines { margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; column-gap: 8mm; }
 .trace-row { display: flex; align-items: center; gap: 8px; height: 9mm; }
-.trace-row .lbl { width: 30mm; font-family: var(--font-en); color: #bbb; font-size: 16pt; white-space: nowrap; overflow: hidden; }
-.trace-row .lines { flex: 1; height: 7.5mm; background:
-  linear-gradient(#bbb, #bbb) 0 0 / 100% 1px no-repeat,
-  repeating-linear-gradient(90deg, #ccc 0 4px, transparent 4px 8px) 0 33% / 100% 1px no-repeat,
-  linear-gradient(#e7a, #e7a) 0 66% / 100% 1px no-repeat,
-  linear-gradient(#bbb, #bbb) 0 100% / 100% 1px no-repeat; }
+/* 따라 쓰기 칸: 배경 그림 대신 실제 테두리로 그려 '배경 그래픽 인쇄'를 꺼도 선이 나온다 */
+.trace-row .lbl { width: 30mm; font-family: var(--font-en); color: #8a8a8a; font-size: 16pt; white-space: nowrap; overflow: hidden; }
+.trace-row .lines { flex: 1; height: 7.5mm; position: relative; border-top: 1px solid #666; border-bottom: 1px solid #666; }
+.trace-row .lines::before { content: ''; position: absolute; left: 0; right: 0; top: 33%; border-top: 1px dashed #888; }
+.trace-row .lines::after { content: ''; position: absolute; left: 0; right: 0; top: 66%; border-top: 1.5px solid #d46a6a; }
 
 /* ---------- 따라 읽기 채점 ---------- */
 .mic-result .word-check { font-size: 22px; line-height: 1.6; margin: 4px 0 6px; font-weight: 600; }
