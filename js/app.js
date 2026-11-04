@@ -5,6 +5,7 @@
      #/e/12/read|write|test|done   학습 단계
      #/e/print              진도표 출력
      #/e/12/print           일차 단어장 출력
+     #/game, #/game/blocks|rain|ox|battle   게임 (js/games.js)
 */
 (() => {
   'use strict';
@@ -289,6 +290,11 @@
             ${last[lv.code] ? `<button class="resume" data-go="#/${lv.code}/${last[lv.code]}/read">▶ 이어서 Day ${last[lv.code]}</button>` : ''}
           </div>`).join('')}
       </section>
+      <button class="game-entry" data-go="#/game">
+        <span class="game-entry-icon" aria-hidden="true">🎮</span>
+        <span><b>게임으로 복습하기</b><br><small>철자 블록 · 떨어지는 단어 · 스피드 O/X · 쌍둥이 대결</small></span>
+        <span aria-hidden="true">▶</span>
+      </button>
       <p class="home-foot">✏️ 진도는 출력한 진도표에 직접 체크해요 <button class="btn ghost small" id="how">사용 방법</button> ${voiceBtn()}</p>`;
     $$('[data-go]').forEach((el) => {
       el.onclick = (e) => { e.stopPropagation(); go(el.dataset.go); };
@@ -743,10 +749,12 @@
         <div class="done-actions">
           <button class="btn" onclick="location.hash='#/${lv.code}/${day}/print'">🖨 오늘 단어장 출력</button>
           <button class="btn" onclick="location.hash='#/${lv.code}'">일차 목록</button>
+          <button class="btn soft" id="toGame">🎮 오늘 단어로 게임</button>
           ${hasNext ? `<button class="btn primary" onclick="location.hash='#/${lv.code}/${day + 1}/read'">Day ${day + 1} 시작 ▶</button>`
             : day >= lv.totalDays ? `<span class="badge" style="font-size:16px;padding:10px 16px">🎓 ${lv.name} 과정을 모두 마쳤어요!</span>` : ''}
         </div>
       </article></div>`;
+    $('#toGame').onclick = () => { window.TWGames?.useDay(lv.code, day); go('#/game'); };
     keyHandler = null;
   }
 
@@ -836,12 +844,20 @@
     draw();
   }
 
+  // ---------- 게임(games.js)에 넘겨주는 공용 도구 ----------
+  window.TW = {
+    app, data, esc, shuffle, toast, go, answers, tts, voiceBtn, store, topicsOf, bindAudio,
+    setKey: (fn) => { keyHandler = fn; },
+  };
+
   // ---------- 라우터 ----------
   function route() {
     window.speechSynthesis?.cancel();
     if (activeRec) activeRec.abort();
+    window.TWGames?.stop();
     keyHandler = null;
     const [code, a, b] = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
+    if (code === 'game' && window.TWGames) { window.scrollTo(0, 0); return window.TWGames.render(a); }
     const lv = data[code];
     document.body.dataset.level = lv ? lv.key : 'home';
     document.title = lv ? `${lv.name} · 쌍둥이의 하루 영단어` : '쌍둥이의 하루 영단어';
