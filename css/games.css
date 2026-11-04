@@ -24,7 +24,7 @@
 .pool-count { margin: 12px 0 0; font-size: 16px; }
 .pool-count.warn { color: var(--hard-ink); font-weight: 700; }
 
-.game-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.game-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
 .game-card {
   display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 18px 18px 16px; min-height: 170px;
   border: 2px solid transparent; border-radius: var(--radius); background: var(--surface); color: var(--ink);
@@ -88,6 +88,28 @@ body[data-level="high"] .game-title { font-weight: 900; font-size: 17px; }
 .rain-input { display: flex; gap: 10px; align-items: center; padding-top: 10px; flex-wrap: wrap; }
 .rain-input .spell-input { flex: 1; min-width: 200px; margin: 0; max-width: none; font-size: 28px; padding: 8px 14px; }
 
+/* G-05 바구니 받기 */
+.catch-wrap { display: flex; flex-direction: column; min-height: 360px; }
+.catch-area { position: relative; flex: 1; overflow: hidden; border-radius: var(--radius); box-shadow: var(--shadow);
+  background: linear-gradient(to bottom, var(--surface) 70%, var(--accent-soft)); touch-action: none; user-select: none; cursor: pointer; }
+.catch-area.paused .catch-item { opacity: .35; }
+.catch-item { position: absolute; left: 0; top: 0; will-change: transform; pointer-events: none; white-space: nowrap; }
+.catch-item.word { padding: 8px 14px; border-radius: 14px; background: var(--accent); color: var(--accent-ink); font-size: 24px; font-weight: 700; box-shadow: 0 4px 0 var(--accent-deep); }
+.catch-item.emoji { font-size: 44px; line-height: 1; }
+.catcher { position: absolute; left: 0; bottom: 4px; display: flex; flex-direction: column; align-items: center; width: 110px; will-change: transform; pointer-events: none; }
+.catcher .basket { font-size: 64px; line-height: 1; width: 100px; text-align: center; margin-bottom: -18px; position: relative; z-index: 1; }
+.catcher .kid { font-size: 56px; line-height: 1; }
+.catcher.yuck { animation: shake .35s; }
+.catch-help { position: absolute; left: 50%; top: 38%; transform: translate(-50%, -50%); text-align: center; color: var(--muted); font-size: 18px; line-height: 1.7; pointer-events: none; width: 90%; }
+.catch-msg { position: absolute; left: 50%; top: 12px; transform: translateX(-50%); padding: 8px 18px; border-radius: 99px; font-size: 20px; font-weight: 700; opacity: 0; transition: opacity .2s; pointer-events: none; white-space: nowrap; z-index: 2; }
+.catch-msg.show { opacity: 1; }
+.catch-msg.ok { background: var(--good-soft); color: var(--know-ink); }
+.catch-msg.bad { background: var(--bad-soft); color: var(--hard-ink); }
+.catch-float { position: absolute; transform: translateX(-50%); font-size: 24px; font-weight: 800; pointer-events: none; animation: c-float .8s forwards; z-index: 2; }
+.catch-float.ok { color: var(--good); }
+.catch-float.bad { color: var(--bad); }
+@keyframes c-float { to { translate: 0 -60px; opacity: 0; } }
+
 /* G-03 스피드 O/X */
 .ox-card { text-align: center; max-width: 620px; transition: background .15s; }
 .ox-card.right { background: var(--good-soft); }
@@ -138,7 +160,7 @@ body[data-level="high"] .game-title { font-weight: 900; font-size: 17px; }
 .best-badge { display: inline-block; margin: 10px 0 0; padding: 4px 14px; border-radius: 99px; background: var(--accent-soft); color: var(--accent-deep); font-weight: 700; }
 .missed-title { text-align: left; font-size: 17px; margin: 22px 0 0; }
 
-@media (max-width: 900px) {
+@media (max-width: 600px) {
   .game-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 600px) {
@@ -151,3 +173,8 @@ body[data-level="high"] .game-title { font-weight: 900; font-size: 17px; }
 /* 떨어지는 단어·대결은 화면을 꽉 채우므로 페이지 스크롤을 막는다 */
 body.game-full { overflow: hidden; overscroll-behavior: none; }
 body.game-full #app { padding-bottom: 0; }
+
+/* ⓘ 조작 방법 */
+.help-btn { font-size: 20px; font-weight: 700; min-width: 40px; padding: 4px 10px; }
+.game-help ul { margin: 10px 0 0; padding-left: 20px; line-height: 1.7; font-size: 17px; }
+.game-help li + li { margin-top: 4px; }

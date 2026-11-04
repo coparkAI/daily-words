@@ -13,8 +13,17 @@
   const GAMES = {
     blocks: { icon: '🧩', name: '철자 블록', desc: '섞인 알파벳으로 단어 완성', unit: '점' },
     rain: { icon: '☔', name: '떨어지는 단어', desc: '바닥에 닿기 전에 영단어 쓰기', unit: '점' },
+    catch: { icon: '🧺', name: '바구니 받기', desc: '영단어·과일은 받고 못 먹는 건 피하기', unit: '점' },
     ox: { icon: '⭕', name: '스피드 O/X', desc: '단어와 뜻이 맞는지 빠르게', unit: '개' },
     battle: { icon: '⚔️', name: '쌍둥이 대결', desc: '마주 앉아 먼저 맞히기', unit: '' },
+  };
+  // ⓘ 버튼으로 보는 조작 방법
+  const HELP = {
+    blocks: ['뜻을 보고 소리를 들은 뒤, 알파벳 블록을 단어 순서대로 눌러요.', 'PC는 키보드로 글자를 쳐도 돼요. 스페이스 = 다시 듣기', '💡 힌트는 다음 글자 블록을 반짝여 줘요.', '힌트를 쓰거나 "모르겠어요"를 누른 단어는 놓친 단어로 남아요.'],
+    rain: ['위에서 한글 뜻 카드가 떨어져요.', '바닥에 닿기 전에 그 영단어를 입력칸에 써요. 맞으면 Enter 없이 바로 터져요.', '✍️ 펜으로 쓰기를 켜면 손글씨로 쓸 수 있고, 단어가 조금 천천히 떨어져요.', '카드가 바닥에 3개 닿으면 끝나요. ⏸ 로 잠깐 멈출 수 있어요.'],
+    catch: ['화면을 누르거나 손가락으로 끌면 아이가 그쪽으로 달려가요.', 'PC는 ← → 키로 움직이고, 스페이스로 잠깐 멈춰요.', '영단어 +10점 · 과일 🍎🍌🍇 +5점', '못 먹는 것 🪨🧦👟🔩🧱🪣🧽 은 피해요. 받으면 −5점!', '영단어를 받으면 뜻을 보여 주고 발음을 들려줘요. 영단어가 다 떨어지면 끝나요.'],
+    ox: ['영단어와 뜻이 짝으로 나와요.', '맞는 짝이면 ⭕, 틀린 짝이면 ❌ 를 눌러요.', 'PC는 ← 또는 O 키 = ⭕, → 또는 X 키 = ❌', '틀리면 정답을 보여 주고 2초 쉬어요. 시간이 끝날 때까지 최대한 많이 맞혀요.'],
+    battle: ['태블릿을 책상에 눕혀 놓고 마주 앉아요. 위쪽 화면은 맞은편 사람 쪽으로 뒤집혀 있어요.', '같은 문제를 먼저 맞히면 1점!', '틀리면 그 문제는 기회가 끝나요. 둘 다 틀리면 정답을 보여 줘요.', '10문제를 풀고 점수가 많은 사람이 이겨요.'],
   };
   const DIFFS = { easy: '쉬움', normal: '보통', hard: '어려움' };
 
@@ -31,7 +40,7 @@
   const onStop = (fn) => cleanups.push(fn);
   const later = (fn, ms) => { const t = setTimeout(fn, ms); onStop(() => clearTimeout(t)); return t; };
   const every = (fn, ms) => { const t = setInterval(fn, ms); onStop(() => clearInterval(t)); return t; };
-  function stop() { cleanups.forEach((f) => f()); cleanups = []; document.body.classList.remove('game-full'); }
+  function stop() { cleanups.forEach((f) => f()); cleanups = []; helpPause = null; document.body.classList.remove('game-full'); }
   const fullScreen = () => document.body.classList.add('game-full');
 
   // ---------- 단어 범위 ----------
@@ -69,9 +78,27 @@
   const esc = (s) => T().esc(s);
   function setTheme() { document.body.dataset.level = level().key; document.title = '게임 · 쌍둥이의 하루 영단어'; }
   function topBar(title, right = '') {
-    return `<div class="game-bar"><button class="close-x" id="gQuit" aria-label="게임 메뉴로">✕</button><span class="game-title">${title}</span><span class="game-stats">${right}</span></div>`;
+    return `<div class="game-bar"><button class="close-x" id="gQuit" aria-label="게임 메뉴로">✕</button><span class="game-title">${title}</span><span class="game-stats">${right}</span><button class="btn ghost small help-btn" id="gHelp" aria-label="조작 방법">ⓘ</button></div>`;
   }
+  let helpPause = null;   // 설명을 보는 동안 게임을 멈추는 함수 (떨어지는 단어·바구니)
+  function showHelp() {
+    const g = (location.hash.split('/')[2] || '').split('?')[0];
+    const info = GAMES[g]; if (!info) return;
+    if (helpPause) helpPause(true);
+    let dlg = document.getElementById('gameHelp');
+    if (!dlg) { dlg = document.createElement('dialog'); dlg.id = 'gameHelp'; dlg.className = 'voice-dlg game-help'; document.body.append(dlg); }
+    dlg.innerHTML = `<h3>${info.icon} ${info.name} — 이렇게 해요</h3>
+      <ul>${HELP[g].map((t) => `<li>${t}</li>`).join('')}</ul>
+      <div class="done-actions"><button class="btn primary" id="helpClose">알겠어요${helpPause ? ' ▶ 계속하기' : ''}</button></div>`;
+    const close = () => { dlg.close(); if (helpPause) helpPause(false); };
+    dlg.querySelector('#helpClose').onclick = close;
+    dlg.oncancel = (e) => { e.preventDefault(); close(); };
+    dlg.showModal();
+  }
+
   function bindQuit(confirmFirst = true) {
+    const h = app().querySelector('#gHelp');
+    if (h) h.onclick = showHelp;
     const b = app().querySelector('#gQuit');
     if (b) b.onclick = () => { if (!confirmFirst || confirm('게임을 그만둘까요?')) T().go('#/game'); };
   }
@@ -406,6 +433,7 @@
       if (p) msg('⏸ 잠깐 멈춤 — ▶ 를 누르면 계속해요', true); else input.focus();
     };
     $('#rPause').onclick = () => setPause(!paused);
+    helpPause = setPause;
     const onVis = () => { if (document.hidden) setPause(true); };
     document.addEventListener('visibilitychange', onVis); onStop(() => document.removeEventListener('visibilitychange', onVis));
     $('#rPen').onclick = () => {
@@ -429,6 +457,165 @@
     }
     hud();
     input.focus();
+  }
+
+  // =========================================================
+  // G-05 바구니 받기 — 영단어(+10)·과일(+5)은 받고, 못 먹는 것(-5)은 피하기
+  // =========================================================
+  const FRUITS = ['🍎', '🍌', '🍇', '🍓', '🍊', '🍉', '🍑', '🍒', '🍍', '🥝'];
+  const JUNK = ['🪨', '🧦', '👟', '🔩', '🧱', '🪣', '🧽'];
+  function playCatch() {
+    stop(); setTheme();
+    const P = pool();
+    const TOTAL = { easy: 10, normal: 15, hard: 20 }[S.diff];         // 이번 판에 떨어질 영단어 수
+    const FALL = { easy: 95, normal: 120, hard: 150 }[S.diff];         // 낙하 속도 (px/초)
+    const JUNK_RATE = { easy: 0.3, normal: 0.45, hard: 0.55 }[S.diff]; // 단어가 아닌 것 중 못 먹는 것 비율
+    const words = T().shuffle(P).slice(0, TOTAL);
+    while (words.length < TOTAL) words.push(pick(P));
+    let score = 0; let gotWords = 0; let gotFruit = 0; let gotJunk = 0;
+    const missed = [];
+    let items = []; let paused = false; let over = false; let raf; let last = performance.now();
+    let wordIn = 0.8; let extraIn = 1.6;
+    let kidX = 0; let targetX = null; let keyDir = 0;
+
+    app().innerHTML = `
+      <div class="catch-wrap" id="cWrap">
+        ${topBar('🧺 바구니 받기', `<span id="cLeft">단어 ${TOTAL}개 남음</span><span id="cScore">0점</span><button class="btn ghost small" id="cPause">⏸</button>`)}
+        <div class="catch-area" id="cArea">
+          <div class="catch-help" id="cHelp">손가락으로 아이를 끌어서 움직여요 (PC는 ← →)<br>영단어 <b>+10</b> · 과일 <b>+5</b> · 못 먹는 것 <b>−5</b></div>
+          <div class="catch-msg" id="cMsg"></div>
+          <div class="catcher" id="cKid"><span class="basket">🧺</span><span class="kid">🧒</span></div>
+        </div>
+      </div>`;
+    bindQuit(); fullScreen();
+    const $ = (s) => app().querySelector(s);
+    const wrap = $('#cWrap'); const area = $('#cArea'); const kid = $('#cKid');
+    const fit = () => { wrap.style.height = `${Math.max(360, window.innerHeight - wrap.getBoundingClientRect().top - 8)}px`; };
+    fit(); window.addEventListener('resize', fit); onStop(() => window.removeEventListener('resize', fit));
+    kidX = (area.clientWidth - kid.offsetWidth) / 2;
+
+    const left = () => words.length + items.filter((it) => it.w).length;
+    const hud = () => {
+      $('#cScore').textContent = `${score}점`;
+      $('#cLeft').textContent = `단어 ${left()}개 남음`;
+    };
+    let msgT;
+    function msg(html, ok) {
+      const m = $('#cMsg'); if (!m) return;
+      m.innerHTML = html; m.className = `catch-msg show ${ok ? 'ok' : 'bad'}`;
+      clearTimeout(msgT); msgT = setTimeout(() => m.classList.remove('show'), 1400);
+    }
+    onStop(() => clearTimeout(msgT));
+    function float(text, x, y, ok) {
+      const f = document.createElement('div');
+      f.className = `catch-float ${ok ? 'ok' : 'bad'}`; f.textContent = text;
+      f.style.left = `${x}px`; f.style.top = `${y}px`;
+      area.appendChild(f); later(() => f.remove(), 800);
+    }
+    function spawn(kind) {
+      const el = document.createElement('div');
+      let w = null;
+      if (kind === 'word') { w = words.shift(); el.className = 'catch-item word en'; el.textContent = w.word; }
+      else { el.className = 'catch-item emoji'; el.textContent = pick(kind === 'fruit' ? FRUITS : JUNK); }
+      area.appendChild(el);
+      const x = 4 + Math.random() * Math.max(0, area.clientWidth - el.offsetWidth - 8);
+      const it = { kind, w, el, x, y: -el.offsetHeight, v: FALL * (kind === 'word' ? 1 : 0.9 + Math.random() * 0.4) };
+      el.style.transform = `translate(${x}px, ${it.y}px)`;
+      items.push(it); hud();
+    }
+    function catchIt(it) {
+      const fx = it.x + it.el.offsetWidth / 2; const fy = it.y;
+      it.el.remove();
+      if (it.kind === 'word') {
+        score += 10; gotWords++; sfx('ok'); sayAfter(it.w);
+        float('+10', fx, fy, true);
+        msg(`<span class="en">${esc(it.w.word)}</span> = ${esc(short(it.w))}`, true);
+      } else if (it.kind === 'fruit') {
+        score += 5; gotFruit++; sfx('ok'); float('+5 냠냠', fx, fy, true);
+      } else {
+        score = Math.max(0, score - 5); gotJunk++; sfx('bad'); float('−5 퉤!', fx, fy, false);
+        kid.classList.remove('yuck'); void kid.offsetWidth; kid.classList.add('yuck');
+        kid.querySelector('.kid').textContent = '😖';
+        later(() => { const k = kid.querySelector('.kid'); if (k) k.textContent = '🧒'; }, 600);
+      }
+      hud();
+    }
+    function loop(ts) {
+      const dt = Math.min(0.05, (ts - last) / 1000); last = ts;
+      if (!paused && !over) {
+        // 아이 움직이기: 누른 곳을 따라가거나 ← → 키
+        const maxX = area.clientWidth - kid.offsetWidth;
+        const RUN = 900;
+        if (keyDir) { kidX += keyDir * RUN * 0.7 * dt; targetX = null; }
+        else if (targetX != null) { const d = targetX - kidX; kidX += Math.sign(d) * Math.min(Math.abs(d), RUN * dt); }
+        kidX = Math.max(0, Math.min(maxX, kidX));
+        kid.style.transform = `translateX(${kidX}px)`;
+
+        // 떨어뜨리기: 영단어는 정해진 개수만, 과일·못 먹는 것은 그 사이사이에
+        if (words.length) { wordIn -= dt; if (wordIn <= 0) { spawn('word'); wordIn = Math.max(1.2, 1.9 - (TOTAL - words.length) * 0.03); } }
+        extraIn -= dt;
+        if (extraIn <= 0 && left()) { spawn(Math.random() < JUNK_RATE ? 'junk' : 'fruit'); extraIn = 1.1 + Math.random() * 1.2; }
+
+        // 바구니 위치 (아이 요소 안에서 바구니가 차지하는 칸)
+        const bk = kid.querySelector('.basket');
+        const bL = kidX + bk.offsetLeft + 4; const bR = bL + bk.offsetWidth - 8;
+        const bT = kid.offsetTop + bk.offsetTop;
+        for (const it of [...items]) {
+          it.y += it.v * dt;
+          it.el.style.transform = `translate(${it.x}px, ${it.y}px)`;
+          const h = it.el.offsetHeight; const w = it.el.offsetWidth;
+          const bottom = it.y + h;
+          if (bottom >= bT && bottom <= bT + 36 && it.x + w * 0.75 >= bL && it.x + w * 0.25 <= bR) {
+            items = items.filter((x) => x !== it); catchIt(it); continue;
+          }
+          if (it.y > area.clientHeight) {
+            items = items.filter((x) => x !== it); it.el.remove();
+            if (it.kind === 'word') { missed.push(it.w); msg(`놓쳤어요: <span class="en">${esc(it.w.word)}</span> = ${esc(short(it.w))}`, false); }
+            hud();
+          }
+        }
+        if (!left()) { end(); return; }
+      }
+      raf = requestAnimationFrame(loop);
+    }
+    raf = requestAnimationFrame(loop);
+    onStop(() => cancelAnimationFrame(raf));
+
+    // 터치·마우스: 누른 곳으로 아이가 달려가고, 끌면 따라온다
+    const aim = (e) => { const a = area.getBoundingClientRect(); targetX = e.clientX - a.left - kid.offsetWidth / 2; $('#cHelp')?.remove(); };
+    area.onpointerdown = (e) => { e.preventDefault(); try { area.setPointerCapture(e.pointerId); } catch { /* 무시 */ } aim(e); };
+    area.onpointermove = (e) => { if (e.buttons || e.pointerType !== 'mouse') aim(e); };
+    T().setKey((e) => {
+      if (e.key === 'ArrowLeft') keyDir = -1; else if (e.key === 'ArrowRight') keyDir = 1;
+      else if (e.key === ' ') { e.preventDefault(); setPause(!paused); return; } else return;
+      e.preventDefault(); $('#cHelp')?.remove();
+    });
+    const up = (e) => { if ((e.key === 'ArrowLeft' && keyDir < 0) || (e.key === 'ArrowRight' && keyDir > 0)) keyDir = 0; };
+    document.addEventListener('keyup', up); onStop(() => document.removeEventListener('keyup', up));
+
+    function setPause(p) {
+      if (over) return;
+      paused = p; last = performance.now();
+      $('#cPause').textContent = p ? '▶' : '⏸';
+      area.classList.toggle('paused', p);
+      if (p) msg('⏸ 잠깐 멈춤 — ▶ 를 누르면 계속해요', true);
+    }
+    $('#cPause').onclick = () => setPause(!paused);
+    helpPause = setPause;
+    const onVis = () => { if (document.hidden) setPause(true); };
+    document.addEventListener('visibilitychange', onVis); onStop(() => document.removeEventListener('visibilitychange', onVis));
+
+    function end() {
+      over = true;
+      later(() => showResult('catch', {
+        big: `${score.toLocaleString()}점`,
+        sub: `영단어 ${gotWords}/${TOTAL}개 · 과일 ${gotFruit}개 · 못 먹는 것 ${gotJunk}개`,
+        score, missed,
+        again: () => playCatch(),
+        againMissed: null,
+      }), 500);
+    }
+    hud();
   }
 
   // =========================================================
@@ -557,7 +744,7 @@
             <div class="half-choices" id="ch${p}"></div>
             <div class="half-msg" id="m${p}"></div>
           </section>
-          ${p === 1 ? `<div class="battle-mid"><button class="close-x" id="gQuit" aria-label="그만하기">✕</button><span id="bCount">1 / 10</span><button class="icon-btn" id="bSay" aria-label="듣기">🔊</button></div>` : ''}`).join('')}
+          ${p === 1 ? `<div class="battle-mid"><button class="close-x" id="gQuit" aria-label="그만하기">✕</button><span id="bCount">1 / 10</span><button class="icon-btn" id="bSay" aria-label="듣기">🔊</button><button class="btn ghost small help-btn" id="gHelp" aria-label="조작 방법">ⓘ</button></div>` : ''}`).join('')}
       </div>`;
     bindQuit(); fullScreen();
     const $ = (s) => app().querySelector(s);
@@ -631,7 +818,7 @@
       T().setKey(null);
       if (!T().data[S.level]) S.level = 'e';
       if (sub && pool().length < 4) { T().toast('단어 범위를 먼저 골라 주세요'); return T().go('#/game'); }
-      ({ blocks: playBlocks, rain: playRain, ox: playOX, battle: battleSetup }[sub] || renderMenu)();
+      ({ blocks: playBlocks, rain: playRain, catch: playCatch, ox: playOX, battle: battleSetup }[sub] || renderMenu)();
     },
     // 학습 완료 화면에서 "오늘 단어로 게임"
     useDay(code, day) { S.level = code; S.mode = 'range'; S.from = day; S.to = day; save(); },
