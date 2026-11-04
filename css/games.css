@@ -80,7 +80,7 @@ body[data-level="high"] .game-title { font-weight: 900; font-size: 17px; }
 }
 .rain-card.aim { border-color: var(--accent); background: var(--accent-soft); }
 .rain-card.popped { animation: g-popout .3s forwards; }
-@keyframes g-popout { to { opacity: 0; scale: 1.6; } }
+@keyframes g-popout { to { opacity: 0; font-size: 34px; } }
 .rain-msg { position: absolute; left: 50%; top: 40%; transform: translate(-50%, -50%); padding: 10px 18px; border-radius: 99px; font-size: 20px; font-weight: 700; opacity: 0; transition: opacity .2s; pointer-events: none; white-space: nowrap; }
 .rain-msg.show { opacity: 1; }
 .rain-msg.ok { background: var(--good-soft); color: var(--know-ink); }
@@ -108,7 +108,7 @@ body[data-level="high"] .game-title { font-weight: 900; font-size: 17px; }
 .catch-float { position: absolute; transform: translateX(-50%); font-size: 24px; font-weight: 800; pointer-events: none; animation: c-float .8s forwards; z-index: 2; }
 .catch-float.ok { color: var(--good); }
 .catch-float.bad { color: var(--bad); }
-@keyframes c-float { to { translate: 0 -60px; opacity: 0; } }
+@keyframes c-float { to { transform: translate(-50%, -60px); opacity: 0; } }
 
 /* G-03 스피드 O/X */
 .ox-card { text-align: center; max-width: 620px; transition: background .15s; }

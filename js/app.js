@@ -33,12 +33,12 @@
 
   // ---------- 저장 (마지막 학습 일차만) ----------
   const store = {
-    get() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch { return {}; } },
-    setLast(code, day) { try { const s = store.get(); s[code] = day; localStorage.setItem(STORE_KEY, JSON.stringify(s)); } catch { /* 저장 불가 환경 */ } },
+    get() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } },
+    setLast(code, day) { try { const s = store.get(); s[code] = day; localStorage.setItem(STORE_KEY, JSON.stringify(s)); } catch (e) { /* 저장 불가 환경 */ } },
   };
 
   // ---------- 도우미 ----------
-  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const $ = (sel, el = app) => el.querySelector(sel);
   const $$ = (sel, el = app) => [...el.querySelectorAll(sel)];
   const shuffle = (a) => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
@@ -68,8 +68,8 @@
   const NOVELTY = /Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Deranged|Good News|Hysterical|Jester|Junior|Organ|Pipe|Ralph|Superstar|Trinoids|Whisper|Wobble|Zarvox|Fred|Kathy|Grandma|Grandpa|Eddy|Flo|Reed|Rocko|Sandy|Shelley/i;
   const VOICE_KEY = 'twins-voice';
   const tts = {
-    settings: (() => { try { return { accent: 'us', name: '', ...JSON.parse(localStorage.getItem(VOICE_KEY)) }; } catch { return { accent: 'us', name: '' }; } })(),
-    save() { try { localStorage.setItem(VOICE_KEY, JSON.stringify(tts.settings)); } catch { /* 저장 불가 환경 */ } },
+    settings: (() => { try { return { accent: 'us', name: '', ...JSON.parse(localStorage.getItem(VOICE_KEY)) }; } catch (e) { return { accent: 'us', name: '' }; } })(),
+    save() { try { localStorage.setItem(VOICE_KEY, JSON.stringify(tts.settings)); } catch (e) { /* 저장 불가 환경 */ } },
     // 선택한 억양에 맞는 영어 음성 목록 (좋은 음성 먼저)
     list(accent = tts.settings.accent) {
       const want = ACCENTS[accent];
@@ -113,15 +113,18 @@
   // 정답 = 코인, 오답 = 낮게 내려가는 뿅, 완료·콤보 = 짧은 팡파르
   const SFX_KEY = 'twins-sfx';
   const sfx = {
-    on: (() => { try { return localStorage.getItem(SFX_KEY) !== 'off'; } catch { return true; } })(),
+    on: (() => { try { return localStorage.getItem(SFX_KEY) !== 'off'; } catch (e) { return true; } })(),
     ctx: null,
-    set(on) { sfx.on = on; try { localStorage.setItem(SFX_KEY, on ? 'on' : 'off'); } catch { /* 저장 불가 환경 */ } },
+    set(on) { sfx.on = on; try { localStorage.setItem(SFX_KEY, on ? 'on' : 'off'); } catch (e) { /* 저장 불가 환경 */ } },
     // 안드로이드 크롬은 사용자가 화면을 누른 뒤에만 소리를 낼 수 있어서, 첫 터치 때 오디오를 깨워 둔다
     wake() {
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return null;
-      if (!sfx.ctx) sfx.ctx = new AC();
-      if (sfx.ctx.state === 'suspended') sfx.ctx.resume();
+      if (!sfx.ctx) {
+        sfx.ctx = new AC();
+        try { const src = sfx.ctx.createBufferSource(); src.buffer = sfx.ctx.createBuffer(1, 1, 22050); src.connect(sfx.ctx.destination); src.start(0); } catch (e) { /* 무시 */ }
+      }
+      if (sfx.ctx.state === 'suspended' && sfx.ctx.resume) sfx.ctx.resume();
       return sfx.ctx;
     },
     tone(f, t, d, type = 'sine', v = 0.25, slide) {
@@ -130,7 +133,7 @@
       o.type = type; o.frequency.setValueAtTime(f, t0);
       if (slide) o.frequency.exponentialRampToValueAtTime(slide, t0 + d);
       g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(v, t0 + 0.01); g.gain.exponentialRampToValueAtTime(0.001, t0 + d);
-      o.connect(g).connect(ctx.destination); o.start(t0); o.stop(t0 + d + 0.05);
+      o.connect(g); g.connect(ctx.destination); o.start(t0); o.stop(t0 + d + 0.05);
     },
     play(kind) {
       if (!sfx.on || !sfx.wake()) return;
@@ -141,18 +144,18 @@
           [523, 659, 784].forEach((f, i) => sfx.tone(f, i * 0.1, 0.15, 'square', 0.1));
           sfx.tone(1047, 0.3, 0.6, 'square', 0.12); sfx.tone(784, 0.3, 0.6, 'triangle', 0.15);
         }
-      } catch { /* 오디오를 쓸 수 없는 환경 */ }
+      } catch (e) { /* 오디오를 쓸 수 없는 환경 */ }
     },
     ok: () => sfx.play('ok'), bad: () => sfx.play('bad'), combo: () => sfx.play('combo'),
   };
   document.addEventListener('pointerdown', () => sfx.on && sfx.wake(), { once: true, capture: true });
+  document.addEventListener('touchend', () => sfx.on && sfx.wake(), { once: true, capture: true });
   // 효과음 직후 발음을 이어서 들려줄 때, 코인 소리가 끝날 즈음 시작한다
   const sayAfterSfx = (word) => setTimeout(() => tts.say(word), sfx.on ? 380 : 0);
 
   // 발음 설정 창
   function openVoiceSettings() {
-    let dlg = document.getElementById('voiceDlg');
-    if (!dlg) { dlg = document.createElement('dialog'); dlg.id = 'voiceDlg'; dlg.className = 'voice-dlg'; document.body.append(dlg); }
+    const dlg = window.makeDialog('voiceDlg', 'voice-dlg');
     const draw = () => {
       const s = tts.settings;
       const vs = 'speechSynthesis' in window ? tts.list() : [];
@@ -798,7 +801,7 @@
             : day >= lv.totalDays ? `<span class="badge" style="font-size:16px;padding:10px 16px">🎓 ${lv.name} 과정을 모두 마쳤어요!</span>` : ''}
         </div>
       </article></div>`;
-    $('#toGame').onclick = () => { window.TWGames?.useDay(lv.code, day); go('#/game'); };
+    $('#toGame').onclick = () => { if (window.TWGames) window.TWGames.useDay(lv.code, day); go('#/game'); };
     keyHandler = null;
   }
 
@@ -896,9 +899,9 @@
 
   // ---------- 라우터 ----------
   function route() {
-    window.speechSynthesis?.cancel();
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
     if (activeRec) activeRec.abort();
-    window.TWGames?.stop();
+    if (window.TWGames) window.TWGames.stop();
     keyHandler = null;
     const [code, a, b] = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
     if (code === 'game' && window.TWGames) { window.scrollTo(0, 0); return window.TWGames.render(a); }

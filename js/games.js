@@ -30,10 +30,10 @@
   // ---------- 설정 (기기에 기억) ----------
   const S = (() => {
     let s = {};
-    try { s = JSON.parse(localStorage.getItem(KEY)) || {}; } catch { /* 저장 불가 환경 */ }
+    try { s = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { /* 저장 불가 환경 */ }
     return { level: 'e', mode: 'today', from: 1, to: 10, topic: '', diff: 'normal', pen: false, penGuide: false, names: ['형', '동생'], best: {}, ...s };
   })();
-  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch { /* 저장 불가 환경 */ } };
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* 저장 불가 환경 */ } };
 
   // ---------- 정리 (화면을 떠나면 타이머·애니메이션 중지) ----------
   let cleanups = [];
@@ -85,8 +85,7 @@
     const g = (location.hash.split('/')[2] || '').split('?')[0];
     const info = GAMES[g]; if (!info) return;
     if (helpPause) helpPause(true);
-    let dlg = document.getElementById('gameHelp');
-    if (!dlg) { dlg = document.createElement('dialog'); dlg.id = 'gameHelp'; dlg.className = 'voice-dlg game-help'; document.body.append(dlg); }
+    const dlg = window.makeDialog('gameHelp', 'voice-dlg game-help');
     dlg.innerHTML = `<h3>${info.icon} ${info.name} — 이렇게 해요</h3>
       <ul>${HELP[g].map((t) => `<li>${t}</li>`).join('')}</ul>
       <div class="done-actions"><button class="btn primary" id="helpClose">알겠어요${helpPause ? ' ▶ 계속하기' : ''}</button></div>`;
@@ -103,7 +102,7 @@
     if (b) b.onclick = () => { if (!confirmFirst || confirm('게임을 그만둘까요?')) T().go('#/game'); };
   }
   const say = (w) => T().tts.say(w.word);
-  const sfx = (k) => T().sfx?.[k]();
+  const sfx = (k) => { const s = T().sfx; if (s) s[k](); };
   const sayAfter = (w) => T().sayAfterSfx(w.word);
 
   // =========================================================
@@ -243,7 +242,7 @@
       $('#bSay').onclick = () => say(w);
       $('#bHint').onclick = hint;
       $('#bGive').onclick = giveUp;
-      app().querySelectorAll('.block').forEach((b) => (b.onpointerdown = (e) => { e.preventDefault(); press(+b.dataset.k); }));
+      app().querySelectorAll('.block').forEach((b) => b.addEventListener('pointerdown', (e) => { e.preventDefault(); press(+b.dataset.k); }));
     }
     function press(k) {
       if (busy) return;
@@ -582,13 +581,14 @@
     onStop(() => cancelAnimationFrame(raf));
 
     // 터치·마우스: 누른 곳으로 아이가 달려가고, 끌면 따라온다
-    const aim = (e) => { const a = area.getBoundingClientRect(); targetX = e.clientX - a.left - kid.offsetWidth / 2; $('#cHelp')?.remove(); };
-    area.onpointerdown = (e) => { e.preventDefault(); try { area.setPointerCapture(e.pointerId); } catch { /* 무시 */ } aim(e); };
-    area.onpointermove = (e) => { if (e.buttons || e.pointerType !== 'mouse') aim(e); };
+    const rmHelp = () => { const h = $('#cHelp'); if (h) h.remove(); };
+    const aim = (e) => { const a = area.getBoundingClientRect(); targetX = e.clientX - a.left - kid.offsetWidth / 2; rmHelp(); };
+    area.addEventListener('pointerdown', (e) => { e.preventDefault(); try { area.setPointerCapture(e.pointerId); } catch (err) { /* 무시 */ } aim(e); });
+    area.addEventListener('pointermove', (e) => { if (e.buttons || e.pointerType !== 'mouse') { e.preventDefault(); aim(e); } });
     T().setKey((e) => {
       if (e.key === 'ArrowLeft') keyDir = -1; else if (e.key === 'ArrowRight') keyDir = 1;
       else if (e.key === ' ') { e.preventDefault(); setPause(!paused); return; } else return;
-      e.preventDefault(); $('#cHelp')?.remove();
+      e.preventDefault(); rmHelp();
     });
     const up = (e) => { if ((e.key === 'ArrowLeft' && keyDir < 0) || (e.key === 'ArrowRight' && keyDir > 0)) keyDir = 0; };
     document.addEventListener('keyup', up); onStop(() => document.removeEventListener('keyup', up));
@@ -679,7 +679,7 @@
       $('#oxRight').textContent = `맞힌 수 ${right}`;
       $('#oxCombo').textContent = combo >= 3 ? `🔥 콤보 ${combo}` : '';
     }
-    app().querySelectorAll('.ox-btn').forEach((b) => (b.onpointerdown = (e) => { e.preventDefault(); answer(+b.dataset.a); }));
+    app().querySelectorAll('.ox-btn').forEach((b) => b.addEventListener('pointerdown', (e) => { e.preventDefault(); answer(+b.dataset.a); }));
     T().setKey((e) => {
       if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'o') answer(1);
       else if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'x') answer(0);
@@ -766,7 +766,7 @@
         const half = app().querySelector(`.half.p${p}`); half.classList.remove('locked', 'won', 'lost');
         // 서로 보기 순서를 다르게 섞어 상대 화면을 따라 누르지 못하게
         $(`#ch${p}`).innerHTML = T().shuffle(opts).map((o) => `<button class="choice ${en2ko ? '' : 'en-choice'}" data-ok="${o === w ? 1 : 0}">${esc(en2ko ? short(o) : o.word)}</button>`).join('');
-        app().querySelectorAll(`#ch${p} .choice`).forEach((b) => (b.onpointerdown = (e) => { e.preventDefault(); choose(p, b); }));
+        app().querySelectorAll(`#ch${p} .choice`).forEach((b) => b.addEventListener('pointerdown', (e) => { e.preventDefault(); choose(p, b); }));
       });
     }
     function reveal() {
