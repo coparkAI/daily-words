@@ -76,6 +76,8 @@
     if (b) b.onclick = () => { if (!confirmFirst || confirm('게임을 그만둘까요?')) T().go('#/game'); };
   }
   const say = (w) => T().tts.say(w.word);
+  const sfx = (k) => T().sfx?.[k]();
+  const sayAfter = (w) => T().sayAfterSfx(w.word);
 
   // =========================================================
   // S-07 게임 메뉴
@@ -145,6 +147,7 @@
   function showResult(g, { big, sub, score, missed, again, againMissed }) {
     stop(); T().setKey(null);   // 게임 타이머·키 입력 정리 (stop 이 game-full 도 해제)
     const isBest = score != null && saveBest(g, score);
+    if (isBest || g === 'battle') sfx('combo');
     const uniq = [...new Map(missed.map((w) => [w.word, w])).values()];
     app().innerHTML = `
       <div class="stage"><article class="card game-result">
@@ -228,7 +231,7 @@
         do { pos++; } while (pos < chars.length && !isLetter(chars[pos]));
         if (pos >= chars.length) solved();
       } else {
-        mistakes++; wordMistakes++;
+        mistakes++; wordMistakes++; sfx('bad');
         el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake');
         if (wordMistakes === 3) missed.push(w);
       }
@@ -252,8 +255,8 @@
     function solved() {
       busy = true;
       app().querySelector('.slots').classList.add('done');
-      say(w);
-      later(() => { i++; next(); }, 900);
+      sfx('ok'); sayAfter(w);
+      later(() => { i++; next(); }, 1200);
     }
     function finish() {
       const solvedCount = words.length - new Set(missed.map((x) => x.word)).size;
@@ -353,12 +356,12 @@
       later(() => c.el.remove(), 300);
       cards = cards.filter((x) => x !== c);
       score += 10 * stage; hits++;
-      if (hits % 6 === 0) { stage++; msg(`🚀 단계 ${stage}!`, true); }
-      say(c.w); hud();
+      if (hits % 6 === 0) { stage++; msg(`🚀 단계 ${stage}!`, true); sfx('combo'); } else sfx('ok');
+      sayAfter(c.w); hud();
     }
     function land(c) {
       remove(c);
-      lives--; missed.push(c.w);
+      lives--; missed.push(c.w); sfx('bad');
       area.classList.remove('hit'); void area.offsetWidth; area.classList.add('hit');
       msg(`<span class="en">${esc(c.w.word)}</span> = ${esc(short(c.w))}`, false);
       hud();
@@ -390,7 +393,7 @@
       // 가장 아래(급한) 카드부터 정답 확인 — 손글씨 입력은 Enter 없이도 맞으면 바로 터진다
       const hit = [...cards].sort((a, b) => b.y - a.y).find((c) => exact(c, v));
       if (hit) { pop(hit); input.value = ''; cards.forEach((c) => c.el.classList.remove('aim')); return; }
-      if (submit) { input.classList.remove('no'); void input.offsetWidth; input.classList.add('no'); later(() => { input.value = ''; input.classList.remove('no'); }, 350); }
+      if (submit) { sfx('bad'); input.classList.remove('no'); void input.offsetWidth; input.classList.add('no'); later(() => { input.value = ''; input.classList.remove('no'); }, 350); }
     }
     input.oninput = () => check(false);
     input.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); check(true); } };
@@ -476,13 +479,14 @@
       const card = $('#oxCard');
       if (ok) {
         right++; combo++; bestCombo = Math.max(bestCombo, combo);
+        sfx(combo % 5 === 0 ? 'combo' : 'ok');
         card.className = 'ox-card right';
         later(newQ, 250);
       } else {
-        combo = 0; missed.push(q.w); locked = true;
+        combo = 0; missed.push(q.w); locked = true; sfx('bad');
         card.className = 'ox-card wrong';
         $('#oxAns').innerHTML = `정답: <span class="en">${esc(q.w.word)}</span> = ${esc(short(q.w))}`;
-        say(q.w);
+        sayAfter(q.w);
         later(() => { locked = false; $('#oxAns').textContent = ''; newQ(); }, 1800);
       }
       $('#oxRight').textContent = `맞힌 수 ${right}`;
@@ -591,10 +595,10 @@
         app().querySelector(`.half.p${1 - p}`).classList.add('lost');
         $(`#m${p}`).textContent = '⭐ 먼저 맞혔어요! +1';
         $(`#m${1 - p}`).textContent = '상대가 먼저 맞혔어요';
-        reveal(); say(q.w);
+        reveal(); sfx('ok'); sayAfter(q.w);
         n++; later(ask, 1500);
       } else {
-        locked[p] = true;
+        locked[p] = true; sfx('bad');
         b.classList.add('wrong');
         app().querySelector(`.half.p${p}`).classList.add('locked');
         $(`#m${p}`).textContent = '✗ 이번 문제는 기회 끝';

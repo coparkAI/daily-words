@@ -109,6 +109,46 @@
   };
   if ('speechSynthesis' in window) speechSynthesis.getVoices(); // 일부 브라우저는 첫 호출 때 목록을 불러오기 시작한다
 
+  // ---------- 효과음 (음원 파일 없이 Web Audio 로 합성) ----------
+  // 정답 = 코인, 오답 = 낮게 내려가는 뿅, 완료·콤보 = 짧은 팡파르
+  const SFX_KEY = 'twins-sfx';
+  const sfx = {
+    on: (() => { try { return localStorage.getItem(SFX_KEY) !== 'off'; } catch { return true; } })(),
+    ctx: null,
+    set(on) { sfx.on = on; try { localStorage.setItem(SFX_KEY, on ? 'on' : 'off'); } catch { /* 저장 불가 환경 */ } },
+    // 안드로이드 크롬은 사용자가 화면을 누른 뒤에만 소리를 낼 수 있어서, 첫 터치 때 오디오를 깨워 둔다
+    wake() {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      if (!sfx.ctx) sfx.ctx = new AC();
+      if (sfx.ctx.state === 'suspended') sfx.ctx.resume();
+      return sfx.ctx;
+    },
+    tone(f, t, d, type = 'sine', v = 0.25, slide) {
+      const ctx = sfx.ctx; const t0 = ctx.currentTime + t;
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.type = type; o.frequency.setValueAtTime(f, t0);
+      if (slide) o.frequency.exponentialRampToValueAtTime(slide, t0 + d);
+      g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(v, t0 + 0.01); g.gain.exponentialRampToValueAtTime(0.001, t0 + d);
+      o.connect(g).connect(ctx.destination); o.start(t0); o.stop(t0 + d + 0.05);
+    },
+    play(kind) {
+      if (!sfx.on || !sfx.wake()) return;
+      try {
+        if (kind === 'ok') { sfx.tone(988, 0, 0.08, 'square', 0.12); sfx.tone(1319, 0.08, 0.35, 'square', 0.12); }
+        else if (kind === 'bad') sfx.tone(330, 0, 0.3, 'triangle', 0.25, 220);
+        else if (kind === 'combo') {
+          [523, 659, 784].forEach((f, i) => sfx.tone(f, i * 0.1, 0.15, 'square', 0.1));
+          sfx.tone(1047, 0.3, 0.6, 'square', 0.12); sfx.tone(784, 0.3, 0.6, 'triangle', 0.15);
+        }
+      } catch { /* 오디오를 쓸 수 없는 환경 */ }
+    },
+    ok: () => sfx.play('ok'), bad: () => sfx.play('bad'), combo: () => sfx.play('combo'),
+  };
+  document.addEventListener('pointerdown', () => sfx.on && sfx.wake(), { once: true, capture: true });
+  // 효과음 직후 발음을 이어서 들려줄 때, 코인 소리가 끝날 즈음 시작한다
+  const sayAfterSfx = (word) => setTimeout(() => tts.say(word), sfx.on ? 380 : 0);
+
   // 발음 설정 창
   function openVoiceSettings() {
     let dlg = document.getElementById('voiceDlg');
@@ -132,6 +172,7 @@
             아이패드: 설정 → 손쉬운 사용 → 읽기 및 말하기 → 음성 → 영어에서 음성을 내려받아 주세요.<br>
             윈도우: 설정 → 시간 및 언어 → 음성에서 영어 음성을 추가해 주세요.</p>`}
         <p class="voice-note">발음기호는 미국식 기준이에요.</p>
+        <label class="sfx-toggle"><input type="checkbox" id="sfxOn" ${sfx.on ? 'checked' : ''}> 🔔 정답·오답 효과음</label>
         <div class="done-actions">
           <button class="btn soft" id="voiceTest" ${vs.length ? '' : 'disabled'}>▶ 들어 보기</button>
           <button class="btn primary" id="voiceClose">닫기</button>
@@ -140,6 +181,7 @@
       const sel = dlg.querySelector('#voiceSel');
       if (sel) sel.onchange = () => { s.name = sel.value; tts.save(); tts.say(ACCENTS[s.accent].test); };
       dlg.querySelector('#voiceTest').onclick = () => tts.say(ACCENTS[s.accent].test);
+      dlg.querySelector('#sfxOn').onchange = (e) => { sfx.set(e.target.checked); if (sfx.on) sfx.ok(); };
       dlg.querySelector('#voiceClose').onclick = () => { dlg.close(); route(); };
     };
     draw();
@@ -538,10 +580,10 @@
         if (answers(w).includes(val)) {
           input.classList.add('ok'); input.disabled = true;
           $('#fb').innerHTML = '<b style="color:var(--good)">✓ 정답!</b>';
-          tts.say(w.word);
-          setTimeout(nextWord, 1100);
+          sfx.ok(); sayAfterSfx(w.word);
+          setTimeout(nextWord, 1300);
         } else {
-          misses++;
+          misses++; sfx.bad();
           const diff = [...w.word].map((c, k) => `<span class="${val[k] === c.toLowerCase() ? '' : 'x'}">${esc(c)}</span>`).join('');
           input.classList.remove('no'); void input.offsetWidth; input.classList.add('no');
           $('#fb').innerHTML = `정답은 <span class="diff">${diff}</span> — 다시 써 볼까요?`;
@@ -677,7 +719,7 @@
         <div class="stage"><article class="card">${body}</article></div>`;
       bindStudyBar(lv, day); bindAudio();
       const answer = (ok) => {
-        if (!ok) wrong.push(q.k);
+        if (ok) sfx.ok(); else { sfx.bad(); wrong.push(q.k); }
         setTimeout(() => { qi++; drawQ(); }, ok ? 800 : 1600);
       };
       if (q.type === 'listen') {
@@ -700,7 +742,7 @@
           const ok = btn.dataset.ok === '1';
           $$('.choice').forEach((c) => { c.disabled = true; if (c.dataset.ok === '1') c.classList.add('right'); });
           if (!ok) btn.classList.add('wrong');
-          if (q.type === 'en2ko' || ok) tts.say(w.word);
+          if (q.type === 'en2ko' || ok) sayAfterSfx(w.word);
           answer(ok);
         };
         $$('.choice').forEach((c) => (c.onclick = () => choose(c)));
@@ -710,6 +752,7 @@
     const drawResult = () => {
       if (firstScore === null) firstScore = words.length - wrong.length;
       const perfect = wrong.length === 0;
+      if (perfect) sfx.combo();
       app.innerHTML = `
         ${studyBar(lv, day, 'test', questions.length, questions.length)}
         <div class="stage"><article class="card">
@@ -737,6 +780,7 @@
     const words = lv.days[day];
     const score = sessionStorage.getItem(`score-${lv.code}-${day}`);
     const hasNext = day < lv.totalDays && isReady(lv, day + 1);
+    sfx.combo();   // 하루 학습 완료 축하
     app.innerHTML = `
       <div class="stage"><article class="card">
         <div class="done-head">
@@ -846,7 +890,7 @@
 
   // ---------- 게임(games.js)에 넘겨주는 공용 도구 ----------
   window.TW = {
-    app, data, esc, shuffle, toast, go, answers, tts, voiceBtn, store, topicsOf, bindAudio,
+    app, data, esc, shuffle, toast, go, answers, tts, sfx, sayAfterSfx, voiceBtn, store, topicsOf, bindAudio,
     setKey: (fn) => { keyHandler = fn; },
   };
 

@@ -410,6 +410,8 @@ body[data-level="high"] .sheet-head h3 { font-weight: 900; font-size: 15pt; }
 .voice-pick select { font: inherit; font-weight: 400; padding: 10px; border: 2px solid var(--line); border-radius: 12px; background: var(--field); color: var(--ink); }
 .voice-note { color: var(--muted); font-size: 14px; margin: 8px 0 0; }
 .voice-note.warn { color: var(--hard-ink); background: var(--bad-soft); padding: 10px 12px; border-radius: 12px; }
+.sfx-toggle { display: flex; align-items: center; gap: 8px; margin: 14px 0 0; font-size: 16px; font-weight: 700; cursor: pointer; }
+.sfx-toggle input { width: 22px; height: 22px; accent-color: var(--accent); }
 
 #toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(20px); background: var(--toast-bg); color: var(--toast-ink); padding: 12px 20px; border-radius: 999px; opacity: 0; transition: .25s; pointer-events: none; z-index: 10; font-size: 16px; max-width: 90vw; text-align: center; }
 #toast.show { opacity: 1; transform: translateX(-50%); }
