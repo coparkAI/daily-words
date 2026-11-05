@@ -204,6 +204,7 @@
   function listen(target, btn, out) {
     // 듣는 중에 다시 누르면 그만 듣기
     if (activeRec) { activeRec.stop(); return; }
+    if (activeRecording) activeRecording.stop();
     const isSentence = /\s/.test(target.trim());
     const MAX_MS = isSentence ? 15000 : 8000; // 최대 듣는 시간
     const SILENCE_MS = 2500;                    // 말이 끝난 뒤 이만큼 조용하면 채점
@@ -274,6 +275,122 @@
     ? `<button class="btn soft small mic" data-say="${esc(target)}">🎤 ${label}</button>`
     : '';
 
+  // ---------- 내 목소리 녹음·듣기 ----------
+  // 따라 읽기(음성 인식)와 따로 쓴다: 안드로이드 크롬은 마이크를 두 곳에서 동시에 쓰면 인식이 잘 안 된다.
+  // MediaRecorder 가 있으면 그것으로, 없으면(iOS 14.2 이하) Web Audio 로 WAV 를 만든다.
+  const canRecord = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+  const myVoices = new Map();   // 녹음한 문장 → 재생 주소 (이 화면을 떠나면 지운다)
+  let activeRecording = null;
+  let myAudio = null;
+  function clearVoices() {
+    if (activeRecording) activeRecording.cancel();
+    if (myAudio) { myAudio.pause(); myAudio = null; }
+    myVoices.forEach((url) => URL.revokeObjectURL(url));
+    myVoices.clear();
+  }
+  function playMine(target, btn) {
+    const url = myVoices.get(target);
+    if (!url) return;
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    if (myAudio) myAudio.pause();
+    myAudio = new Audio(url);
+    if (btn) { btn.classList.add('playing'); myAudio.onended = myAudio.onpause = () => btn.classList.remove('playing'); }
+    const p = myAudio.play();
+    if (p && p.catch) p.catch(() => toast('녹음을 재생하지 못했어요'));
+  }
+  function wavBlob(chunks, rate) {
+    const len = chunks.reduce((n, c) => n + c.length, 0);
+    const buf = new ArrayBuffer(44 + len * 2); const v = new DataView(buf);
+    const str = (o, s) => { for (let k = 0; k < s.length; k++) v.setUint8(o + k, s.charCodeAt(k)); };
+    str(0, 'RIFF'); v.setUint32(4, 36 + len * 2, true); str(8, 'WAVE'); str(12, 'fmt ');
+    v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, rate, true);
+    v.setUint32(28, rate * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); str(36, 'data'); v.setUint32(40, len * 2, true);
+    let o = 44;
+    chunks.forEach((c) => { for (let k = 0; k < c.length; k++, o += 2) { const x = Math.max(-1, Math.min(1, c[k])); v.setInt16(o, x < 0 ? x * 0x8000 : x * 0x7fff, true); } });
+    return new Blob([v], { type: 'audio/wav' });
+  }
+  async function record(target, btn) {
+    // 녹음 중에 다시 누르면 녹음 끝
+    if (activeRecording) { activeRecording.stop(); return; }
+    if (activeRec) activeRec.abort();
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    if (myAudio) myAudio.pause();
+    const out = btn.closest('.card, .face') && btn.closest('.card, .face').querySelector('.mic-result');
+    let stream;
+    try { stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }); }
+    catch (e) { toast('마이크를 쓸 수 없어요. 주소창 옆 🔒 에서 마이크를 허용해 주세요'); return; }
+    const ctx = sfx.wake() || null;
+    const isSentence = /\s/.test(target.trim());
+    const MAX_MS = isSentence ? 15000 : 6000;   // 최대 녹음 시간
+    const QUIET_MS = 1800;                      // 말이 끝난 뒤 이만큼 조용하면 자동으로 끝
+    const label = btn.innerHTML;
+    btn.classList.add('listening'); btn.innerHTML = '■ 녹음 끝';
+    if (out) { out.className = 'mic-result'; out.textContent = '🔴 녹음 중… 소리 내어 읽어 보세요 (다 읽었으면 ■ 녹음 끝)'; }
+
+    const chunks = []; let mr = null; let proc = null; let src = null; let an = null;
+    if (ctx) { try { src = ctx.createMediaStreamSource(stream); an = ctx.createAnalyser(); an.fftSize = 1024; src.connect(an); } catch (e) { src = null; an = null; } }
+    if (window.MediaRecorder) {
+      mr = new MediaRecorder(stream);
+      mr.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+      mr.start();
+    } else if (src) {
+      proc = ctx.createScriptProcessor(4096, 1, 1);
+      proc.onaudioprocess = (e) => chunks.push(new Float32Array(e.inputBuffer.getChannelData(0)));
+      src.connect(proc); proc.connect(ctx.destination);
+    } else {
+      stream.getTracks().forEach((t) => t.stop());
+      btn.classList.remove('listening'); btn.innerHTML = label;
+      return toast('이 브라우저는 녹음을 지원하지 않아요');
+    }
+
+    // 목소리가 나온 뒤 조용해지면 자동으로 끝낸다
+    const bytes = an ? new Uint8Array(an.fftSize) : null;
+    let spoke = false; let quietSince = 0; const t0 = Date.now();
+    const tick = setInterval(() => {
+      if (Date.now() - t0 > MAX_MS) return finish(true);
+      if (!an) return;
+      an.getByteTimeDomainData(bytes);
+      let sum = 0; for (let k = 0; k < bytes.length; k++) { const x = (bytes[k] - 128) / 128; sum += x * x; }
+      const loud = Math.sqrt(sum / bytes.length) > 0.04;
+      if (loud) { spoke = true; quietSince = 0; } else if (spoke) {
+        if (!quietSince) quietSince = Date.now();
+        else if (Date.now() - quietSince > QUIET_MS) finish(true);
+      }
+    }, 100);
+
+    let ended = false;
+    function cleanup() {
+      clearInterval(tick); activeRecording = null;
+      stream.getTracks().forEach((t) => t.stop());
+      if (proc) { proc.onaudioprocess = null; proc.disconnect(); }
+      if (src) src.disconnect();
+      btn.classList.remove('listening'); btn.innerHTML = label;
+    }
+    function done(blob) {
+      if (myVoices.has(target)) URL.revokeObjectURL(myVoices.get(target));
+      myVoices.set(target, URL.createObjectURL(blob));
+      if (!btn.isConnected) return;
+      const mine = btn.parentNode.querySelector('.play-mine');
+      if (mine) mine.hidden = false;
+      if (out) { out.className = 'mic-result ok'; out.innerHTML = '<b>녹음 완료!</b> ▶ 내 목소리 와 🔊 원어민 발음을 번갈아 들어 보세요'; }
+      playMine(target, mine);
+    }
+    function finish(keep) {
+      if (ended) return; ended = true;
+      if (mr) {
+        mr.onstop = () => { cleanup(); if (keep && chunks.length) done(new Blob(chunks, { type: mr.mimeType || 'audio/webm' })); };
+        try { mr.stop(); } catch (e) { cleanup(); }
+      } else {
+        cleanup();
+        if (keep && chunks.length) done(wavBlob(chunks, ctx.sampleRate));
+      }
+    }
+    activeRecording = { stop: () => finish(true), cancel: () => finish(false) };
+  }
+  const recButton = (target) => canRecord
+    ? `<button class="btn soft small rec" data-rec="${esc(target)}">🎙 녹음</button><button class="btn soft small play-mine" data-mine="${esc(target)}" ${myVoices.has(target) ? '' : 'hidden'}>▶ 내 목소리</button>`
+    : '';
+
   // ---------- 공통 조각 ----------
   function studyBar(lv, day, step, idx, total) {
     const stepIdx = STEPS.findIndex(([s]) => s === step);
@@ -297,6 +414,8 @@
   }
   function bindAudio(root = app) {
     $$('[data-tts]', root).forEach((b) => (b.onclick = (e) => { e.stopPropagation(); tts.say(b.dataset.tts, b.dataset.slow === '1', b); }));
+    $$('.rec', root).forEach((b) => (b.onclick = (e) => { e.stopPropagation(); record(b.dataset.rec, b); }));
+    $$('.play-mine', root).forEach((b) => (b.onclick = (e) => { e.stopPropagation(); playMine(b.dataset.mine, b); }));
     $$('.mic', root).forEach((b) => (b.onclick = (e) => { e.stopPropagation(); listen(b.dataset.say, b, b.closest('.card, .face').querySelector('.mic-result')); }));
   }
   const audioBtns = (text) => `<button class="icon-btn" data-tts="${esc(text)}" aria-label="듣기">🔊</button><button class="icon-btn" data-tts="${esc(text)}" data-slow="1" aria-label="느리게 듣기">🐢</button>`;
@@ -418,7 +537,7 @@
               <div class="meaning">${esc(w.meaning)}</div>
               ${w.variants.length ? `<div class="sub">다른 형태: <span class="en">${esc(w.variants.join(', '))}</span></div>` : ''}
               ${w.related.length ? `<div class="sub">관련어: <span class="en">${esc(w.related.join(', '))}</span></div>` : ''}
-              <div class="audio-row">${audioBtns(w.word)}${micButton(w.word, '단어 따라 읽기')}</div>
+              <div class="audio-row">${audioBtns(w.word)}${micButton(w.word, '단어 따라 읽기')}${recButton(w.word)}</div>
             </div>
             <div class="example-box">
               <div class="ex-en">${highlight(w.example, w.word)}</div>
@@ -426,6 +545,7 @@
               <div class="ex-actions">
                 ${audioBtns(w.example)}
                 ${micButton(w.example, '예문 따라 읽기')}
+                ${recButton(w.example)}
                 <span class="speak-hint">🗣 소리 내어 3번 따라 읽어 보세요</span>
               </div>
               <div class="mic-result"></div>
@@ -901,6 +1021,7 @@
   function route() {
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     if (activeRec) activeRec.abort();
+    clearVoices();
     if (window.TWGames) window.TWGames.stop();
     keyHandler = null;
     const [code, a, b] = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);

@@ -272,8 +272,10 @@ body[data-level="high"] .day-card .d { font-weight: 900; font-size: 19px; }
 .mic-result { font-size: 15px; margin-top: 8px; min-height: 22px; }
 .mic-result.ok { color: var(--good); font-weight: 700; }
 .mic-result.retry { color: var(--bad); }
-.mic.listening { background: var(--rec-bg); border-color: var(--rec-line); }
-.mic.listening::before { content: ''; width: 10px; height: 10px; border-radius: 50%; background: #e5484d; animation: blink 1s infinite; }
+.btn[hidden] { display: none; }
+.mic.listening, .rec.listening { background: var(--rec-bg); border-color: var(--rec-line); }
+.play-mine.playing { background: var(--accent-soft); border-color: var(--accent); }
+.mic.listening::before, .rec.listening::before { content: ''; width: 10px; height: 10px; border-radius: 50%; background: #e5484d; animation: blink 1s infinite; }
 @keyframes blink { 50% { opacity: .2; } }
 
 .nav-row { width: 100%; max-width: 760px; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 20px; }
