@@ -372,8 +372,7 @@
       if (!btn.isConnected) return;
       const mine = btn.parentNode.querySelector('.play-mine');
       if (mine) mine.hidden = false;
-      if (out) { out.className = 'mic-result ok'; out.innerHTML = '<b>녹음 완료!</b> ▶ 내 목소리 와 🔊 원어민 발음을 번갈아 들어 보세요'; }
-      playMine(target, mine);
+      if (out) { out.className = 'mic-result ok'; out.innerHTML = '<b>녹음 완료!</b> ▶ 내 목소리 를 눌러 들어 보고, 🔊 원어민 발음과 비교해 보세요'; }
     }
     function finish(keep) {
       if (ended) return; ended = true;
