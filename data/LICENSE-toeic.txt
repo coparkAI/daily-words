@@ -1,0 +1,13 @@
+쌍둥이의 하루 영단어 — 토익 단어 데이터 (data/words.js 의 "toeic" 부분)
+
+단어 목록 출처
+- TOEIC Service List (TSL) 1.2 — Browne, C. & Culligan, B. — https://www.newgeneralservicelist.com
+- New General Service List (NGSL) 1.2 — Browne, C., Culligan, B. & Phillips, J. — https://www.newgeneralservicelist.com
+두 목록 모두 Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0) 라이선스입니다.
+
+이 사이트에서 한 일
+- 두 목록에서 초·중·고 필수 영단어 3,000개와 겹치는 단어, 부적절하거나 너무 쉬운 단어를 빼고 1,370개를 골랐습니다.
+- 주제별로 나누고, 한국어 뜻·품사·발음기호·예문·예문 해석을 새로 썼습니다.
+
+이 토익 단어 데이터도 같은 CC BY-SA 4.0 라이선스로 공개합니다.
+https://creativecommons.org/licenses/by-sa/4.0/deed.ko

@@ -75,6 +75,20 @@ body[data-level="high"] {
   --word-size: 58px;
 }
 
+/* 토익 — 사무실: 청록·슬레이트, 단정한 비즈니스 느낌 */
+body[data-level="toeic"] {
+  --bg: #eff6f5;
+  --line: #d3e5e2;
+  --accent: #0f766e;
+  --accent-soft: #dcf0ed;
+  --accent-deep: #115e59;
+  --shadow: 0 12px 30px rgba(15, 118, 110, .10), 0 2px 6px rgba(15, 40, 40, .06);
+  --radius: 14px;
+  --font-display: 'Do Hyeon', 'Noto Sans KR', sans-serif;
+  --font-en: 'Poppins', sans-serif;
+  --word-size: 58px;
+}
+
 /* ===== 다크 모드 (기기 설정이 어두운 테마일 때 자동 적용) =====
    글자는 밝게, 강조색(accent-deep)은 밝은 쪽으로 뒤집어 어두운 바탕에서도 잘 읽히게 한다 */
 @media (prefers-color-scheme: dark) {
@@ -118,6 +132,11 @@ body[data-level="high"] {
   body[data-level="high"] {
     --bg: #14111e; --surface: #1f1a2e; --line: #352d4d;
     --accent: #9a84f0; --accent-soft: #2a2245; --accent-deep: #c9bbff; --accent-ink: #120c24;
+    --shadow: 0 12px 30px rgba(0, 0, 0, .5), 0 2px 6px rgba(0, 0, 0, .3);
+  }
+  body[data-level="toeic"] {
+    --bg: #0d1716; --surface: #162422; --line: #27403d;
+    --accent: #2fb5a8; --accent-soft: #163a36; --accent-deep: #8fe3d9; --accent-ink: #04201d;
     --shadow: 0 12px 30px rgba(0, 0, 0, .5), 0 2px 6px rgba(0, 0, 0, .3);
   }
   .level-card { filter: brightness(.9); }
@@ -174,7 +193,7 @@ a { color: inherit; }
 .home-hero .twins { font-size: 54px; line-height: 1; letter-spacing: -6px; }
 .home-hero h1 { font-family: 'Jua', var(--font-ko); font-size: 40px; font-size: clamp(34px, 5vw, 48px); margin: 12px 0 4px; font-weight: 400; }
 .home-hero p { color: var(--muted); margin: 0; }
-.level-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 36px 0 20px; }
+.level-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin: 36px 0 20px; }
 .level-card {
   position: relative; overflow: hidden; text-align: left;
   border: none; border-radius: 28px; padding: 26px 24px 22px; min-height: 250px;
@@ -197,6 +216,10 @@ a { color: inherit; }
 .level-card.middle .name { font-family: 'Do Hyeon'; }
 .level-card.high { background: linear-gradient(150deg, #7b62da, #5b3fc4 60%, #3f2b8f); }
 .level-card.high .name { font-family: 'Noto Serif KR'; font-weight: 900; font-size: 30px; }
+.level-card.toeic { background: linear-gradient(150deg, #2a9d92, #0f766e 60%, #0b5953); }
+.level-card.toeic .name { font-family: 'Do Hyeon'; }
+.credit { text-align: center; color: var(--muted); font-size: 12px; margin: 14px auto 0; max-width: 760px; line-height: 1.5; }
+.credit a { color: inherit; }
 .level-card .deco { position: absolute; right: -14px; top: -10px; font-size: 120px; opacity: .14; transform: rotate(-12deg); pointer-events: none; }
 .home-foot { text-align: center; color: var(--muted); font-size: 16px; display: flex; gap: 12px; justify-content: center; align-items: center; flex-wrap: wrap; }
 
@@ -421,7 +444,7 @@ body[data-level="high"] .sheet-head h3 { font-weight: 900; font-size: 15pt; }
 /* ---------- 반응형 ---------- */
 @media (max-width: 900px) {
   .day-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .level-cards { grid-template-columns: 1fr; }
+  .level-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .level-card { min-height: 150px; }
   .level-card .name { margin-top: 0; }
 }

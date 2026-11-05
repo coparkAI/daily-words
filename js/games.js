@@ -314,7 +314,7 @@
   function playRain() {
     stop(); setTheme();
     const P = pool();
-    const BASE = { e: 26, m: 32, h: 38 }[S.level];               // 처음 낙하 속도 (px/초)
+    const BASE = { e: 26, m: 32, h: 38, t: 38 }[S.level];               // 처음 낙하 속도 (px/초)
     const MULT = { easy: 0.75, normal: 1, hard: 1.3 }[S.diff];
     let lives = 3; let score = 0; let stage = 1; let hits = 0;
     const missed = [];
@@ -624,7 +624,7 @@
   function playOX() {
     stop(); setTheme();
     const P = pool();
-    const total = ({ e: 90, m: 60, h: 60 }[S.level]) + ({ easy: 20, normal: 0, hard: -15 }[S.diff]);
+    const total = ({ e: 90, m: 60, h: 60, t: 60 }[S.level]) + ({ easy: 20, normal: 0, hard: -15 }[S.diff]);
     const t0 = Date.now();
     let right = 0; let tries = 0; let combo = 0; let bestCombo = 0; let locked = false; let over = false;
     const missed = [];

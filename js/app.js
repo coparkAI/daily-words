@@ -14,7 +14,11 @@
     e: { key: 'elementary', name: '초등', emoji: '🌱', deco: '🌳' },
     m: { key: 'middle', name: '중등', emoji: '🌊', deco: '⛵' },
     h: { key: 'high', name: '고등', emoji: '🌙', deco: '✨' },
+    t: { key: 'toeic', name: '토익', emoji: '💼', deco: '🏢' },
   };
+  // 토익 단어 목록 출처 (CC BY-SA 4.0 — 출처 표시 의무)
+  const TOEIC_CREDIT = '토익 단어 목록: TOEIC Service List 1.2 (Browne & Culligan), New General Service List 1.2 (Browne, Culligan & Phillips) · CC BY-SA 4.0 · 뜻·예문은 이 사이트에서 새로 씀';
+  const LICENSE_URL = 'https://creativecommons.org/licenses/by-sa/4.0/deed.ko';
   const STEPS = [['read', '① 읽기'], ['write', '② 쓰기'], ['test', '③ 암기']];
   const STORE_KEY = 'twins-words';
   const DAYS_PER_PAGE = 40;   // 진도표 한 장에 들어가는 일차 수
@@ -441,7 +445,7 @@
       <section class="home-hero">
         <div class="twins" aria-hidden="true">👦👦</div>
         <h1>쌍둥이의 하루 영단어</h1>
-        <p>교육부 지정 필수 영단어 3,000개 · 하루 10단어씩 읽고, 쓰고, 외워요</p>
+        <p>교육부 지정 필수 영단어 3,000개 + 토익 영단어 1,370개 · 하루 10단어씩 읽고, 쓰고, 외워요</p>
       </section>
       <section class="level-cards">
         ${Object.values(data).map((lv) => `
@@ -455,10 +459,11 @@
       </section>
       <button class="game-entry" data-go="#/game">
         <span class="game-entry-icon" aria-hidden="true">🎮</span>
-        <span><b>게임으로 복습하기</b><br><small>철자 블록 · 떨어지는 단어 · 스피드 O/X · 쌍둥이 대결</small></span>
+        <span><b>게임으로 복습하기</b><br><small>철자 블록 · 떨어지는 단어 · 바구니 받기 · 스피드 O/X · 쌍둥이 대결</small></span>
         <span aria-hidden="true">▶</span>
       </button>
-      <p class="home-foot">✏️ 진도는 출력한 진도표에 직접 체크해요 <button class="btn ghost small" id="how">사용 방법</button> ${voiceBtn()}</p>`;
+      <p class="home-foot">✏️ 진도는 출력한 진도표에 직접 체크해요 <button class="btn ghost small" id="how">사용 방법</button> ${voiceBtn()}</p>
+      <p class="credit">💼 ${esc(TOEIC_CREDIT)} (<a href="${LICENSE_URL}" target="_blank" rel="noopener">라이선스</a>)</p>`;
     $$('[data-go]').forEach((el) => {
       el.onclick = (e) => { e.stopPropagation(); go(el.dataset.go); };
       el.onkeydown = (e) => { if (e.key === 'Enter') go(el.dataset.go); };
@@ -506,7 +511,8 @@
         <button class="chip" data-topic="">전체</button>
         ${allTopics.map((t) => `<button class="chip" data-topic="${esc(t)}">${esc(t)}</button>`).join('')}
       </div>
-      <div class="day-grid" id="grid"></div>`;
+      <div class="day-grid" id="grid"></div>
+      ${lv.code === 't' ? `<p class="credit">${esc(TOEIC_CREDIT)} (<a href="${LICENSE_URL}" target="_blank" rel="noopener">라이선스</a>)</p>` : ''}`;
     $$('.chip').forEach((c) => (c.onclick = () => { filter = c.dataset.topic || null; draw(); }));
     draw();
     const recent = $('.day-card.recent');
@@ -935,7 +941,7 @@
       $('#sheets').innerHTML = pages.map((pg, pi) => `
         <section class="sheet">
           <div class="sheet-head">
-            <h3>${lv.emoji} ${lv.name} 필수 영단어 ${lv.totalWords.toLocaleString()} — 진도표</h3>
+            <h3>${lv.emoji} ${lv.name} ${lv.code === 't' ? '' : '필수 '}영단어 ${lv.totalWords.toLocaleString()} — 진도표</h3>
             <div class="fields">이름: <b>${esc(name) || '__________'}</b> &nbsp; 시작일: ____년 __월 __일</div>
           </div>
           <table class="prog">
