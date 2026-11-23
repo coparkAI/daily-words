@@ -89,6 +89,20 @@ body[data-level="toeic"] {
   --word-size: 58px;
 }
 
+/* EBS — 주황: 밝고 활기찬 느낌 (Level 1·2 같은 테마) */
+body[data-level^="ebs"] {
+  --bg: #fff7ed;
+  --line: #fbdcc0;
+  --accent: #c2410c;
+  --accent-soft: #ffedd5;
+  --accent-deep: #9a3412;
+  --shadow: 0 12px 30px rgba(194, 65, 12, .10), 0 2px 6px rgba(60, 25, 10, .06);
+  --radius: 24px;
+  --font-display: 'Jua', 'Noto Sans KR', sans-serif;
+  --font-en: 'Fredoka', sans-serif;
+  --word-size: 64px;
+}
+
 /* ===== 다크 모드 (기기 설정이 어두운 테마일 때 자동 적용) =====
    글자는 밝게, 강조색(accent-deep)은 밝은 쪽으로 뒤집어 어두운 바탕에서도 잘 읽히게 한다 */
 @media (prefers-color-scheme: dark) {
@@ -137,6 +151,11 @@ body[data-level="toeic"] {
   body[data-level="toeic"] {
     --bg: #0d1716; --surface: #162422; --line: #27403d;
     --accent: #2fb5a8; --accent-soft: #163a36; --accent-deep: #8fe3d9; --accent-ink: #04201d;
+    --shadow: 0 12px 30px rgba(0, 0, 0, .5), 0 2px 6px rgba(0, 0, 0, .3);
+  }
+  body[data-level^="ebs"] {
+    --bg: #1b130d; --surface: #281c13; --line: #45301f;
+    --accent: #f08a4b; --accent-soft: #3d2516; --accent-deep: #ffc29b; --accent-ink: #2a1206;
     --shadow: 0 12px 30px rgba(0, 0, 0, .5), 0 2px 6px rgba(0, 0, 0, .3);
   }
   .level-card { filter: brightness(.9); }
@@ -193,7 +212,7 @@ a { color: inherit; }
 .home-hero .twins { font-size: 54px; line-height: 1; letter-spacing: -6px; }
 .home-hero h1 { font-family: 'Jua', var(--font-ko); font-size: 40px; font-size: clamp(34px, 5vw, 48px); margin: 12px 0 4px; font-weight: 400; }
 .home-hero p { color: var(--muted); margin: 0; }
-.level-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin: 36px 0 20px; }
+.level-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin: 36px 0 20px; }
 .level-card {
   position: relative; overflow: hidden; text-align: left;
   border: none; border-radius: 28px; padding: 26px 24px 22px; min-height: 250px;
@@ -218,6 +237,10 @@ a { color: inherit; }
 .level-card.high .name { font-family: 'Noto Serif KR'; font-weight: 900; font-size: 30px; }
 .level-card.toeic { background: linear-gradient(150deg, #2a9d92, #0f766e 60%, #0b5953); }
 .level-card.toeic .name { font-family: 'Do Hyeon'; }
+.level-card.ebs1 { background: linear-gradient(150deg, #fb923c, #ea580c 60%, #c2410c); }
+.level-card.ebs2 { background: linear-gradient(150deg, #f97316, #c2410c 60%, #9a3412); }
+.level-card.ebs1 .name, .level-card.ebs2 .name { font-family: 'Jua'; }
+.spell-boxes .gap { border-color: transparent; background: none; }
 .credit { text-align: center; color: var(--muted); font-size: 12px; margin: 14px auto 0; max-width: 760px; line-height: 1.5; }
 .credit a { color: inherit; }
 .level-card .deco { position: absolute; right: -14px; top: -10px; font-size: 120px; opacity: .14; transform: rotate(-12deg); pointer-events: none; }
@@ -414,6 +437,13 @@ body[data-level="high"] .sheet-head h3 { font-weight: 900; font-size: 15pt; }
 .trace-row .lines { flex: 1; height: 7.5mm; position: relative; border-top: 1px solid #666; border-bottom: 1px solid #666; }
 .trace-row .lines::before { content: ''; position: absolute; left: 0; right: 0; top: 33%; border-top: 1px dashed #888; }
 .trace-row .lines::after { content: ''; position: absolute; left: 0; right: 0; top: 66%; border-top: 1.5px solid #d46a6a; }
+/* 하루 10단어보다 많은 날(EBS Level 2 = 14개)은 한 장에 들어가도록 조금 촘촘하게 */
+.sheet.dense .daysheet td { padding: 1px 8px; line-height: 1.25; }
+.sheet.dense .daysheet td.w { font-size: 13pt; }
+.sheet.dense .daysheet .ko { font-size: 9.5pt; }
+.sheet.dense .trace-row { height: 7.5mm; }
+.sheet.dense .trace-row .lines { height: 6.5mm; }
+.sheet.dense .trace-row .lbl { font-size: 14pt; }
 
 /* ---------- 따라 읽기 채점 ---------- */
 .mic-result .word-check { font-size: 22px; line-height: 1.6; margin: 4px 0 6px; font-weight: 600; }

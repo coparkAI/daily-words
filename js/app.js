@@ -15,7 +15,11 @@
     m: { key: 'middle', name: '중등', emoji: '🌊', deco: '⛵' },
     h: { key: 'high', name: '고등', emoji: '🌙', deco: '✨' },
     t: { key: 'toeic', name: '토익', emoji: '💼', deco: '🏢' },
+    a: { key: 'ebs1', name: 'EBS 1', emoji: '📺', deco: '🎒' },
+    b: { key: 'ebs2', name: 'EBS 2', emoji: '📺', deco: '🚀' },
   };
+  const isEbs = (lv) => lv.code === 'a' || lv.code === 'b';
+  const EBS_CREDIT = '단어 순서: EBS 교재(Level 1·2) 참고 · 뜻·예문은 이 사이트에서 새로 씀';
   // 토익 단어 목록 출처 (CC BY-SA 4.0 — 출처 표시 의무)
   const TOEIC_CREDIT = '토익 단어 목록: TOEIC Service List 1.2 (Browne & Culligan), New General Service List 1.2 (Browne, Culligan & Phillips) · CC BY-SA 4.0 · 뜻·예문은 이 사이트에서 새로 씀';
   const LICENSE_URL = 'https://creativecommons.org/licenses/by-sa/4.0/deed.ko';
@@ -30,7 +34,7 @@
     const src = window.WORDS[lv.key];
     const days = {};
     src.words.forEach((w) => (days[w.day] = days[w.day] || []).push(w));
-    data[code] = { ...lv, code, words: src.words, totalDays: Math.ceil(src.totalWords / 10), totalWords: src.totalWords, days };
+    data[code] = { ...lv, code, words: src.words, totalDays: src.words.reduce((m, w) => Math.max(m, w.day), 0), totalWords: src.totalWords, days };
   }
   const isReady = (lv, day) => (lv.days[day] || []).length > 0 && lv.days[day].every((w) => w.meaning);
   const topicsOf = (words) => [...new Set(words.map((w) => w.topic))];
@@ -51,7 +55,16 @@
   const reWord = (w) => new RegExp(`(^|[^A-Za-z])(${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})(?=[^A-Za-z]|$)`, 'i');
   const highlight = (ex, w) => esc(ex).replace(reWord(esc(w)), '$1<b>$2</b>');
   const blankOut = (ex, w) => esc(ex).replace(reWord(esc(w)), (m, p) => p + '_'.repeat(Math.max(4, w.length)));
-  const answers = (w) => [w.word, ...w.variants].map((x) => x.toLowerCase());
+  const answers = (w) => {
+    const out = new Set();
+    [w.word, ...w.variants].forEach((x) => {
+      const s = x.toLowerCase();
+      out.add(s);
+      const loose = s.replace(/[.'’]/g, '');
+      out.add(loose); out.add(loose.replace(/-/g, ' ')); out.add(loose.replace(/-/g, ''));
+    });
+    return [...out];
+  };
 
   let toastTimer;
   function toast(msg) {
@@ -445,7 +458,7 @@
       <section class="home-hero">
         <div class="twins" aria-hidden="true">👦👦</div>
         <h1>쌍둥이의 하루 영단어</h1>
-        <p>교육부 지정 필수 영단어 3,000개 + 토익 영단어 1,370개 · 하루 10단어씩 읽고, 쓰고, 외워요</p>
+        <p>교육부 지정 필수 영단어 3,000개 + 토익 1,370개 + EBS Level 1·2 · 하루에 조금씩 읽고, 쓰고, 외워요</p>
       </section>
       <section class="level-cards">
         ${Object.values(data).map((lv) => `
@@ -512,7 +525,7 @@
         ${allTopics.map((t) => `<button class="chip" data-topic="${esc(t)}">${esc(t)}</button>`).join('')}
       </div>
       <div class="day-grid" id="grid"></div>
-      ${lv.code === 't' ? `<p class="credit">${esc(TOEIC_CREDIT)} (<a href="${LICENSE_URL}" target="_blank" rel="noopener">라이선스</a>)</p>` : ''}`;
+      ${lv.code === 't' ? `<p class="credit">${esc(TOEIC_CREDIT)} (<a href="${LICENSE_URL}" target="_blank" rel="noopener">라이선스</a>)</p>` : isEbs(lv) ? `<p class="credit">${esc(EBS_CREDIT)}</p>` : ''}`;
     $$('.chip').forEach((c) => (c.onclick = () => { filter = c.dataset.topic || null; draw(); }));
     draw();
     const recent = $('.day-card.recent');
@@ -670,7 +683,7 @@
       const w = words[i];
       // 정답 보기: 모든 칸 공개 / 힌트 2: 글자 수 + 첫 글자 / 힌트 1: 첫 글자
       const boxes = revealed ? `<div class="spell-boxes">${[...w.word].map((c) => `<span class="given">${esc(c)}</span>`).join('')}</div>`
-        : hints >= 2 ? `<div class="spell-boxes">${[...w.word].map((c, k) => `<span class="${k === 0 ? 'given' : ''}">${k === 0 ? esc(c) : ''}</span>`).join('')}</div>`
+        : hints >= 2 ? `<div class="spell-boxes">${[...w.word].map((c, k) => (k === 0 || !/[a-z]/i.test(c)) ? `<span class="given ${c === ' ' ? 'gap' : ''}">${esc(c)}</span>` : '<span></span>').join('')}</div>`
         : hints === 1 ? `<div class="spell-boxes"><span class="given">${esc(w.word[0])}</span><span>…</span></div>` : '';
       app.innerHTML = `
         ${studyBar(lv, day, 'write', i, words.length)}
@@ -732,7 +745,7 @@
         <div class="stage"><article class="card" style="text-align:center">
           <div style="font-size:56px">✍️</div>
           <h2 style="font-family:var(--font-display);font-weight:400;margin:6px 0">쓰기 완료!</h2>
-          <p style="color:var(--muted)">10단어 쓰기 연습을 마쳤어요. 이제 외웠는지 확인해 볼까요?</p>
+          <p style="color:var(--muted)">${words.length}단어 쓰기 연습을 마쳤어요. 이제 외웠는지 확인해 볼까요?</p>
           <button class="btn primary" id="nextStep">③ 암기 확인으로 ▶</button>
         </article></div>`;
       bindStudyBar(lv, day);
@@ -941,7 +954,7 @@
       $('#sheets').innerHTML = pages.map((pg, pi) => `
         <section class="sheet">
           <div class="sheet-head">
-            <h3>${lv.emoji} ${lv.name} ${lv.code === 't' ? '' : '필수 '}영단어 ${lv.totalWords.toLocaleString()} — 진도표</h3>
+            <h3>${lv.emoji} ${lv.name} ${'emh'.includes(lv.code) ? '필수 ' : ''}영단어 ${lv.totalWords.toLocaleString()} — 진도표</h3>
             <div class="fields">이름: <b>${esc(name) || '__________'}</b> &nbsp; 시작일: ____년 __월 __일</div>
           </div>
           <table class="prog">
@@ -980,7 +993,7 @@
     let mode = 'all';
     const draw = () => {
       $('#sheets').innerHTML = `
-        <section class="sheet">
+        <section class="sheet ${words.length > 10 ? 'dense' : ''}">
           <div class="sheet-head">
             <h3>${lv.emoji} ${lv.name} Day ${day} · ${esc(topicsOf(words).join(' · '))}</h3>
             <div class="fields">이름: ________ &nbsp; 날짜: ____ / ____</div>
