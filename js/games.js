@@ -14,6 +14,7 @@
     blocks: { icon: '🧩', name: '철자 블록', desc: '섞인 알파벳으로 단어 완성', unit: '점' },
     rain: { icon: '☔', name: '떨어지는 단어', desc: '바닥에 닿기 전에 영단어 쓰기', unit: '점' },
     catch: { icon: '🧺', name: '바구니 받기', desc: '영단어·과일은 받고 못 먹는 건 피하기', unit: '점' },
+    drive: { icon: '🚗', name: '단어 드라이브', desc: '뜻에 맞는 단어를 먹으며 달리기', unit: '점' },
     ox: { icon: '⭕', name: '스피드 O/X', desc: '단어와 뜻이 맞는지 빠르게', unit: '개' },
     battle: { icon: '⚔️', name: '쌍둥이 대결', desc: '마주 앉아 먼저 맞히기', unit: '' },
   };
@@ -21,6 +22,7 @@
   const HELP = {
     blocks: ['뜻을 보고 소리를 들은 뒤, 알파벳 블록을 단어 순서대로 눌러요.', 'PC는 키보드로 글자를 쳐도 돼요. 스페이스 = 다시 듣기', '💡 힌트는 다음 글자 블록을 반짝여 줘요.', '힌트를 쓰거나 "모르겠어요"를 누른 단어는 놓친 단어로 남아요.'],
     rain: ['위에서 한글 뜻 카드가 떨어져요.', '바닥에 닿기 전에 그 영단어를 입력칸에 써요. 맞으면 Enter 없이 바로 터져요.', '✍️ 펜으로 쓰기를 켜면 손글씨로 쓸 수 있고, 단어가 조금 천천히 떨어져요.', '카드가 바닥에 3개 닿으면 끝나요. ⏸ 로 잠깐 멈출 수 있어요.'],
+    drive: ['화면 위 🎯 뜻을 보고, 그 뜻의 영어 단어가 있는 도로로 차를 옮겨 먹어요. 맞으면 +10점!', '태블릿: 화면 왼쪽·오른쪽을 누르거나 좌우로 밀어서 차선을 바꿔요. PC: ← → 키', '틀린 단어 −10 연료, 💀 −20 연료, ⛽ +25 연료. 연료는 계속 조금씩 닳고, 0이 되면 끝나요.', '3번 연속 맞히면 점수 ×2, 6번 연속이면 ×3. 🛡 방패는 한 번 막아 줘요.', '맞는 단어 5개를 먹으면 🚀 부스터! 누르면(스페이스) 3초 동안 아주 빠르고, 무적에 점수 2배예요.', '시간이 갈수록 빨라지고, 30초마다 낮 → 노을 → 밤 → 비로 풍경이 바뀌어요.'],
     catch: ['화면을 누르거나 손가락으로 끌면 아이가 그쪽으로 달려가요.', 'PC는 ← → 키로 움직이고, 스페이스로 잠깐 멈춰요.', '영단어 +10점 · 과일 🍎🍌🍇 +5점', '못 먹는 것 💀💣🔨🪨🧦👟 등은 피해요. 받으면 −5점!', '영단어를 받으면 뜻을 보여 주고 발음을 들려줘요. 영단어가 다 떨어지면 끝나요.'],
     ox: ['영단어와 뜻이 짝으로 나와요.', '맞는 짝이면 ⭕, 틀린 짝이면 ❌ 를 눌러요.', 'PC는 ← 또는 O 키 = ⭕, → 또는 X 키 = ❌', '틀리면 정답을 보여 주고 2초 쉬어요. 시간이 끝날 때까지 최대한 많이 맞혀요.'],
     battle: ['태블릿을 책상에 눕혀 놓고 마주 앉아요. 위쪽 화면은 맞은편 사람 쪽으로 뒤집혀 있어요.', '같은 문제를 먼저 맞히면 1점!', '틀리면 그 문제는 기회가 끝나요. 둘 다 틀리면 정답을 보여 줘요.', '10문제를 풀고 점수가 많은 사람이 이겨요.'],
@@ -394,7 +396,7 @@
       if (lives <= 0) end();
     }
     function loop(ts) {
-      const dt = Math.min(0.05, (ts - last) / 1000); last = ts;
+      const dt = Math.max(0, Math.min(0.05, (ts - last) / 1000)); last = ts;
       if (!paused && !over) {
         spawnIn -= dt;
         if (spawnIn <= 0 && cards.length < maxCards()) { spawn(); spawnIn = spawnGap(); }
@@ -540,7 +542,7 @@
       hud();
     }
     function loop(ts) {
-      const dt = Math.min(0.05, (ts - last) / 1000); last = ts;
+      const dt = Math.max(0, Math.min(0.05, (ts - last) / 1000)); last = ts;
       if (!paused && !over) {
         // 아이 움직이기: 누른 곳을 따라가거나 ← → 키
         const maxX = area.clientWidth - kid.offsetWidth;
@@ -612,6 +614,257 @@
         sub: `영단어 ${gotWords}/${TOTAL}개 · 과일 ${gotFruit}개 · 못 먹는 것 ${gotJunk}개`,
         score, missed,
         again: () => playCatch(),
+        againMissed: null,
+      }), 500);
+    }
+    hud();
+  }
+
+  // =========================================================
+  // G-06 단어 드라이브 — 도로 3개, 뜻에 맞는 영단어 먹기 · ⛽ 연료 · 💀 해골 · 🛡 방패 · 🚀 부스터
+  // =========================================================
+  function playDrive() {
+    stop(); setTheme();
+    const P = pool();
+    const D = {
+      easy: { speed: 130, drain: 0.7 },
+      normal: { speed: 160, drain: 1 },
+      hard: { speed: 190, drain: 1.5 },
+    }[S.diff];
+    const SCENES = [['day', '☀️ 낮'], ['sunset', '🌇 노을'], ['night', '🌙 밤'], ['rain', '🌧 비']];
+    let queue = T().shuffle(P);
+    let score = 0; let combo = 0; let bestCombo = 0; let gotWords = 0;
+    let fuel = 100; let gauge = 0; let shield = false; let boostLeft = 0;
+    let km = 0; let elapsed = 0; let lane = 1; let target = null;
+    let items = []; let rowId = 0; let wordRowLive = false;
+    let wordIn = 1.2; let extraIn = 2.2; let roadOffset = 0;
+    let paused = false; let over = false; let raf; let last = performance.now();
+    const missed = [];
+
+    app().innerHTML = `
+      <div class="drive-wrap" id="dWrap">
+        ${topBar('🚗 단어 드라이브', `<span id="dScore">0점</span><span id="dCombo"></span><span id="dKm">0.0km</span><button class="btn ghost small" id="dPause">⏸</button>`)}
+        <div class="drive-hud">
+          <div class="drive-target">🎯 <span id="dTarget">준비…</span></div>
+          <div class="drive-gauges">
+            <div class="gauge fuel"><span>⛽</span><div class="bar"><i id="dFuel"></i></div></div>
+            <div class="gauge boost"><span>🚀</span><div class="bar"><i id="dGauge"></i></div></div>
+          </div>
+        </div>
+        <div class="drive-road day" id="dRoad">
+          <div class="roadside left"></div><div class="roadside right"></div>
+          <div class="asphalt"><div class="lane-line l1"></div><div class="lane-line l2"></div></div>
+          <div class="drive-scene" id="dScene">☀️ 낮</div>
+          <div class="drive-msg" id="dMsg"></div>
+          <div class="drive-car" id="dCar"><svg class="car" viewBox="0 0 60 100" aria-hidden="true">
+            <rect x="2" y="16" width="9" height="18" rx="3" fill="#1f2937"/><rect x="49" y="16" width="9" height="18" rx="3" fill="#1f2937"/>
+            <rect x="2" y="66" width="9" height="18" rx="3" fill="#1f2937"/><rect x="49" y="66" width="9" height="18" rx="3" fill="#1f2937"/>
+            <rect x="7" y="4" width="46" height="92" rx="16" fill="#ef4444"/>
+            <rect x="7" y="4" width="46" height="92" rx="16" fill="none" stroke="#b91c1c" stroke-width="2"/>
+            <path d="M14 30 Q30 22 46 30 L43 42 Q30 38 17 42 Z" fill="#bfdbfe"/>
+            <rect x="16" y="44" width="28" height="22" rx="5" fill="#dc2626"/>
+            <path d="M17 68 Q30 72 43 68 L45 78 Q30 84 15 78 Z" fill="#93c5fd"/>
+            <rect x="12" y="6" width="10" height="5" rx="2" fill="#fef08a"/><rect x="38" y="6" width="10" height="5" rx="2" fill="#fef08a"/>
+            <rect x="12" y="89" width="9" height="4" rx="2" fill="#7f1d1d"/><rect x="39" y="89" width="9" height="4" rx="2" fill="#7f1d1d"/>
+          </svg></div>
+          <button class="drive-boost" id="dBoost" disabled aria-label="부스터">🚀</button>
+        </div>
+      </div>`;
+    bindQuit(); fullScreen();
+    const $ = (s) => app().querySelector(s);
+    const wrap = $('#dWrap'); const road = $('#dRoad'); const car = $('#dCar');
+    const fit = () => { wrap.style.height = `${Math.max(380, window.innerHeight - wrap.getBoundingClientRect().top - 8)}px`; };
+    fit(); window.addEventListener('resize', fit); onStop(() => window.removeEventListener('resize', fit));
+
+    const SIDE = 0.14;
+    const laneW = () => (road.clientWidth * (1 - SIDE * 2)) / 3;
+    const laneX = (l) => road.clientWidth * SIDE + laneW() * (l + 0.5);
+    const placeCar = () => {
+      const w = Math.max(40, Math.min(72, laneW() * 0.5));
+      car.style.width = `${w}px`; car.style.height = `${w * 1.65}px`;
+      car.style.transform = `translateX(${laneX(lane) - w / 2}px)`;
+    };
+    placeCar();
+    const speedMul = () => Math.min(2, 1 + Math.floor(elapsed / 20) * 0.08);
+    const speed = () => D.speed * speedMul() * (boostLeft > 0 ? 1.8 : 1);
+    const multiplier = () => (combo >= 6 ? 3 : combo >= 3 ? 2 : 1) * (boostLeft > 0 ? 2 : 1);
+
+    let msgT;
+    function msg(html, ok) {
+      const m = $('#dMsg'); if (!m) return;
+      m.innerHTML = html; m.className = `drive-msg show ${ok ? 'ok' : 'bad'}`;
+      clearTimeout(msgT); msgT = setTimeout(() => m.classList.remove('show'), 1300);
+    }
+    onStop(() => clearTimeout(msgT));
+    function hud() {
+      $('#dScore').textContent = `${score.toLocaleString()}점`;
+      $('#dCombo').textContent = combo >= 3 ? `🔥×${multiplier() / (boostLeft > 0 ? 2 : 1)} 콤보 ${combo}` : '';
+      $('#dKm').textContent = `${km.toFixed(1)}km`;
+      const f = $('#dFuel'); f.style.width = `${Math.max(0, fuel)}%`; f.className = fuel < 25 ? 'low' : '';
+      $('#dGauge').style.width = `${(gauge / 5) * 100}%`;
+      const b = $('#dBoost'); b.disabled = gauge < 5 || boostLeft > 0; b.classList.toggle('ready', gauge >= 5 && boostLeft <= 0);
+      car.classList.toggle('shield', shield);
+      road.classList.toggle('boosting', boostLeft > 0);
+    }
+    function nextTarget() {
+      if (!queue.length) queue = T().shuffle(P);
+      target = queue.shift();
+      $('#dTarget').textContent = short(target);
+    }
+    function addItem(kind, l, y, extra) {
+      const el = document.createElement('div');
+      el.className = `drive-item ${kind}`;
+      if (kind === 'word') { el.textContent = extra.w.word; el.classList.add('en'); } else el.textContent = { fuel: '⛽', skull: '💀', shield: '🛡' }[kind];
+      road.appendChild(el);
+      const it = { kind, lane: l, y, el, ...extra };
+      el.style.transform = `translate(${laneX(l) - el.offsetWidth / 2}px, ${y}px)`;
+      items.push(it);
+      return it;
+    }
+    function spawnWords() {
+      nextTarget();
+      const n = Math.random() < 0.5 ? 2 : 3;
+      const lanes = T().shuffle([0, 1, 2]).slice(0, n);
+      const wrong = distractors(target, n - 1, P);
+      const id = ++rowId;
+      lanes.forEach((l, k) => addItem('word', l, -50, { w: k === 0 ? target : wrong[k - 1], ok: k === 0, row: id }));
+      wordRowLive = true;
+    }
+    function spawnExtra() {
+      // 단어 줄과 겹치지 않게 위쪽이 비어 있을 때만
+      if (items.some((it) => it.y < 60)) return;
+      const r = Math.random();
+      const kind = r < 0.42 ? 'fuel' : r < 0.85 ? 'skull' : 'shield';
+      addItem(kind, Math.floor(Math.random() * 3), -50, {});
+    }
+    function removeRow(id) {
+      items.filter((it) => it.row === id).forEach((it) => { it.el.classList.add('gone'); later(() => it.el.remove(), 250); });
+      items = items.filter((it) => it.row !== id);
+      wordRowLive = false; wordIn = 0.9;
+    }
+    function hit(it) {
+      const protectedNow = boostLeft > 0;
+      if (it.kind === 'word') {
+        if (it.ok) {
+          combo++; bestCombo = Math.max(bestCombo, combo); gotWords++;
+          score += 10 * multiplier(); gauge = Math.min(5, gauge + 1);
+          sfx(combo % 5 === 0 ? 'combo' : 'ok'); sayAfter(it.w);
+          msg(`⭕ <span class="en">${esc(it.w.word)}</span> = ${esc(short(it.w))}`, true);
+        } else if (protectedNow) {
+          msg('🚀 부스터로 통과!', true);
+        } else if (shield) {
+          shield = false; sfx('bad'); msg('🛡 방패가 막아 줬어요', true);
+          missed.push(target); combo = 0;
+        } else {
+          fuel -= 10; combo = 0; sfx('bad'); missed.push(target);
+          msg(`❌ 정답은 <span class="en">${esc(target.word)}</span>`, false);
+          road.classList.remove('hit'); void road.offsetWidth; road.classList.add('hit');
+        }
+        removeRow(it.row);
+      } else {
+        it.el.remove(); items = items.filter((x) => x !== it);
+        if (it.kind === 'fuel') { fuel = Math.min(100, fuel + 25); sfx('ok'); msg('⛽ 연료 +25', true); }
+        else if (it.kind === 'shield') { shield = true; sfx('ok'); msg('🛡 방패를 얻었어요', true); }
+        else if (protectedNow) msg('🚀 해골도 문제없어요', true);
+        else if (shield) { shield = false; sfx('bad'); msg('🛡 방패가 막아 줬어요', true); }
+        else {
+          fuel -= 20; combo = 0; sfx('bad'); msg('💀 연료 −20', false);
+          road.classList.remove('hit'); void road.offsetWidth; road.classList.add('hit');
+        }
+      }
+      hud();
+    }
+    function loop(ts) {
+      const dt = Math.max(0, Math.min(0.05, (ts - last) / 1000)); last = ts;
+      if (!paused && !over) {
+        elapsed += dt;
+        if (boostLeft > 0) boostLeft = Math.max(0, boostLeft - dt);
+        fuel -= D.drain * dt;
+        km += speed() * dt / 900;
+        // 풍경: 30초마다
+        const scene = SCENES[Math.floor(elapsed / 30) % SCENES.length];
+        if (!road.classList.contains(scene[0])) {
+          SCENES.forEach(([c]) => road.classList.remove(c)); road.classList.add(scene[0]);
+          const s = $('#dScene'); s.textContent = scene[1]; s.classList.remove('show'); void s.offsetWidth; s.classList.add('show');
+        }
+        // 차선 무늬
+        roadOffset = (roadOffset + speed() * dt) % 320;
+        road.style.setProperty('--road-y', `${roadOffset % 80}px`);
+        road.style.setProperty('--side-y', `${roadOffset % 160}px`);
+        // 떨어뜨리기
+        if (!wordRowLive) { wordIn -= dt; if (wordIn <= 0) spawnWords(); }
+        extraIn -= dt;
+        if (extraIn <= 0) { spawnExtra(); extraIn = 1.3 + Math.random() * 1.6; }
+        // 움직이기·부딪힘
+        const carTop = car.offsetTop + 6; const carBottom = car.offsetTop + car.offsetHeight - 6;
+        for (const it of [...items]) {
+          if (!items.includes(it)) continue;
+          it.y += speed() * dt;
+          it.el.style.transform = `translate(${laneX(it.lane) - it.el.offsetWidth / 2}px, ${it.y}px)`;
+          const mid = it.y + it.el.offsetHeight / 2;
+          if (it.lane === lane && mid >= carTop && mid <= carBottom) { hit(it); continue; }
+          if (it.y > road.clientHeight) {
+            if (it.kind === 'word') {
+              if (it.ok) { combo = 0; missed.push(target); msg(`놓쳤어요: <span class="en">${esc(target.word)}</span>`, false); }
+              removeRow(it.row);
+            } else { it.el.remove(); items = items.filter((x) => x !== it); }
+          }
+        }
+        hud();
+        if (fuel <= 0) { end(); return; }
+      }
+      raf = requestAnimationFrame(loop);
+    }
+    raf = requestAnimationFrame(loop);
+    onStop(() => cancelAnimationFrame(raf));
+
+    // 조작: ← → / 화면 왼쪽·오른쪽 누르기 / 좌우로 밀기 / 🚀 · 스페이스
+    const move = (d) => { if (paused || over) return; lane = Math.max(0, Math.min(2, lane + d)); placeCar(); };
+    function boost() {
+      if (paused || over || gauge < 5 || boostLeft > 0) return;
+      gauge = 0; boostLeft = 3; sfx('combo'); msg('🚀 부스터! 3초 동안 무적 · 점수 2배', true); hud();
+    }
+    let x0 = null;
+    road.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('#dBoost')) return;
+      e.preventDefault(); x0 = e.clientX;
+    });
+    road.addEventListener('pointerup', (e) => {
+      if (x0 === null) return;
+      const dx = e.clientX - x0; x0 = null;
+      if (Math.abs(dx) > 30) move(dx < 0 ? -1 : 1);
+      else { const r = road.getBoundingClientRect(); move(e.clientX - r.left < laneX(lane) ? -1 : 1); }
+    });
+    $('#dBoost').addEventListener('pointerdown', (e) => { e.preventDefault(); boost(); });
+    T().setKey((e) => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); move(-1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); move(1); }
+      else if (e.key === ' ') { e.preventDefault(); boost(); }
+    });
+    window.addEventListener('resize', placeCar); onStop(() => window.removeEventListener('resize', placeCar));
+
+    function setPause(p) {
+      if (over) return;
+      paused = p; last = performance.now();
+      $('#dPause').textContent = p ? '▶' : '⏸';
+      road.classList.toggle('paused', p);
+      if (p) msg('⏸ 잠깐 멈춤 — ▶ 를 누르면 계속해요', true);
+    }
+    $('#dPause').onclick = () => setPause(!paused);
+    helpPause = setPause;
+    const onVis = () => { if (document.hidden) setPause(true); };
+    document.addEventListener('visibilitychange', onVis); onStop(() => document.removeEventListener('visibilitychange', onVis));
+
+    function end() {
+      over = true;
+      const kmKey = `${bestKey('drive')}-km`;
+      const kmBest = !(S.best[kmKey] >= km);
+      if (kmBest) { S.best[kmKey] = Math.round(km * 10) / 10; save(); }
+      later(() => showResult('drive', {
+        big: `${score.toLocaleString()}점`,
+        sub: `🏁 ${km.toFixed(1)}km${kmBest ? ' (최고 거리!)' : ''} · 맞힌 단어 ${gotWords}개 · 최고 콤보 ${bestCombo}`,
+        score, missed,
+        again: () => playDrive(),
         againMissed: null,
       }), 500);
     }
@@ -818,7 +1071,7 @@
       T().setKey(null);
       if (!T().data[S.level]) S.level = 'e';
       if (sub && pool().length < 4) { T().toast('단어 범위를 먼저 골라 주세요'); return T().go('#/game'); }
-      ({ blocks: playBlocks, rain: playRain, catch: playCatch, ox: playOX, battle: battleSetup }[sub] || renderMenu)();
+      ({ blocks: playBlocks, rain: playRain, catch: playCatch, drive: playDrive, ox: playOX, battle: battleSetup }[sub] || renderMenu)();
     },
     // 학습 완료 화면에서 "오늘 단어로 게임"
     useDay(code, day) { S.level = code; S.mode = 'range'; S.from = day; S.to = day; save(); },

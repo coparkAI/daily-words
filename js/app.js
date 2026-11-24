@@ -472,7 +472,7 @@
       </section>
       <button class="game-entry" data-go="#/game">
         <span class="game-entry-icon" aria-hidden="true">🎮</span>
-        <span><b>게임으로 복습하기</b><br><small>철자 블록 · 떨어지는 단어 · 바구니 받기 · 스피드 O/X · 쌍둥이 대결</small></span>
+        <span><b>게임으로 복습하기</b><br><small>철자 블록 · 떨어지는 단어 · 바구니 받기 · 단어 드라이브 · 스피드 O/X · 쌍둥이 대결</small></span>
         <span aria-hidden="true">▶</span>
       </button>
       <p class="home-foot">✏️ 진도는 출력한 진도표에 직접 체크해요 <button class="btn ghost small" id="how">사용 방법</button> ${voiceBtn()}</p>

@@ -110,6 +110,54 @@ body[data-level="high"] .game-title { font-weight: 900; font-size: 17px; }
 .catch-float.bad { color: var(--bad); }
 @keyframes c-float { to { transform: translate(-50%, -60px); opacity: 0; } }
 
+/* G-06 단어 드라이브 */
+.drive-wrap { display: flex; flex-direction: column; min-height: 380px; }
+.drive-hud { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding-bottom: 8px; }
+.drive-target { flex: 1; min-width: 180px; padding: 8px 16px; border-radius: 99px; background: var(--accent); color: var(--accent-ink); font-size: 22px; font-weight: 800; text-align: center; box-shadow: var(--shadow); }
+.drive-gauges { display: flex; flex-direction: column; gap: 4px; min-width: 200px; }
+.gauge { display: flex; align-items: center; gap: 6px; font-size: 16px; }
+.gauge .bar { flex: 1; height: 12px; border-radius: 99px; background: var(--line); overflow: hidden; }
+.gauge .bar i { display: block; height: 100%; width: 0; border-radius: 99px; background: var(--good); transition: width .15s; }
+.gauge .bar i.low { background: var(--bad); animation: blink .6s infinite; }
+.gauge.boost .bar i { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+.drive-road { --road-y: 0px; --side-y: 0px; position: relative; flex: 1; overflow: hidden; border-radius: var(--radius); background: #5c9e3d; box-shadow: var(--shadow); touch-action: none; user-select: none; -webkit-user-select: none; transition: background .8s; }
+.roadside { position: absolute; top: 0; bottom: 0; width: 14%; background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'80'%20height%3D'160'%20viewBox%3D'0%200%2080%20160'%3E%0A%3Crect%20x%3D'36'%20y%3D'34'%20width%3D'8'%20height%3D'14'%20fill%3D'%237c4a1e'%2F%3E%3Ccircle%20cx%3D'40'%20cy%3D'26'%20r%3D'18'%20fill%3D'%232f7d32'%2F%3E%3Ccircle%20cx%3D'33'%20cy%3D'21'%20r%3D'7'%20fill%3D'%2343a047'%2F%3E%0A%3Ccircle%20cx%3D'18'%20cy%3D'98'%20r%3D'10'%20fill%3D'%23388e3c'%2F%3E%3Ccircle%20cx%3D'27'%20cy%3D'103'%20r%3D'8'%20fill%3D'%232e7d32'%2F%3E%0A%3Ccircle%20cx%3D'60'%20cy%3D'120'%20r%3D'3'%20fill%3D'%23fde047'%2F%3E%3Ccircle%20cx%3D'66'%20cy%3D'126'%20r%3D'3'%20fill%3D'%23f472b6'%2F%3E%3Ccircle%20cx%3D'55'%20cy%3D'129'%20r%3D'3'%20fill%3D'%23fff'%2F%3E%0A%3Crect%20x%3D'58'%20y%3D'76'%20width%3D'4'%20height%3D'10'%20fill%3D'%237c4a1e'%2F%3E%3Cpath%20d%3D'M60%2058%20L70%2078%20L50%2078%20Z'%20fill%3D'%231b5e20'%2F%3E%3C%2Fsvg%3E"); background-repeat: repeat-y; background-size: 100% auto; background-position: center var(--side-y); transition: filter .8s; }
+.roadside.left { left: 0; } .roadside.right { right: 0; -webkit-transform: scaleX(-1); transform: scaleX(-1); }
+.asphalt { position: absolute; top: 0; bottom: 0; left: 14%; right: 14%; background: #4b5563; border-left: 6px solid #facc15; border-right: 6px solid #facc15; box-shadow: inset 0 0 0 3px #e5e7eb; transition: background .8s; }
+.lane-line { position: absolute; top: 0; bottom: 0; width: 5px; margin-left: -2px; background: repeating-linear-gradient(to bottom, rgba(255,255,255,.85) 0 40px, transparent 40px 80px); background-position: 0 var(--road-y); }
+.lane-line.l1 { left: 33.33%; } .lane-line.l2 { left: 66.66%; }
+.drive-road.sunset { background: #8a8a3a; }
+.drive-road.sunset .asphalt { background: #5b4a46; }
+.drive-road.sunset .roadside { filter: sepia(.5) saturate(1.3) hue-rotate(-15deg); }
+.drive-road.sunset .drive-scene { background: rgba(251, 146, 60, .9); }
+.drive-road.night { background: #1d3320; }
+.drive-road.night .asphalt { background: #1f2430; }
+.drive-road.night .roadside { filter: brightness(.45); }
+.drive-road.night .lane-line { opacity: .6; }
+.drive-road.night .drive-car::before { content: ''; position: absolute; left: 50%; bottom: 80%; width: 90px; height: 120px; margin-left: -45px; background: radial-gradient(ellipse at bottom, rgba(255,240,170,.45), transparent 70%); pointer-events: none; }
+.drive-road.rain { background: #3f6b45; }
+.drive-road.rain .asphalt { background: #3f4a57; background-image: repeating-linear-gradient(105deg, rgba(255,255,255,.14) 0 2px, transparent 2px 14px); }
+.drive-road.rain .roadside { filter: brightness(.75) saturate(.8); }
+.drive-road.boosting .lane-line { background: repeating-linear-gradient(to bottom, #fde68a 0 60px, transparent 60px 80px); background-position: 0 var(--road-y); }
+.drive-road.paused .drive-item { opacity: .35; }
+.drive-road.hit { animation: shake .35s; }
+.drive-scene { position: absolute; right: 12px; top: 10px; padding: 4px 12px; border-radius: 99px; background: rgba(255,255,255,.85); color: #222; font-size: 14px; font-weight: 700; z-index: 2; }
+.drive-scene.show { animation: g-pop .5s; }
+.drive-item { position: absolute; left: 0; top: 0; will-change: transform; pointer-events: none; white-space: nowrap; z-index: 1; }
+.drive-item.word { padding: 8px 14px; border-radius: 12px; background: #fff; color: #111; font-size: 22px; font-weight: 700; box-shadow: 0 4px 0 rgba(0,0,0,.35); }
+.drive-item.fuel, .drive-item.skull, .drive-item.shield { font-size: 42px; line-height: 1; }
+.drive-item.gone { opacity: 0; transition: opacity .25s; }
+.drive-car { position: absolute; left: 0; bottom: 14px; width: 56px; height: 92px; transition: transform .12s ease-out; z-index: 2; pointer-events: none; }
+.drive-car .car { display: block; width: 100%; height: 100%; filter: drop-shadow(0 4px 3px rgba(0,0,0,.45)); }
+.drive-car.shield::after { content: ''; position: absolute; top: -10px; right: -14px; bottom: -10px; left: -14px; border: 4px solid #60a5fa; border-radius: 50%; box-shadow: 0 0 14px #60a5fa; }
+.drive-road.boosting .drive-car .car { filter: drop-shadow(0 14px 8px #f97316); }
+.drive-boost { position: absolute; right: 12px; bottom: 16px; width: 70px; height: 70px; border-radius: 50%; border: 3px solid #fff; background: #9ca3af; font-size: 34px; z-index: 3; touch-action: manipulation; opacity: .6; }
+.drive-boost.ready { background: linear-gradient(135deg, #f59e0b, #ef4444); opacity: 1; animation: g-glow 1s infinite; }
+.drive-msg { position: absolute; left: 50%; top: 44px; transform: translateX(-50%); padding: 8px 18px; border-radius: 99px; font-size: 19px; font-weight: 700; opacity: 0; transition: opacity .2s; pointer-events: none; white-space: nowrap; z-index: 3; }
+.drive-msg.show { opacity: 1; }
+.drive-msg.ok { background: var(--good-soft); color: var(--know-ink); }
+.drive-msg.bad { background: var(--bad-soft); color: var(--hard-ink); }
+
 /* G-03 스피드 O/X */
 .ox-card { text-align: center; max-width: 620px; transition: background .15s; }
 .ox-card.right { background: var(--good-soft); }
