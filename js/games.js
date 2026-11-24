@@ -15,6 +15,7 @@
     rain: { icon: '☔', name: '떨어지는 단어', desc: '바닥에 닿기 전에 영단어 쓰기', unit: '점' },
     catch: { icon: '🧺', name: '바구니 받기', desc: '영단어·과일은 받고 못 먹는 건 피하기', unit: '점' },
     drive: { icon: '🚗', name: '단어 드라이브', desc: '뜻에 맞는 단어를 먹으며 달리기', unit: '점' },
+    run: { icon: '🏃', name: '3D 단어 런', desc: '달리면서 맞는 뜻의 문으로', unit: '점' },
     ox: { icon: '⭕', name: '스피드 O/X', desc: '단어와 뜻이 맞는지 빠르게', unit: '개' },
     battle: { icon: '⚔️', name: '쌍둥이 대결', desc: '마주 앉아 먼저 맞히기', unit: '' },
   };
@@ -22,6 +23,7 @@
   const HELP = {
     blocks: ['뜻을 보고 소리를 들은 뒤, 알파벳 블록을 단어 순서대로 눌러요.', 'PC는 키보드로 글자를 쳐도 돼요. 스페이스 = 다시 듣기', '💡 힌트는 다음 글자 블록을 반짝여 줘요.', '힌트를 쓰거나 "모르겠어요"를 누른 단어는 놓친 단어로 남아요.'],
     rain: ['위에서 한글 뜻 카드가 떨어져요.', '바닥에 닿기 전에 그 영단어를 입력칸에 써요. 맞으면 Enter 없이 바로 터져요.', '✍️ 펜으로 쓰기를 켜면 손글씨로 쓸 수 있고, 단어가 조금 천천히 떨어져요.', '카드가 바닥에 3개 닿으면 끝나요. ⏸ 로 잠깐 멈출 수 있어요.'],
+    run: ['형이나 동생을 골라 2차선 길을 달려요. 위에 영어 단어가 나오고 발음도 들려줘요.', '앞에서 뜻이 적힌 문 두 개가 다가와요. 맞는 뜻의 문 쪽 차선으로 옮겨서 지나가세요!', '태블릿: 화면 왼쪽·오른쪽을 누르거나 좌우로 밀기. PC: ← → 키', '맞히면 +10점, 3번 연속 ×2, 6번 연속 ×3. 💰 코인은 +2점이에요.', '틀리면 ❤️ 하나를 잃어요. 3개를 다 잃으면 끝! 오래 달릴수록 빨라져요.', '3D 그림이라 인터넷이 필요하고, 오래된 기기에서는 안 될 수도 있어요.'],
     drive: ['화면 위 🎯 뜻을 보고, 그 뜻의 영어 단어가 있는 도로로 차를 옮겨 먹어요. 맞으면 +10점!', '태블릿: 화면 왼쪽·오른쪽을 누르거나 좌우로 밀어서 차선을 바꿔요. PC: ← → 키', '틀린 단어 −10 연료, 💀 −20 연료, ⛽ +25 연료. 연료는 계속 조금씩 닳고, 0이 되면 끝나요.', '3번 연속 맞히면 점수 ×2, 6번 연속이면 ×3. 🛡 방패는 한 번 막아 줘요.', '맞는 단어 5개를 먹으면 🚀 부스터! 누르면(스페이스) 3초 동안 아주 빠르고, 무적에 점수 2배예요.', '시간이 갈수록 빨라지고, 30초마다 낮 → 노을 → 밤 → 비로 풍경이 바뀌어요.'],
     catch: ['화면을 누르거나 손가락으로 끌면 아이가 그쪽으로 달려가요.', 'PC는 ← → 키로 움직이고, 스페이스로 잠깐 멈춰요.', '영단어 +10점 · 과일 🍎🍌🍇 +5점', '못 먹는 것 💀💣🔨🪨🧦👟 등은 피해요. 받으면 −5점!', '영단어를 받으면 뜻을 보여 주고 발음을 들려줘요. 영단어가 다 떨어지면 끝나요.'],
     ox: ['영단어와 뜻이 짝으로 나와요.', '맞는 짝이면 ⭕, 틀린 짝이면 ❌ 를 눌러요.', 'PC는 ← 또는 O 키 = ⭕, → 또는 X 키 = ❌', '틀리면 정답을 보여 주고 2초 쉬어요. 시간이 끝날 때까지 최대한 많이 맞혀요.'],
@@ -872,6 +874,316 @@
   }
 
   // =========================================================
+  // G-07 🏃 3D 단어 런 — three.js r128 (이 게임에 들어올 때만 불러옴)
+  // =========================================================
+  const THREE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+  let threeLoading = null;
+  function loadThree() {
+    if (window.THREE) return Promise.resolve(window.THREE);
+    if (threeLoading) return threeLoading;
+    threeLoading = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = THREE_URL; s.async = true;
+      s.onload = () => (window.THREE ? resolve(window.THREE) : reject(new Error('no THREE')));
+      s.onerror = () => { threeLoading = null; reject(new Error('load failed')); };
+      document.head.appendChild(s);
+    });
+    return threeLoading;
+  }
+  function hasWebGL() {
+    try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl') || c.getContext('experimental-webgl'))); }
+    catch (e) { return false; }
+  }
+
+  function runSetup() {
+    stop(); setTheme();
+    app().innerHTML = `
+      ${topBar('🏃 단어 런')}
+      <article class="card run-setup">
+        <p>위에 나온 <b>영어 단어</b>의 뜻이 적힌 문으로 달려가요. 틀리면 ❤️ 하나를 잃어요!</p>
+        <p class="run-pick-title">누가 달릴까요?</p>
+        <div class="run-pick">
+          <button class="run-who p0" data-who="0"><span class="dot"></span>${esc(S.names[0])}<small>빨간 옷</small></button>
+          <button class="run-who p1" data-who="1"><span class="dot"></span>${esc(S.names[1])}<small>파란 옷</small></button>
+        </div>
+        <p class="run-note" id="runNote"></p>
+      </article>`;
+    bindQuit(false);
+    const note = app().querySelector('#runNote');
+    if (!hasWebGL()) { note.textContent = '이 기기·브라우저에서는 3D 게임을 할 수 없어요. 다른 게임을 즐겨 주세요!'; app().querySelectorAll('.run-who').forEach((b) => (b.disabled = true)); return; }
+    app().querySelectorAll('.run-who').forEach((b) => (b.onclick = () => {
+      S.runner = +b.dataset.who; save();
+      note.textContent = '3D 준비 중…';
+      app().querySelectorAll('.run-who').forEach((x) => (x.disabled = true));
+      loadThree().then(() => playRun()).catch(() => {
+        note.textContent = '3D 프로그램을 불러오지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요.';
+        app().querySelectorAll('.run-who').forEach((x) => (x.disabled = false));
+      });
+    }));
+  }
+
+  function playRun() {
+    stop(); setTheme();
+    const THREE = window.THREE;
+    const P = pool();
+    const BASE = { easy: 9, normal: 11, hard: 13 }[S.diff];
+    const LANE = 1.3;               // 차선 중심 x (왼쪽 -1.3, 오른쪽 +1.3)
+    const SHIRT = [0xe5484d, 0x3b82f6][S.runner || 0];
+    let queue = T().shuffle(P);
+    let hearts = 3; let score = 0; let combo = 0; let bestCombo = 0; let right = 0; let coins = 0; let dist = 0;
+    let lane = 0; let runnerX = -LANE; let elapsed = 0; let target = null;
+    let gate = null; let nextQIn = 1.0; let coinIn = 1.5;
+    let paused = false; let over = false; let raf; let last = performance.now();
+    const missed = [];
+
+    app().innerHTML = `
+      <div class="run-wrap" id="rnWrap">
+        ${topBar('🏃 단어 런', `<span id="rnHearts">❤️❤️❤️</span><span id="rnScore">0점</span><span id="rnCoins">💰 0</span><span id="rnCombo"></span><button class="btn ghost small" id="rnPause">⏸</button>`)}
+        <div class="run-stage" id="rnStage">
+          <div class="run-word" id="rnWord"><span class="en" id="rnEn">준비…</span><button class="icon-btn" id="rnSay" aria-label="듣기">🔊</button></div>
+          <div class="run-msg" id="rnMsg"></div>
+        </div>
+      </div>`;
+    bindQuit(); fullScreen();
+    const $ = (s) => app().querySelector(s);
+    const wrap = $('#rnWrap'); const stage = $('#rnStage');
+
+    // ----- 3D 장면 -----
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    stage.insertBefore(renderer.domElement, stage.firstChild);
+    const scene = new THREE.Scene();
+    const SKY = 0x9fd6ff;
+    scene.background = new THREE.Color(SKY);
+    scene.fog = new THREE.Fog(SKY, 30, 75);
+    const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 200);
+    camera.position.set(0, 4.2, 8.6);
+    camera.lookAt(0, 1.2, -8);
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x6aa35a, 0.9));
+    const sun = new THREE.DirectionalLight(0xffffff, 0.7); sun.position.set(5, 10, 4); scene.add(sun);
+
+    const mat = (color) => new THREE.MeshLambertMaterial({ color });
+    const box = (w, h, d, color) => new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(color));
+    // 땅·길
+    const grass = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), mat(0x6fbf5a)); grass.rotation.x = -Math.PI / 2; scene.add(grass);
+    const road = new THREE.Mesh(new THREE.PlaneGeometry(5.6, 200), mat(0x5b6472)); road.rotation.x = -Math.PI / 2; road.position.y = 0.01; scene.add(road);
+    [-2.8, 2.8].forEach((x) => { const e = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 200), mat(0xfacc15)); e.rotation.x = -Math.PI / 2; e.position.set(x, 0.02, 0); scene.add(e); });
+    // 가운데 점선 (흘러가는 것)
+    const dashes = [];
+    for (let i = 0; i < 16; i++) { const d = new THREE.Mesh(new THREE.PlaneGeometry(0.16, 1.6), mat(0xffffff)); d.rotation.x = -Math.PI / 2; d.position.set(0, 0.03, -i * 5); scene.add(d); dashes.push(d); }
+    // 길가 나무
+    const trees = [];
+    for (let i = 0; i < 24; i++) {
+      const t = new THREE.Group();
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.2, 1, 6), mat(0x8b5a2b)); trunk.position.y = 0.5; t.add(trunk);
+      const leaf = new THREE.Mesh(i % 3 ? new THREE.ConeGeometry(0.9, 2, 7) : new THREE.SphereGeometry(0.9, 8, 6), mat(i % 2 ? 0x2e7d32 : 0x43a047)); leaf.position.y = 1.9; t.add(leaf);
+      t.position.set((i % 2 ? 1 : -1) * (4 + Math.random() * 4), 0, -i * 3.5);
+      scene.add(t); trees.push(t);
+    }
+    // 구름 (멀리, 고정)
+    for (let i = 0; i < 6; i++) {
+      const c = new THREE.Group();
+      for (let k = 0; k < 3; k++) { const p = new THREE.Mesh(new THREE.SphereGeometry(1.2 + Math.random(), 8, 6), new THREE.MeshBasicMaterial({ color: 0xffffff })); p.position.set(k * 1.4, Math.random() * 0.5, 0); c.add(p); }
+      c.position.set(-20 + i * 8, 12 + Math.random() * 4, -70 - Math.random() * 20); scene.add(c);
+    }
+    // 달리는 아이 (블록)
+    const runner = new THREE.Group();
+    const SKIN = 0xf2c9a0;
+    const body = box(0.7, 0.8, 0.4, SHIRT); body.position.y = 1.35; runner.add(body);
+    const head = box(0.55, 0.55, 0.55, SKIN); head.position.y = 2.05; runner.add(head);
+    const hair = box(0.58, 0.2, 0.58, 0x3b2a1a); hair.position.y = 2.33; runner.add(hair);
+    const limb = (w, h, color, x, y) => { const g = new THREE.Group(); const m = box(w, h, w, color); m.position.y = -h / 2; g.add(m); g.position.set(x, y, 0); runner.add(g); return g; };
+    const armL = limb(0.2, 0.7, SKIN, -0.47, 1.7); const armR = limb(0.2, 0.7, SKIN, 0.47, 1.7);
+    const legL = limb(0.26, 0.95, 0x1e3a8a, -0.18, 0.95); const legR = limb(0.26, 0.95, 0x1e3a8a, 0.18, 0.95);
+    runner.position.set(runnerX, 0, 0);
+    scene.add(runner);
+
+    // 뜻 표지판 글자 (캔버스 그림 → 텍스처)
+    function signTexture(text) {
+      const c = document.createElement('canvas'); c.width = 512; c.height = 256;
+      const g = c.getContext('2d');
+      const r = 36; g.fillStyle = '#ffffff'; g.strokeStyle = '#1f2937'; g.lineWidth = 12;
+      g.beginPath(); g.moveTo(r, 6); g.arcTo(506, 6, 506, 250, r); g.arcTo(506, 250, 6, 250, r); g.arcTo(6, 250, 6, 6, r); g.arcTo(6, 6, 506, 6, r); g.closePath(); g.fill(); g.stroke();
+      let t = text; let size = 92;
+      g.fillStyle = '#111827'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      const font = () => `bold ${size}px "Noto Sans KR", "Apple SD Gothic Neo", sans-serif`;
+      g.font = font();
+      while (g.measureText(t).width > 460 && size > 40) { size -= 6; g.font = font(); }
+      while (g.measureText(t).width > 460 && t.length > 2) t = `${t.slice(0, -2)}…`;
+      g.fillText(t, 256, 132);
+      return new THREE.CanvasTexture(c);
+    }
+    function makeSign(text, x) {
+      const g = new THREE.Group();
+      const post = (px) => { const p = box(0.12, 2.6, 0.12, 0x6b7280); p.position.set(px, 1.3, 0); g.add(p); };
+      post(-1.05); post(1.05);
+      const tex = signTexture(text);
+      const board = new THREE.Mesh(new THREE.PlaneGeometry(2.3, 1.15), new THREE.MeshBasicMaterial({ map: tex }));
+      board.position.set(0, 2.2, 0.07); g.add(board);
+      g.position.set(x, 0, 0);
+      g.userData.tex = tex;
+      return g;
+    }
+    function spawnGate() {
+      if (!queue.length) queue = T().shuffle(P);
+      target = queue.shift();
+      const wrong = distractors(target, 1, P)[0];
+      const correctLane = Math.random() < 0.5 ? 0 : 1;
+      const group = new THREE.Group();
+      // 표지판에는 첫 번째 뜻만 크게 (두 뜻이 같아 보이면 전체 뜻)
+      let a = short(target).split(',')[0].trim(); let b = short(wrong).split(',')[0].trim();
+      if (a === b) { a = short(target); b = short(wrong); }
+      [0, 1].forEach((l) => group.add(makeSign(l === correctLane ? a : b, l ? LANE : -LANE)));
+      group.position.z = -55;
+      scene.add(group);
+      gate = { group, correctLane, done: false };
+      $('#rnEn').textContent = target.word;
+      $('#rnWord').classList.remove('pop'); void $('#rnWord').offsetWidth; $('#rnWord').classList.add('pop');
+      say(target);
+    }
+    function disposeGroup(g) {
+      scene.remove(g);
+      g.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) { if (o.material.map) o.material.map.dispose(); o.material.dispose(); } });
+    }
+    // 코인
+    const coinGeo = new THREE.CylinderGeometry(0.32, 0.32, 0.08, 16);
+    const coinMat = new THREE.MeshLambertMaterial({ color: 0xfacc15, emissive: 0x6b4d00 });
+    let coinList = [];
+    function spawnCoins() {
+      if (gate && gate.group.position.z < -40) return; // 문 바로 앞에는 두지 않기
+      const l = Math.random() < 0.5 ? 0 : 1;
+      for (let k = 0; k < 3; k++) {
+        const m = new THREE.Mesh(coinGeo, coinMat); m.rotation.x = Math.PI / 2;
+        m.position.set(l ? LANE : -LANE, 0.8, -50 - k * 2.2); scene.add(m); coinList.push({ m, lane: l });
+      }
+    }
+
+    // 화면 크기
+    const fit = () => {
+      wrap.style.height = `${Math.max(380, window.innerHeight - wrap.getBoundingClientRect().top - 8)}px`;
+      const w = stage.clientWidth; const h = stage.clientHeight;
+      renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix();
+    };
+    fit(); window.addEventListener('resize', fit); onStop(() => window.removeEventListener('resize', fit));
+
+    let msgT;
+    function msg(html, ok) {
+      const m = $('#rnMsg'); if (!m) return;
+      m.innerHTML = html; m.className = `run-msg show ${ok ? 'ok' : 'bad'}`;
+      clearTimeout(msgT); msgT = setTimeout(() => m.classList.remove('show'), 1500);
+    }
+    onStop(() => clearTimeout(msgT));
+    const mult = () => (combo >= 6 ? 3 : combo >= 3 ? 2 : 1);
+    function hud() {
+      $('#rnHearts').textContent = '❤️'.repeat(Math.max(0, hearts)) + '🤍'.repeat(3 - Math.max(0, hearts));
+      $('#rnScore').textContent = `${score.toLocaleString()}점`;
+      $('#rnCoins').textContent = `💰 ${coins}`;
+      $('#rnCombo').textContent = combo >= 3 ? `🔥×${mult()} 콤보 ${combo}` : '';
+    }
+    function judge() {
+      gate.done = true;
+      if (lane === gate.correctLane) {
+        combo++; bestCombo = Math.max(bestCombo, combo); right++;
+        score += 10 * mult();
+        sfx(combo % 5 === 0 ? 'combo' : 'ok');
+        msg(`⭕ <span class="en">${esc(target.word)}</span> = ${esc(short(target))}`, true);
+      } else {
+        hearts--; combo = 0; missed.push(target); sfx('bad');
+        msg(`❌ <span class="en">${esc(target.word)}</span> = ${esc(short(target))}`, false);
+        stage.classList.remove('hit'); void stage.offsetWidth; stage.classList.add('hit');
+      }
+      hud();
+      if (hearts <= 0) end();
+    }
+
+    function loop(ts) {
+      const dt = Math.max(0, Math.min(0.05, (ts - last) / 1000)); last = ts;
+      if (!paused && !over) {
+        elapsed += dt;
+        const speed = BASE * Math.min(2, 1 + Math.floor(elapsed / 15) * 0.08);
+        const dz = speed * dt;
+        dist += dz;
+        // 흘러가는 것들
+        dashes.forEach((d) => { d.position.z += dz; if (d.position.z > 6) d.position.z -= 80; });
+        trees.forEach((t) => { t.position.z += dz; if (t.position.z > 8) { t.position.z -= 84; t.position.x = (t.position.x > 0 ? 1 : -1) * (4 + Math.random() * 4); } });
+        // 문(표지판)
+        if (!gate) { nextQIn -= dt; if (nextQIn <= 0) spawnGate(); }
+        if (gate) {
+          gate.group.position.z += dz;
+          if (!gate.done && gate.group.position.z >= 0) judge();
+          if (gate && gate.group.position.z > 9) { disposeGroup(gate.group); gate = null; nextQIn = 0.6; }
+        }
+        // 코인
+        coinIn -= dt;
+        if (coinIn <= 0) { spawnCoins(); coinIn = 2.5 + Math.random() * 2; }
+        coinList = coinList.filter((c) => {
+          c.m.position.z += dz; c.m.rotation.z += dt * 4;
+          if (Math.abs(c.m.position.z) < 0.6 && c.lane === lane) { coins++; score += 2; scene.remove(c.m); hud(); return false; }
+          if (c.m.position.z > 8) { scene.remove(c.m); return false; }
+          return true;
+        });
+        // 달리기 동작
+        const tx = lane ? LANE : -LANE;
+        runnerX += (tx - runnerX) * Math.min(1, dt * 12);
+        runner.position.x = runnerX;
+        const sw = Math.sin(elapsed * speed * 1.1) * 0.8;
+        armL.rotation.x = sw; armR.rotation.x = -sw; legL.rotation.x = -sw; legR.rotation.x = sw;
+        runner.position.y = Math.abs(Math.sin(elapsed * speed * 1.1)) * 0.12;
+        camera.position.x = runnerX * 0.35; camera.lookAt(runnerX * 0.2, 1.2, -8);
+      }
+      renderer.render(scene, camera);
+      if (!over) raf = requestAnimationFrame(loop);
+    }
+    raf = requestAnimationFrame(loop);
+    onStop(() => {
+      cancelAnimationFrame(raf);
+      scene.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) { if (o.material.map) o.material.map.dispose(); o.material.dispose(); } });
+      renderer.dispose();
+    });
+
+    // 조작
+    const move = (to) => { if (!paused && !over) lane = to; };
+    let x0 = null;
+    stage.addEventListener('pointerdown', (e) => { if (e.target.closest('button')) return; e.preventDefault(); x0 = e.clientX; });
+    stage.addEventListener('pointerup', (e) => {
+      if (x0 === null) return;
+      const dx = e.clientX - x0; x0 = null;
+      if (Math.abs(dx) > 30) move(dx < 0 ? 0 : 1);
+      else { const r = stage.getBoundingClientRect(); move(e.clientX - r.left < r.width / 2 ? 0 : 1); }
+    });
+    T().setKey((e) => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); move(0); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); move(1); }
+    });
+    $('#rnSay').onclick = () => { if (target) say(target); };
+
+    function setPause(p) {
+      if (over) return;
+      paused = p; last = performance.now();
+      $('#rnPause').textContent = p ? '▶' : '⏸';
+      if (p) msg('⏸ 잠깐 멈춤 — ▶ 를 누르면 계속해요', true);
+    }
+    $('#rnPause').onclick = () => setPause(!paused);
+    helpPause = setPause;
+    const onVis = () => { if (document.hidden) setPause(true); };
+    document.addEventListener('visibilitychange', onVis); onStop(() => document.removeEventListener('visibilitychange', onVis));
+
+    function end() {
+      over = true;
+      const km = dist / 1000;
+      later(() => showResult('run', {
+        big: `${score.toLocaleString()}점`,
+        sub: `맞힌 단어 ${right}개 · 💰 ${coins}개 · 🏃 ${Math.round(dist)}m · 최고 콤보 ${bestCombo}`,
+        score, missed,
+        again: () => playRun(),
+        againMissed: null,
+      }), 700);
+      return km;
+    }
+    hud();
+  }
+
+  // =========================================================
   // G-03 스피드 O/X 퀴즈
   // =========================================================
   function playOX() {
@@ -1071,7 +1383,7 @@
       T().setKey(null);
       if (!T().data[S.level]) S.level = 'e';
       if (sub && pool().length < 4) { T().toast('단어 범위를 먼저 골라 주세요'); return T().go('#/game'); }
-      ({ blocks: playBlocks, rain: playRain, catch: playCatch, drive: playDrive, ox: playOX, battle: battleSetup }[sub] || renderMenu)();
+      ({ blocks: playBlocks, rain: playRain, catch: playCatch, drive: playDrive, run: runSetup, ox: playOX, battle: battleSetup }[sub] || renderMenu)();
     },
     // 학습 완료 화면에서 "오늘 단어로 게임"
     useDay(code, day) { S.level = code; S.mode = 'range'; S.from = day; S.to = day; save(); },

@@ -158,6 +158,30 @@ body[data-level="high"] .game-title { font-weight: 900; font-size: 17px; }
 .drive-msg.ok { background: var(--good-soft); color: var(--know-ink); }
 .drive-msg.bad { background: var(--bad-soft); color: var(--hard-ink); }
 
+/* G-07 3D 단어 런 */
+.run-setup { text-align: center; max-width: 620px; }
+.run-pick-title { font-weight: 700; margin-top: 18px; }
+.run-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+.run-who { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 18px; border-radius: var(--radius); border: 3px solid var(--line); background: var(--surface); color: var(--ink); font-size: 24px; font-weight: 800; }
+.run-who small { font-size: 14px; color: var(--muted); font-weight: 400; }
+.run-who .dot { width: 46px; height: 46px; border-radius: 12px; }
+.run-who.p0 .dot { background: #e5484d; } .run-who.p1 .dot { background: #3b82f6; }
+.run-who.p0:hover:not(:disabled) { border-color: #e5484d; } .run-who.p1:hover:not(:disabled) { border-color: #3b82f6; }
+.run-who:disabled { opacity: .5; }
+.run-note { min-height: 24px; margin-top: 14px; color: var(--muted); font-weight: 700; }
+.run-wrap { display: flex; flex-direction: column; min-height: 380px; }
+.run-stage { position: relative; flex: 1; overflow: hidden; border-radius: var(--radius); box-shadow: var(--shadow); touch-action: none; user-select: none; -webkit-user-select: none; background: #9fd6ff; }
+.run-stage canvas { display: block; width: 100%; height: 100%; }
+.run-stage.hit { animation: shake .35s; }
+.run-word { position: absolute; left: 50%; top: 12px; -webkit-transform: translateX(-50%); transform: translateX(-50%); display: flex; align-items: center; gap: 8px; padding: 8px 12px 8px 22px; border-radius: 99px; background: rgba(255,255,255,.95); box-shadow: 0 4px 12px rgba(0,0,0,.2); z-index: 2; }
+.run-word .en { font-size: 34px; font-weight: 700; color: #111827; }
+.run-word .icon-btn { width: 40px; height: 40px; }
+.run-word.pop { animation: g-pop .4s; }
+.run-msg { position: absolute; left: 50%; top: 84px; -webkit-transform: translateX(-50%); transform: translateX(-50%); padding: 8px 18px; border-radius: 99px; font-size: 20px; font-weight: 700; opacity: 0; transition: opacity .2s; pointer-events: none; white-space: nowrap; z-index: 2; }
+.run-msg.show { opacity: 1; }
+.run-msg.ok { background: var(--good-soft); color: var(--know-ink); }
+.run-msg.bad { background: var(--bad-soft); color: var(--hard-ink); }
+
 /* G-03 스피드 O/X */
 .ox-card { text-align: center; max-width: 620px; transition: background .15s; }
 .ox-card.right { background: var(--good-soft); }
