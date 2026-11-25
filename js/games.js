@@ -650,7 +650,7 @@
 
     app().innerHTML = `
       <div class="drive-wrap" id="dWrap">
-        ${topBar('🚗 단어 드라이브', `<span id="dScore">0점</span><span id="dCombo"></span><span id="dKm">0.0km</span><button class="btn ghost small" id="dPause">⏸</button>`)}
+        ${topBar('🚗 단어 드라이브', `<span id="dScore">0점</span><span id="dCombo"></span><span id="dKm">0.0km</span><button class="btn ghost small" id="dMusic" aria-label="배경음">🎵</button><button class="btn ghost small" id="dPause">⏸</button>`)}
         <div class="drive-hud">
           <div class="drive-target">🎯 <span id="dTarget">준비…</span></div>
           <div class="drive-gauges">
@@ -681,6 +681,11 @@
     bindQuit(); fullScreen();
     const $ = (s) => app().querySelector(s);
     const wrap = $('#dWrap'); const road = $('#dRoad'); const car = $('#dCar');
+    // 배경음: 신나는 달리기, 부스터 때 더 빠르게 (2026-11-25)
+    const bgm = makeBgm(); onStop(() => bgm.dispose()); bgm.play('run');
+    const musicBtn = () => $('#dMusic').classList.toggle('off', !bgm.on);
+    $('#dMusic').onclick = () => { bgm.setOn(!bgm.on); musicBtn(); };
+    musicBtn();
     const fit = () => { wrap.style.height = `${Math.max(380, window.innerHeight - wrap.getBoundingClientRect().top - 8)}px`; };
     fit(); window.addEventListener('resize', fit); onStop(() => window.removeEventListener('resize', fit));
 
@@ -791,6 +796,7 @@
       if (!paused && !over) {
         elapsed += dt;
         if (boostLeft > 0) boostLeft = Math.max(0, boostLeft - dt);
+        bgm.setTempo(boostLeft > 0 ? 1.35 : 1);
         fuel -= D.drain * dt;
         km += speed() * dt / 900;
         // 풍경: 30초마다
@@ -865,7 +871,7 @@
       paused = p; last = performance.now();
       $('#dPause').textContent = p ? '▶' : '⏸';
       road.classList.toggle('paused', p);
-      if (p) msg('⏸ 잠깐 멈춤 — ▶ 를 누르면 계속해요', true);
+      if (p) { bgm.stop(); msg('⏸ 잠깐 멈춤 — ▶ 를 누르면 계속해요', true); } else bgm.resume();
     }
     $('#dPause').onclick = () => setPause(!paused);
     helpPause = setPause;
@@ -873,7 +879,7 @@
     document.addEventListener('visibilitychange', onVis); onStop(() => document.removeEventListener('visibilitychange', onVis));
 
     function end() {
-      over = true;
+      over = true; bgm.stop();
       const kmKey = `${bestKey('drive')}-km`;
       const kmBest = !(S.best[kmKey] >= km);
       if (kmBest) { S.best[kmKey] = Math.round(km * 10) / 10; save(); }
@@ -939,6 +945,7 @@
 
   // ----- 배경음 (음원 파일 없이 Web Audio 로 합성, 3D 단어 런 전용) -----
   const BGM_SONGS = {
+    run: { bpm: 150, wave: 'square', mel: [72, 0, 76, 79, 0, 76, 72, 0, 74, 0, 77, 81, 0, 77, 74, 0, 76, 0, 79, 84, 0, 79, 76, 0, 77, 79, 81, 83, 84, 0, 0, 0], bass: [48, 48, 55, 55, 53, 53, 55, 55], bw: 'triangle', mv: 0.07, drum: true },
     town: { bpm: 120, wave: 'sine', mel: [72, 76, 79, 76, 74, 77, 81, 77, 76, 79, 84, 79, 77, 74, 72, 0], bass: [48, 55, 53, 55], bw: 'triangle', mv: 0.16, pluck: true },
     forest: { bpm: 84, wave: 'sine', mel: [69, 0, 72, 74, 76, 0, 74, 72, 67, 0, 69, 72, 71, 0, 0, 0], bass: [45, 45, 43, 43, 41, 41, 40, 40], bw: 'sine', mv: 0.12, vib: true },
     sea: { bpm: 100, wave: 'triangle', mel: [67, 71, 74, 0, 72, 71, 69, 0, 67, 69, 71, 0, 74, 72, 71, 0], bass: [43, 50, 48, 47], bw: 'sine', mv: 0.12, pluck: true, hat: true },
@@ -949,7 +956,13 @@
     if (!ctx) return { play() {}, stop() {}, setOn() {} };
     const master = ctx.createGain(); master.gain.value = 0.22; master.connect(ctx.destination);
     const freq = (n) => 440 * Math.pow(2, (n - 69) / 12);
-    let song = null; let timer = null; let step = 0; let nextT = 0; let on = S.music !== false;
+    let song = null; let timer = null; let step = 0; let nextT = 0; let on = S.music !== false; let tempo = 1;
+    function kick(t) {
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(40, t + 0.12);
+      g.gain.setValueAtTime(0.35, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+      o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.2);
+    }
     function note(f, t, d, wave, v, pluck, vib) {
       const o = ctx.createOscillator(); const g = ctx.createGain();
       o.type = wave; o.frequency.setValueAtTime(f, t);
@@ -964,12 +977,13 @@
     }
     function sched() {
       const S2 = BGM_SONGS[song]; if (!S2) return;
-      const sp = 60 / S2.bpm / 2; const per = Math.max(1, Math.round(S2.mel.length / S2.bass.length));
+      const sp = 60 / S2.bpm / 2 / tempo; const per = Math.max(1, Math.round(S2.mel.length / S2.bass.length));
       while (nextT < ctx.currentTime + 0.15) {
         const m = S2.mel[step % S2.mel.length];
         if (m) note(freq(m), nextT, sp * 1.6, S2.wave, S2.mv, S2.pluck, S2.vib);
         if (step % per === 0) note(freq(S2.bass[Math.floor(step / per) % S2.bass.length]), nextT, sp * per * 0.95, S2.bw, 0.14, false, false);
         if (S2.hat && step % 4 === 2) hat(nextT);
+        if (S2.drum) { if (step % 4 === 0) kick(nextT); if (step % 2 === 1) hat(nextT); }
         nextT += sp; step++;
       }
     }
@@ -980,6 +994,7 @@
       stop: stopIt,
       resume: start,
       setOn(v) { on = v; S.music = v; save(); if (v) start(); else stopIt(); },
+      setTempo(t) { tempo = t; },
       get on() { return on; },
       dispose() { stopIt(); try { master.disconnect(); } catch (e) { /* 무시 */ } },
     };
