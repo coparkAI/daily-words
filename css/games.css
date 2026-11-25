@@ -184,6 +184,14 @@ body[data-level="high"] .game-title { font-weight: 900; font-size: 17px; }
 .run-stage { position: relative; flex: 1; overflow: hidden; border-radius: var(--radius); box-shadow: var(--shadow); touch-action: none; user-select: none; -webkit-user-select: none; background: #9fd6ff; }
 .run-stage canvas { display: block; width: 100%; height: 100%; }
 .run-stage.hit { animation: shake .35s; }
+/* 숙이기 힌트 (2026-11-26) */
+.run-hint { position: absolute; right: 12px; bottom: 172px; z-index: 3; padding: 8px 14px; border-radius: 16px; background: #1d4ed8; color: #fff; font-size: 22px; font-weight: 900; white-space: nowrap; box-shadow: 0 4px 0 rgba(0,0,0,.25); pointer-events: none; opacity: 0; }
+.run-hint::after { content: ''; position: absolute; right: 30px; bottom: -10px; border: 6px solid transparent; border-top: 6px solid #1d4ed8; border-left-width: 8px; border-right-width: 8px; border-top-width: 10px; }
+.run-hint.show { animation: hintbob .45s ease-in-out infinite alternate; opacity: 1; }
+@keyframes hintbob { from { -webkit-transform: translateY(0); transform: translateY(0); } to { -webkit-transform: translateY(-8px); transform: translateY(-8px); } }
+.run-duck.glow { animation: duckglow .35s ease-in-out infinite alternate; }
+@keyframes duckglow { from { box-shadow: 0 5px 0 rgba(0,0,0,.25), 0 0 0 0 rgba(96,165,250,.9); } to { box-shadow: 0 5px 0 rgba(0,0,0,.25), 0 0 0 12px rgba(96,165,250,0); } }
+.run-stage.cs-on .run-hint { display: none; }
 /* 로켓 연출 (2026-11-25) */
 .run-cs { position: absolute; left: 0; right: 0; top: 30%; text-align: center; font-size: 34px; font-weight: 900; color: #fff; text-shadow: 0 3px 0 rgba(0,0,0,.35), 0 0 18px rgba(0,0,0,.45); z-index: 3; pointer-events: none; opacity: 0; }
 .run-cs.big { font-size: 110px; }

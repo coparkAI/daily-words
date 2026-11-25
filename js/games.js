@@ -1011,6 +1011,75 @@
     };
   }
 
+  // ----- 지구 무늬 (2026-11-26): 대륙 윤곽(경도·위도 대략값)·사막·얼음·구름을 캔버스에 그려 3D 공에 입힘 -----
+  const EARTH_LAND = [
+    // 북아메리카
+    [[-168, 66], [-162, 70], [-140, 70], [-120, 72], [-95, 72], [-80, 73], [-62, 66], [-55, 52], [-66, 45], [-70, 42], [-76, 35], [-81, 31], [-80, 25], [-84, 30], [-90, 29], [-97, 26], [-97, 20], [-92, 18], [-87, 21], [-84, 15], [-80, 9], [-78, 8], [-83, 8], [-86, 12], [-92, 14], [-100, 17], [-106, 23], [-112, 29], [-115, 32], [-118, 34], [-124, 40], [-124, 48], [-130, 55], [-140, 60], [-152, 58], [-158, 56], [-165, 60]],
+    // 그린란드
+    [[-50, 60], [-42, 60], [-20, 70], [-20, 80], [-40, 83], [-60, 80], [-70, 77], [-55, 70]],
+    // 남아메리카
+    [[-80, 9], [-72, 12], [-62, 11], [-52, 5], [-35, -5], [-38, -13], [-40, -22], [-48, -26], [-53, -34], [-58, -38], [-65, -42], [-68, -50], [-70, -55], [-75, -50], [-74, -40], [-72, -30], [-70, -18], [-76, -14], [-81, -6], [-80, 0], [-78, 5]],
+    // 아프리카
+    [[-17, 15], [-17, 21], [-13, 27], [-9, 32], [-5, 36], [10, 37], [11, 33], [20, 31], [32, 31], [35, 28], [43, 12], [51, 12], [50, 2], [40, -5], [39, -15], [35, -22], [33, -28], [27, -34], [20, -35], [18, -30], [12, -18], [13, -10], [9, -1], [9, 4], [4, 6], [-8, 4], [-13, 8]],
+    // 유럽
+    [[-10, 36], [-9, 43], [-2, 44], [-5, 48], [0, 49], [5, 53], [8, 57], [10, 54], [14, 55], [20, 55], [22, 60], [18, 63], [25, 66], [20, 69], [30, 70], [42, 67], [40, 63], [45, 55], [40, 48], [35, 45], [30, 45], [28, 41], [23, 37], [20, 40], [15, 38], [12, 44], [8, 44], [3, 43], [-1, 37]],
+    // 아시아
+    [[30, 45], [40, 48], [45, 55], [42, 67], [60, 70], [75, 72], [90, 76], [110, 77], [130, 72], [145, 72], [160, 70], [180, 68], [180, 65], [170, 60], [160, 58], [155, 52], [142, 50], [140, 43], [130, 42], [127, 35], [121, 31], [122, 25], [117, 23], [108, 21], [106, 11], [103, 9], [100, 13], [98, 8], [100, 3], [104, 1], [98, 16], [95, 17], [92, 22], [88, 22], [80, 15], [78, 8], [73, 20], [67, 25], [57, 25], [50, 30], [48, 30], [44, 37], [36, 37], [27, 40]],
+    // 아라비아
+    [[35, 28], [39, 22], [43, 13], [52, 16], [59, 22], [56, 26], [50, 30], [48, 30], [40, 32], [36, 34]],
+    // 오스트레일리아
+    [[114, -22], [114, -34], [118, -35], [124, -33], [132, -32], [138, -35], [141, -38], [147, -39], [150, -37], [153, -28], [153, -25], [146, -19], [142, -11], [136, -12], [131, -11], [126, -14], [122, -18]],
+    // 영국·일본·마다가스카르·인도네시아·뉴기니·뉴질랜드·아이슬란드
+    [[-5, 50], [1, 51], [-2, 56], [-5, 58], [-6, 55]],
+    [[130, 31], [135, 34], [141, 36], [142, 41], [140, 40], [135, 35]],
+    [[44, -25], [47, -25], [50, -15], [49, -12], [44, -17]],
+    [[109, 1], [117, 7], [119, 1], [116, -4], [110, -3]],
+    [[95, 5], [98, 4], [106, -6], [104, -6]],
+    [[131, -1], [141, -3], [150, -10], [141, -9], [137, -5]],
+    [[167, -46], [174, -41], [178, -38], [173, -35], [172, -41]],
+    [[-24, 64], [-14, 64], [-14, 66], [-22, 66.5]],
+  ];
+  // 사막: [경도, 위도, 가로 반지름, 세로 반지름]
+  const EARTH_DESERT = [[10, 23, 28, 8], [45, 23, 8, 6], [133, -25, 12, 7], [105, 42, 14, 5], [-112, 33, 6, 5], [-68, -25, 4, 8], [18, -24, 6, 6], [60, 38, 10, 5]];
+  let earthCanvasCache = null;
+  function earthCanvases() {
+    if (earthCanvasCache) return earthCanvasCache;
+    const W = 1024; const H = 512;
+    const px = (lon) => (lon + 180) / 360 * W; const py = (lat) => (90 - lat) / 180 * H;
+    const c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
+    // 바다: 적도 쪽은 밝게, 극 쪽은 짙게
+    const sea = g.createLinearGradient(0, 0, 0, H); sea.addColorStop(0, '#163d7a'); sea.addColorStop(0.5, '#1f63b8'); sea.addColorStop(1, '#163d7a');
+    g.fillStyle = sea; g.fillRect(0, 0, W, H);
+    // 육지 (가장자리는 얕은 바다색 띠)
+    const land = () => { g.beginPath(); EARTH_LAND.forEach((poly) => { poly.forEach(([lo, la], i) => (i ? g.lineTo(px(lo), py(la)) : g.moveTo(px(lo), py(la)))); g.closePath(); }); };
+    land(); g.strokeStyle = 'rgba(80,170,230,.55)'; g.lineWidth = 7; g.lineJoin = 'round'; g.stroke();
+    land(); g.fillStyle = '#2f7533'; g.fill();
+    // 육지 위에만: 사막·숲 얼룩·작은 무늬
+    g.save(); land(); g.clip();
+    for (let i = 0; i < 260; i++) { g.fillStyle = Math.random() < 0.5 ? 'rgba(24,90,40,.4)' : 'rgba(110,140,70,.3)'; g.beginPath(); g.arc(Math.random() * W, Math.random() * H, 4 + Math.random() * 14, 0, Math.PI * 2); g.fill(); }
+    EARTH_DESERT.forEach(([lo, la, rx, ry]) => {
+      const x = px(lo); const y = py(la); const gr = g.createRadialGradient(x, y, 0, x, y, rx / 360 * W);
+      gr.addColorStop(0, 'rgba(222,190,120,.95)'); gr.addColorStop(0.7, 'rgba(200,170,105,.7)'); gr.addColorStop(1, 'rgba(200,170,105,0)');
+      g.fillStyle = gr; g.save(); g.translate(x, y); g.scale(1, ry / rx); g.translate(-x, -y); g.beginPath(); g.arc(x, y, rx / 360 * W, 0, Math.PI * 2); g.fill(); g.restore();
+    });
+    g.restore();
+    // 남극·북극 얼음
+    g.fillStyle = '#eef6ff'; g.fillRect(0, py(-70), W, H);
+    for (let x = 0; x < W; x += 16) { g.beginPath(); g.arc(x, py(-68) + Math.random() * 6, 10 + Math.random() * 8, 0, Math.PI * 2); g.fill(); }
+    g.fillStyle = 'rgba(238,246,255,.9)'; g.fillRect(0, 0, W, py(82));
+    for (let x = 0; x < W; x += 18) { g.beginPath(); g.arc(x, py(81) + Math.random() * 5, 8 + Math.random() * 8, 0, Math.PI * 2); g.fill(); }
+    // 구름 (투명 바탕에 흰 솜뭉치, 적도·중위도에 띠처럼)
+    const cc = document.createElement('canvas'); cc.width = W; cc.height = H; const k = cc.getContext('2d');
+    for (let i = 0; i < 170; i++) {
+      const band = [-55, -35, -8, 8, 40, 58][i % 6];
+      const x = Math.random() * W; const y = py(band + (Math.random() - 0.5) * 22); const r = 10 + Math.random() * 28;
+      const gr = k.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, 'rgba(255,255,255,.85)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+      k.fillStyle = gr; k.save(); k.translate(x, y); k.scale(1.8, 0.7); k.translate(-x, -y); k.beginPath(); k.arc(x, y, r, 0, Math.PI * 2); k.fill(); k.restore();
+    }
+    earthCanvasCache = { surface: c, clouds: cc };
+    return earthCanvasCache;
+  }
+
   function playRun() {
     stop(); setTheme();
     const THREE = window.THREE;
@@ -1042,6 +1111,7 @@
           <div class="run-msg" id="rnMsg"></div>
           <button class="run-jump" id="rnJump" aria-label="점프">⬆</button>
           <button class="run-duck" id="rnDuck" aria-label="숙이기">⬇</button>
+          <div class="run-hint" id="rnHint">⬇ 숙여요!</div>
         </div>
       </div>`;
     bindQuit(); fullScreen();
@@ -1065,6 +1135,20 @@
     const cyl = (a, b, h, color, seg) => new THREE.Mesh(new THREE.CylinderGeometry(a, b, h, seg || 10), mat(color));
     const cone = (r, h, color, seg) => new THREE.Mesh(new THREE.ConeGeometry(r, h, seg || 8), mat(color));
     const pick3 = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    // 그럴싸한 지구 (2026-11-26): 대륙 무늬 공 + 구름층 + 푸른 대기 테두리. spin() 으로 돌림
+    function makeEarth(r, fogOn) {
+      const cv = earthCanvases();
+      const g = new THREE.Group();
+      const ball = new THREE.Mesh(new THREE.SphereGeometry(r, 40, 28), new THREE.MeshLambertMaterial({ map: new THREE.CanvasTexture(cv.surface), fog: fogOn }));
+      g.add(ball);
+      const cloud = new THREE.Mesh(new THREE.SphereGeometry(r * 1.015, 40, 28), new THREE.MeshLambertMaterial({ map: new THREE.CanvasTexture(cv.clouds), transparent: true, depthWrite: false, fog: fogOn }));
+      g.add(cloud);
+      const air = new THREE.Mesh(new THREE.SphereGeometry(r * 1.09, 32, 24), new THREE.MeshBasicMaterial({ color: 0x7cc4ff, transparent: true, opacity: 0.45, side: THREE.BackSide, depthWrite: false, blending: THREE.AdditiveBlending, fog: fogOn }));
+      g.add(air);
+      ball.rotation.y = -1.2;   // 처음에는 아시아·아프리카 쪽이 보이게
+      g.userData.spin = (dt) => { ball.rotation.y += dt * 0.2; cloud.rotation.y += dt * 0.26; };
+      return g;
+    }
     // 땅·길
     const grass = new THREE.Mesh(new THREE.PlaneGeometry(260, 260), mat(0x6fbf5a)); grass.rotation.x = -Math.PI / 2; scene.add(grass);
     const road = new THREE.Mesh(new THREE.PlaneGeometry(5.6, 260), mat(0x5b6472)); road.rotation.x = -Math.PI / 2; road.position.y = 0.01; scene.add(road);
@@ -1235,15 +1319,10 @@
           const halo = new THREE.Mesh(new THREE.SphereGeometry(11, 28, 20), new THREE.MeshBasicMaterial({ color: 0xffa000, transparent: true, opacity: 0.25, depthWrite: false, fog: false })); halo.position.copy(sunM.position); f.add(halo);
           ball(1.5, 0x9ca3af, -14, 26, -132);
           const venus = ball(2.4, 0xf3c77a, -3, 32, -136);
-          const earth = ball(7, 0x2563eb, 17, 21, -122);
-          [[0.5, 0.4, 0.75], [-0.6, 0.1, 0.8], [0.1, -0.5, 0.85], [-0.2, 0.75, 0.6]].forEach(([dx, dy, dz]) => {
-            const d = new THREE.Vector3(dx, dy, dz).normalize();
-            const land = new THREE.Mesh(new THREE.SphereGeometry(2.4, 14, 10), fm(0x22c55e)); land.position.copy(d.multiplyScalar(5.4)); earth.add(land);
-          });
-          const cl = new THREE.Mesh(new THREE.SphereGeometry(1.6, 12, 8), fm(0xffffff)); cl.position.set(-3, 3, 5.6); cl.scale.set(1.6, 0.5, 0.6); earth.add(cl);
+          const earth = makeEarth(7, false); earth.position.set(17, 21, -122); f.add(earth);
           const mars = ball(2.2, 0xdc5a2a, 25, 36, -130);
           const cap = new THREE.Mesh(new THREE.SphereGeometry(0.9, 10, 8), fm(0xffffff)); cap.position.set(0, 1.7, 0.6); mars.add(cap);
-          f.userData.spin = [earth, mars, venus];
+          f.userData.spin = [mars, venus]; f.userData.earth = earth;
         } },
     ];
     function disposeObj(o) {
@@ -1341,6 +1420,7 @@
       });
       if (deep) updateDeep(dt, dz);
       if (far && far.userData.spin) far.userData.spin.forEach((m) => { m.rotation.y += dt * 0.2; });
+      if (far && far.userData.earth) far.userData.earth.userData.spin(dt);
       if (fishes.length) {
         jumpIn -= dt;
         if (jumpIn <= 0) {
@@ -1720,6 +1800,15 @@
       hud();
       if (hearts <= 0) end();
     }
+    // 위쪽 장애물이 다가오면 '⬇ 숙여요!' 힌트 + ⬇ 버튼 반짝 (2026-11-26)
+    let hintT;
+    function duckHint() {
+      const h = $('#rnHint'); const b = $('#rnDuck'); if (!h || !b) return;
+      h.classList.remove('show'); b.classList.remove('glow'); void h.offsetWidth;
+      h.classList.add('show'); b.classList.add('glow');
+      clearTimeout(hintT); hintT = setTimeout(() => { h.classList.remove('show'); b.classList.remove('glow'); }, 1400);
+    }
+    onStop(() => clearTimeout(hintT));
     function explode(o) {
       const fire = new THREE.Mesh(new THREE.SphereGeometry(0.6, 16, 12), new THREE.MeshBasicMaterial({ color: o.O.boom || 0xff7a00, transparent: true, opacity: 0.9 }));
       fire.position.set(o.g.position.x, 0.8, o.g.position.z); scene.add(fire); booms.push({ m: fire, t: 0 });
@@ -1743,7 +1832,7 @@
     const cs = { on: false, t: 0, partT0: 0, target: 0, scene: null, cam: null, o: {}, upd: null, parts: [], cues: [], puffs: [], shake: 0, end: 0 };
     let csTest = (/[?&]runcs=(launch|return)/.exec(location.search) || [])[1] || null;   // 확인용
     function csSay(text, big) { csEl.textContent = text; csEl.className = 'run-cs'; void csEl.offsetWidth; csEl.className = `run-cs show${big ? ' big' : ''}`; }
-    function disposeScene(sc) { sc.traverse((x) => { if (x.geometry) x.geometry.dispose(); if (x.material) x.material.dispose(); }); }
+    function disposeScene(sc) { sc.traverse((x) => { if (x.geometry) x.geometry.dispose(); if (x.material) { if (x.material.map) x.material.map.dispose(); x.material.dispose(); } }); }
     function csNewScene(bg) {
       if (cs.scene) disposeScene(cs.scene);
       const sc = new THREE.Scene(); sc.background = new THREE.Color(bg);
@@ -1780,14 +1869,7 @@
       const sg = new THREE.BufferGeometry(); sg.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
       return new THREE.Points(sg, new THREE.PointsMaterial({ color: 0xffffff, size: 0.8, transparent: true, opacity: 1 }));
     }
-    function csEarth(r) {
-      const e = new THREE.Mesh(new THREE.SphereGeometry(r, 28, 20), mat(0x2563eb));
-      [[0.5, 0.4, 0.75], [-0.6, 0.1, 0.8], [0.1, -0.5, 0.85], [-0.2, 0.75, 0.6], [0.7, -0.2, -0.6], [-0.5, -0.3, -0.8]].forEach(([x, y, z]) => {
-        const d = new THREE.Vector3(x, y, z).normalize(); const land = new THREE.Mesh(new THREE.SphereGeometry(r * 0.34, 14, 10), mat(0x22c55e)); land.position.copy(d.multiplyScalar(r * 0.78)); e.add(land);
-      });
-      const cl = new THREE.Mesh(new THREE.SphereGeometry(r * 0.22, 12, 8), mat(0xffffff)); cl.scale.set(1.8, 0.5, 0.7); cl.position.set(-r * 0.3, r * 0.45, r * 0.85); e.add(cl);
-      return e;
-    }
+    function csEarth(r) { return makeEarth(r, true); }
     function csMoon(r) {
       const m = new THREE.Mesh(new THREE.SphereGeometry(r, 28, 20), mat(0xc4c4cc));
       [[0.4, 0.5, 0.75], [-0.5, 0.2, 0.85], [0.1, -0.6, 0.8], [-0.3, -0.2, 0.95], [0.75, -0.1, 0.65]].forEach(([x, y, z], i) => {
@@ -1866,7 +1948,7 @@
           earth.position.set(lerp(-9, -5, s), lerp(9, 5, s), lerp(-110, -30, s));
           r.g.position.set(lerp(2.5, -3.5, s), lerp(-3, 2.5, s), lerp(0, -6, s)); r.g.rotation.z = 0.8;
         }
-        earth.rotation.y += dt * 0.3; moonM.rotation.y += dt * 0.2;
+        earth.userData.spin(dt * 1.5); moonM.rotation.y += dt * 0.2;
         csFlame(r, true);
       };
     }
@@ -2015,6 +2097,7 @@
               else if (jumping) msg(`${o.O.icon} 점프 성공!`, true); else trip(o.O);
             }
           }
+          if (o.O.duck && !o.hinted && o.g.position.z > -16) { o.hinted = true; duckHint(); }   // 2026-11-26: 숙이기 힌트
           if (o.g.userData.spark) o.g.userData.spark.visible = Math.sin(elapsed * 30) > 0;
           if (o.g.userData.bob) o.g.children.forEach((j, i) => { j.position.y = 1.95 + Math.sin(elapsed * 3 + i) * 0.12; });
           if (o.g.userData.floaty) o.g.position.y = Math.sin(elapsed * 3) * 0.12;
