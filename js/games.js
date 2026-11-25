@@ -974,7 +974,7 @@
     stop(); setTheme();
     const THREE = window.THREE;
     const P = pool();
-    const BASE = { easy: 9, normal: 11, hard: 13 }[S.diff];
+    const BASE = { easy: 11, normal: 13, hard: 15 }[S.diff];   // 2026-11-25: 사용자 요청으로 약 20% 빠르게
     const LANE = 1.3;               // 차선 중심 x (왼쪽 -1.3, 오른쪽 +1.3)
     const SHIRT = [0xe5484d, 0x3b82f6][S.runner || 0];
     const SCENE_EVERY = 300;        // 배경이 바뀌는 거리(m)
