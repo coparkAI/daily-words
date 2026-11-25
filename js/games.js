@@ -634,9 +634,9 @@
     stop(); setTheme();
     const P = pool();
     const D = {
-      easy: { speed: 130, drain: 0.7 },
-      normal: { speed: 160, drain: 1 },
-      hard: { speed: 190, drain: 1.5 },
+      easy: { speed: 165, drain: 0.7 },     // 2026-11-25: 약 25% 빠르게
+      normal: { speed: 200, drain: 1 },
+      hard: { speed: 240, drain: 1.5 },
     }[S.diff];
     const SCENES = [['day', '☀️ 낮'], ['sunset', '🌇 노을'], ['night', '🌙 밤'], ['rain', '🌧 비']];
     let queue = T().shuffle(P);
@@ -663,7 +663,8 @@
           <div class="asphalt"><div class="lane-line l1"></div><div class="lane-line l2"></div></div>
           <div class="drive-scene" id="dScene">☀️ 낮</div>
           <div class="drive-msg" id="dMsg"></div>
-          <div class="drive-car" id="dCar"><svg class="car" viewBox="0 0 60 100" aria-hidden="true">
+          <div class="speed-lines"></div>
+          <div class="drive-car" id="dCar"><span class="flame"></span><svg class="car" viewBox="0 0 60 100" aria-hidden="true">
             <rect x="2" y="16" width="9" height="18" rx="3" fill="#1f2937"/><rect x="49" y="16" width="9" height="18" rx="3" fill="#1f2937"/>
             <rect x="2" y="66" width="9" height="18" rx="3" fill="#1f2937"/><rect x="49" y="66" width="9" height="18" rx="3" fill="#1f2937"/>
             <rect x="7" y="4" width="46" height="92" rx="16" fill="#ef4444"/>
@@ -686,14 +687,18 @@
     const SIDE = 0.14;
     const laneW = () => (road.clientWidth * (1 - SIDE * 2)) / 3;
     const laneX = (l) => road.clientWidth * SIDE + laneW() * (l + 0.5);
-    const placeCar = () => {
+    let carShift = 0;   // 부스터 때 차가 화면 위쪽(앞)으로 나가는 거리(px, 음수)
+    let carX = null;    // 차선을 바꿀 때 부드럽게 옆으로 움직이도록
+    const placeCar = (dt) => {
       const w = Math.max(40, Math.min(72, laneW() * 0.5));
       car.style.width = `${w}px`; car.style.height = `${w * 1.65}px`;
-      car.style.transform = `translateX(${laneX(lane) - w / 2}px)`;
+      const tx = laneX(lane) - w / 2;
+      carX = carX === null ? tx : dt ? carX + (tx - carX) * Math.min(1, dt * 14) : carX;
+      car.style.transform = `translate(${carX}px, ${carShift}px)`;
     };
     placeCar();
-    const speedMul = () => Math.min(2, 1 + Math.floor(elapsed / 20) * 0.08);
-    const speed = () => D.speed * speedMul() * (boostLeft > 0 ? 1.8 : 1);
+    const speedMul = () => Math.min(2.2, 1 + Math.floor(elapsed / 15) * 0.1);
+    const speed = () => D.speed * speedMul() * (boostLeft > 0 ? 2.6 : 1);   // 부스터: 2.6배
     const multiplier = () => (combo >= 6 ? 3 : combo >= 3 ? 2 : 1) * (boostLeft > 0 ? 2 : 1);
 
     let msgT;
@@ -803,7 +808,11 @@
         extraIn -= dt;
         if (extraIn <= 0) { spawnExtra(); extraIn = 1.3 + Math.random() * 1.6; }
         // 움직이기·부딪힘
-        const carTop = car.offsetTop + 6; const carBottom = car.offsetTop + car.offsetHeight - 6;
+        // 부스터: 차가 앞으로 쭉 나갔다가, 끝나면 제자리로 돌아온다
+        const shiftTo = boostLeft > 0 ? -road.clientHeight * 0.32 : 0;
+        carShift += (shiftTo - carShift) * Math.min(1, dt * (boostLeft > 0 ? 5 : 3));
+        placeCar(dt);
+        const carTop = car.offsetTop + carShift + 6; const carBottom = car.offsetTop + carShift + car.offsetHeight - 6;
         for (const it of [...items]) {
           if (!items.includes(it)) continue;
           it.y += speed() * dt;
@@ -829,7 +838,8 @@
     const move = (d) => { if (paused || over) return; lane = Math.max(0, Math.min(2, lane + d)); placeCar(); };
     function boost() {
       if (paused || over || gauge < 5 || boostLeft > 0) return;
-      gauge = 0; boostLeft = 3; sfx('combo'); msg('🚀 부스터! 3초 동안 무적 · 점수 2배', true); hud();
+      gauge = 0; boostLeft = 3; sfx('combo'); msg('🚀 부스터! 쌩~ 3초 동안 무적 · 점수 2배', true);
+      road.classList.remove('boost-flash'); void road.offsetWidth; road.classList.add('boost-flash'); hud();
     }
     let x0 = null;
     road.addEventListener('pointerdown', (e) => {
