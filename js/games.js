@@ -1019,6 +1019,10 @@
     const LANE = 1.3;               // 차선 중심 x (왼쪽 -1.3, 오른쪽 +1.3)
     const SHIRT = [0xe5484d, 0x3b82f6][S.runner || 0];
     const SCENE_EVERY = 300;        // 배경이 바뀌는 거리(m)
+    const SCENE_LEN = { moon: 600 };   // 2026-11-25: 달나라는 2배(600m) 동안
+    const sceneLen = (i) => SCENE_LEN[PLACES[i].key] || SCENE_EVERY;
+    const sceneStart = (i) => { let d = 0; for (let k = 0; k < i; k++) d += sceneLen(k); return d; };
+    function placeAt(d) { const cyc = sceneStart(PLACES.length); let x = d % cyc; for (let k = 0; k < PLACES.length; k++) { if (x < sceneLen(k)) return k; x -= sceneLen(k); } return 0; }
     let queue = T().shuffle(P);
     let hearts = 3; let score = 0; let combo = 0; let bestCombo = 0; let right = 0; let coins = 0; let dist = 0;
     let lane = 0; let runnerX = -LANE; let elapsed = 0; let target = null;
@@ -1376,7 +1380,7 @@
     }
     // 확인용: 주소에 ?runplace=1(숲)·2(바닷가)·3(물속)·4(달나라) 를 붙이면 그 배경에서 시작 (평소에는 동네부터)
     const startPlace = Math.min(PLACES.length - 1, +((/[?&]runplace=(\d)/.exec(location.search) || [])[1] || 0));
-    dist = startPlace * SCENE_EVERY;
+    dist = sceneStart(startPlace);
     setPlace(startPlace);
 
     // ----- 달리는 아이 — 캐릭터 A '블록 다듬기' (2026-11-25 선택) -----
@@ -1969,13 +1973,13 @@
       }
       if (!paused && !over) {
         elapsed += dt;
-        if (csTest && elapsed > 1) { const tg = csTest === 'launch' ? PLACES.length - 1 : 0; dist = (tg || PLACES.length) * SCENE_EVERY; startCutscene(csTest, tg); csTest = null; }
+        if (csTest && elapsed > 1) { const tg = csTest === 'launch' ? PLACES.length - 1 : 0; dist = sceneStart(tg || PLACES.length); startCutscene(csTest, tg); csTest = null; }
         if (tripT > 0) tripT = Math.max(0, tripT - dt);
         const speed = BASE * Math.min(2, 1 + Math.floor(elapsed / 15) * 0.08) * (tripT > 0 ? 0.5 : 1);
         const dz = speed * dt;
         dist += dz;
         // 300m 마다 배경 바꾸기
-        const want = Math.floor(dist / SCENE_EVERY) % PLACES.length;
+        const want = placeAt(dist);
         if (want !== placeIdx) {
           const pk = PLACES[placeIdx].key; const wk = PLACES[want].key;
           if (wk === 'moon' && pk !== 'moon') startCutscene('launch', want);        // 지구 → 달: 로켓 발사
