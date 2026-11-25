@@ -986,15 +986,33 @@
       for (let k = 0; k < 3; k++) { const p = new THREE.Mesh(new THREE.SphereGeometry(1.2 + Math.random(), 8, 6), new THREE.MeshBasicMaterial({ color: 0xffffff })); p.position.set(k * 1.4, Math.random() * 0.5, 0); c.add(p); }
       c.position.set(-20 + i * 8, 12 + Math.random() * 4, -70 - Math.random() * 20); scene.add(c);
     }
-    // 달리는 아이 (블록)
+    // 달리는 아이 — 캐릭터 A '블록 다듬기' (2026-11-25 선택): 얼굴·볼터치·앞머리·반바지·흰 운동화
+    // 앞(+z)을 보도록 만든 뒤 180° 돌려서, 뒤에서 따라가는 카메라에 뒷모습이 보이게 한다
     const runner = new THREE.Group();
-    const SKIN = 0xf2c9a0;
-    const body = box(0.7, 0.8, 0.4, SHIRT); body.position.y = 1.35; runner.add(body);
-    const head = box(0.55, 0.55, 0.55, SKIN); head.position.y = 2.05; runner.add(head);
-    const hair = box(0.58, 0.2, 0.58, 0x3b2a1a); hair.position.y = 2.33; runner.add(hair);
-    const limb = (w, h, color, x, y) => { const g = new THREE.Group(); const m = box(w, h, w, color); m.position.y = -h / 2; g.add(m); g.position.set(x, y, 0); runner.add(g); return g; };
-    const armL = limb(0.2, 0.7, SKIN, -0.47, 1.7); const armR = limb(0.2, 0.7, SKIN, 0.47, 1.7);
-    const legL = limb(0.26, 0.95, 0x1e3a8a, -0.18, 0.95); const legR = limb(0.26, 0.95, 0x1e3a8a, 0.18, 0.95);
+    const SKIN = 0xf5cfa8; const HAIR = 0x3b2a1a; const DARK = 0x1f2937; const BLUSH = 0xf7a1a1;
+    const add = (m, x, y, z) => { m.position.set(x, y, z || 0); runner.add(m); return m; };
+    add(box(0.72, 0.78, 0.42, SHIRT), 0, 1.38);                 // 몸
+    add(box(0.62, 0.6, 0.58, SKIN), 0, 2.08);                   // 머리
+    add(box(0.66, 0.2, 0.62, HAIR), 0, 2.42);                   // 머리카락 윗부분
+    add(box(0.66, 0.14, 0.08, HAIR), 0, 2.3, 0.3);              // 앞머리
+    add(box(0.66, 0.4, 0.08, HAIR), 0, 2.2, -0.3);              // 뒷머리
+    [-0.14, 0.14].forEach((x) => {
+      add(box(0.08, 0.11, 0.02, DARK), x, 2.12, 0.3);           // 눈
+      add(box(0.1, 0.05, 0.02, BLUSH), x * 1.6, 2.0, 0.3);      // 볼터치
+    });
+    add(box(0.16, 0.04, 0.02, 0xb45309), 0, 1.96, 0.3);         // 입
+    // 팔·다리: 어깨·엉덩이를 중심으로 흔들리도록 그룹 안에 위에서 아래로 쌓는다
+    const limb = (x, y, parts) => {
+      const g = new THREE.Group(); g.position.set(x, y, 0);
+      let yy = 0;
+      parts.forEach(([m, h, dz]) => { m.position.set(0, yy - h / 2, dz || 0); g.add(m); yy -= h; });
+      runner.add(g); return g;
+    };
+    const arm = (x) => limb(x, 1.72, [[box(0.22, 0.3, 0.24, SHIRT), 0.3], [box(0.18, 0.38, 0.2, SKIN), 0.38]]);
+    const leg = (x) => limb(x, 0.99, [[box(0.3, 0.36, 0.3, 0x1e3a8a), 0.36], [box(0.24, 0.45, 0.24, SKIN), 0.45], [box(0.3, 0.16, 0.42, 0xffffff), 0.16, 0.06]]);
+    const armL = arm(-0.48); const armR = arm(0.48);
+    const legL = leg(-0.18); const legR = leg(0.18);
+    runner.rotation.y = Math.PI;
     runner.position.set(runnerX, 0, 0);
     scene.add(runner);
 
