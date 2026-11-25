@@ -815,7 +815,7 @@
         if (extraIn <= 0) { spawnExtra(); extraIn = 1.3 + Math.random() * 1.6; }
         // 움직이기·부딪힘
         // 부스터: 차가 앞으로 쭉 나갔다가, 끝나면 제자리로 돌아온다
-        const shiftTo = boostLeft > 0 ? -road.clientHeight * 0.32 : 0;
+        const shiftTo = boostLeft > 0 ? -road.clientHeight * 0.16 : 0;   // 2026-11-25: 사용자 요청으로 절반만
         carShift += (shiftTo - carShift) * Math.min(1, dt * (boostLeft > 0 ? 5 : 3));
         placeCar(dt);
         const carTop = car.offsetTop + carShift + 6; const carBottom = car.offsetTop + carShift + car.offsetHeight - 6;
