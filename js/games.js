@@ -23,7 +23,7 @@
   const HELP = {
     blocks: ['뜻을 보고 소리를 들은 뒤, 알파벳 블록을 단어 순서대로 눌러요.', 'PC는 키보드로 글자를 쳐도 돼요. 스페이스 = 다시 듣기', '💡 힌트는 다음 글자 블록을 반짝여 줘요.', '힌트를 쓰거나 "모르겠어요"를 누른 단어는 놓친 단어로 남아요.'],
     rain: ['위에서 한글 뜻 카드가 떨어져요.', '바닥에 닿기 전에 그 영단어를 입력칸에 써요. 맞으면 Enter 없이 바로 터져요.', '✍️ 펜으로 쓰기를 켜면 손글씨로 쓸 수 있고, 단어가 조금 천천히 떨어져요.', '카드가 바닥에 3개 닿으면 끝나요. ⏸ 로 잠깐 멈출 수 있어요.'],
-    run: ['형이나 동생을 골라 2차선 길을 달려요. 위에 영어 단어가 나오고 발음도 들려줘요.', '위에 걸린 차단봉·나뭇가지·깃발 줄은 화면을 아래로 밀거나 ⬇ 버튼(PC: ↓ 키)으로 숙여서 지나가요. 💣 폭탄에 부딪히면 ❤️ 하나를 잃으니 옆으로 피하거나 뛰어넘어요!', '장애물이 나오면 화면을 위로 밀거나 ⬆ 버튼(PC: ↑ 키·스페이스)으로 점프! 허들·통나무는 길 전체를 막아 꼭 뛰어야 하고, 고깔·상자·바위·모래성은 한쪽만 막아서 옆으로 피해도 돼요. 부딪히면 넘어지고 💰 5개를 잃어요.', '바닷가 다음엔 물속! 🎐 해파리는 숙이고, 산호초·조개·보물상자는 점프, 🐡 복어는 폭탄처럼 피해요.', '물속 다음엔 달나라! 🛰 인공위성은 숙이고, 크레이터 턱·월면차·달 바위는 점프, ☄️ 운석은 폭탄처럼 피해요. 달에서는 점프가 더 높고 느려요.', '달릴수록 동네 → 숲 → 바닷가 → 물속 → 달나라로 풍경과 음악이 바뀌어요. 🎵 버튼으로 배경음을 끄고 켤 수 있어요.', '앞에서 뜻이 적힌 문 두 개가 다가와요. 맞는 뜻의 문 쪽 차선으로 옮겨서 지나가세요!', '태블릿: 화면 왼쪽·오른쪽을 누르거나 좌우로 밀기. PC: ← → 키', '맞히면 +10점, 3번 연속 ×2, 6번 연속 ×3. 💰 코인은 +2점이에요.', '틀리면 ❤️ 하나를 잃어요. 3개를 다 잃으면 끝! 오래 달릴수록 빨라져요.', '3D 그림이라 인터넷이 필요하고, 오래된 기기에서는 안 될 수도 있어요.'],
+    run: ['형이나 동생을 골라 2차선 길을 달려요. 위에 영어 단어가 나오고 발음도 들려줘요.', '위에 걸린 차단봉·나뭇가지·깃발 줄은 화면을 아래로 밀거나 ⬇ 버튼(PC: ↓ 키)으로 숙여서 지나가요. 💣 폭탄에 부딪히면 ❤️ 하나를 잃으니 옆으로 피하거나 뛰어넘어요!', '장애물이 나오면 화면을 위로 밀거나 ⬆ 버튼(PC: ↑ 키·스페이스)으로 점프! 허들·통나무는 길 전체를 막아 꼭 뛰어야 하고, 고깔·상자·바위·모래성은 한쪽만 막아서 옆으로 피해도 돼요. 부딪히면 넘어지고 💰 5개를 잃어요.', '바닷가 다음엔 물속! 🎐 해파리는 숙이고, 산호초·조개·보물상자는 점프, 🐡 복어는 폭탄처럼 피해요.', '물속 다음엔 달나라! 🛰 인공위성은 숙이고, 크레이터 턱·월면차·달 바위는 점프, ☄️ 운석은 폭탄처럼 피해요. 달에서는 점프가 더 높고 느려요.', '달릴수록 동네 → 숲 → 바닷가 → 물속 → 달나라로 풍경과 음악이 바뀌어요. 🎵 버튼으로 배경음을 끄고 켤 수 있어요.', '앞에서 뜻이 적힌 문 두 개가 다가와요. 맞는 뜻의 문 쪽 차선으로 옮겨서 지나가세요!', '태블릿: 화면 왼쪽·오른쪽을 누르거나 좌우로 밀기. PC: ← → 키', '맞히면 +10점, 3번 연속 ×2, 6번 연속 ×3. 💰 코인은 +2점이에요.', '틀리면 ❤️ 하나를 잃어요. 다 잃으면 끝! 오래 달릴수록 빨라져요.', '가끔 빙글빙글 도는 💖 하트가 나와요. 먹으면 생명 +1 (최대 5개), 가득 차 있으면 +20점!', '3D 그림이라 인터넷이 필요하고, 오래된 기기에서는 안 될 수도 있어요.'],
     drive: ['화면 위 🎯 뜻을 보고, 그 뜻의 영어 단어가 있는 도로로 차를 옮겨 먹어요. 맞으면 +10점!', '태블릿: 화면 왼쪽·오른쪽을 누르거나 좌우로 밀어서 차선을 바꿔요. PC: ← → 키', '틀린 단어 −10 연료, 💀 −20 연료, ⛽ +25 연료. 연료는 계속 조금씩 닳고, 0이 되면 끝나요.', '3번 연속 맞히면 점수 ×2, 6번 연속이면 ×3. 🛡 방패는 한 번 막아 줘요.', '맞는 단어 5개를 먹으면 🚀 부스터! 누르면(스페이스) 3초 동안 아주 빠르고, 무적에 점수 2배예요.', '시간이 갈수록 빨라지고, 30초마다 낮 → 노을 → 밤 → 비로 풍경이 바뀌어요.'],
     catch: ['화면을 누르거나 손가락으로 끌면 아이가 그쪽으로 달려가요.', 'PC는 ← → 키로 움직이고, 스페이스로 잠깐 멈춰요.', '영단어 +10점 · 과일 🍎🍌🍇 +5점', '못 먹는 것 💀💣🔨🪨🧦👟 등은 피해요. 받으면 −5점!', '영단어를 받으면 뜻을 보여 주고 발음을 들려줘요. 영단어가 다 떨어지면 끝나요.'],
     ox: ['영단어와 뜻이 짝으로 나와요.', '맞는 짝이면 ⭕, 틀린 짝이면 ❌ 를 눌러요.', 'PC는 ← 또는 O 키 = ⭕, → 또는 X 키 = ❌', '틀리면 정답을 보여 주고 2초 쉬어요. 시간이 끝날 때까지 최대한 많이 맞혀요.'],
@@ -1645,6 +1645,40 @@
       }
     }
 
+    // ----- 하트 아이템 (2026-11-25): 먹으면 생명 +1, 최대 5개 -----
+    const MAX_HEARTS = 5;
+    let heartIn = 20 + Math.random() * 10; let heartItems = []; let heartBits = [];
+    if (/[?&]runheart=1/.test(location.search)) heartIn = 1.5;   // 확인용: 하트가 바로 나옴
+    function makeHeart(size, color) {
+      const g = new THREE.Group();
+      const m = new THREE.MeshLambertMaterial({ color, emissive: 0x5a0010 });
+      [-1, 1].forEach((sd) => { const b = new THREE.Mesh(new THREE.SphereGeometry(0.3 * size, 14, 10), m); b.position.set(sd * 0.18 * size, 0.1 * size, 0); g.add(b); });
+      const tip = new THREE.Mesh(new THREE.ConeGeometry(0.43 * size, 0.62 * size, 14), m); tip.rotation.x = Math.PI; tip.position.y = -0.3 * size; g.add(tip);
+      return g;
+    }
+    function spawnHeart() {
+      const l = Math.random() < 0.5 ? 0 : 1;
+      const h = makeHeart(1, 0xef4444); h.position.set(l ? LANE : -LANE, 1.1, -50); scene.add(h);
+      const glow = new THREE.Mesh(new THREE.SphereGeometry(0.6, 14, 10), new THREE.MeshBasicMaterial({ color: 0xff8fb3, transparent: true, opacity: 0.25, depthWrite: false })); h.add(glow);
+      heartItems.push({ g: h, lane: l, glow });
+    }
+    function eatHeart(h) {
+      const p = h.g.position.clone(); disposeObj(h.g);
+      let text;
+      if (hearts < MAX_HEARTS) { hearts++; text = `💖 생명 +1! (❤️ ${hearts}개)`; } else { score += 20; text = '💖 생명이 가득! 보너스 +20점'; }
+      sfx('combo'); msg(text, true);
+      // 효과: 분홍 하트 조각이 퍼져 오름
+      for (let i = 0; i < 12; i++) {
+        const b = makeHeart(0.35, pick3([0xff5c8a, 0xff8fb3, 0xef4444, 0xffc2d4])); b.position.copy(p);
+        const a = (i / 12) * Math.PI * 2;
+        b.userData = { vx: Math.cos(a) * (1.5 + Math.random()), vy: 2.5 + Math.random() * 2, vz: Math.sin(a) * 1.2 + 1, t: 0, spin: (Math.random() - 0.5) * 8 };
+        scene.add(b); heartBits.push(b);
+      }
+      stage.classList.remove('heal'); void stage.offsetWidth; stage.classList.add('heal');
+      const hh = $('#rnHearts'); hh.classList.remove('pop'); void hh.offsetWidth; hh.classList.add('pop');
+      hud();
+    }
+
     const fit = () => {
       wrap.style.height = `${Math.max(380, window.innerHeight - wrap.getBoundingClientRect().top - 8)}px`;
       const w = stage.clientWidth; const h = stage.clientHeight;
@@ -1661,7 +1695,7 @@
     onStop(() => clearTimeout(msgT));
     const mult = () => (combo >= 6 ? 3 : combo >= 3 ? 2 : 1);
     function hud() {
-      $('#rnHearts').textContent = '❤️'.repeat(Math.max(0, hearts)) + '🤍'.repeat(3 - Math.max(0, hearts));
+      $('#rnHearts').textContent = '❤️'.repeat(Math.max(0, hearts)) + '🤍'.repeat(Math.max(0, 3 - Math.max(0, hearts)));
       $('#rnScore').textContent = `${score.toLocaleString()}점`;
       $('#rnCoins').textContent = `💰 ${coins}`;
       $('#rnCombo').textContent = combo >= 3 ? `🔥×${mult()} 콤보 ${combo}` : '';
@@ -1700,17 +1734,254 @@
       hud();
     }
 
+    // ----- 로켓 연출 (2026-11-25): 물속 → 달나라 발사, 달나라 → 지구(동네) 귀환 -----
+    const csEl = document.createElement('div'); csEl.className = 'run-cs'; stage.appendChild(csEl);
+    const cs = { on: false, t: 0, partT0: 0, target: 0, scene: null, cam: null, o: {}, upd: null, parts: [], cues: [], puffs: [], shake: 0, end: 0 };
+    let csTest = (/[?&]runcs=(launch|return)/.exec(location.search) || [])[1] || null;   // 확인용
+    function csSay(text, big) { csEl.textContent = text; csEl.className = 'run-cs'; void csEl.offsetWidth; csEl.className = `run-cs show${big ? ' big' : ''}`; }
+    function disposeScene(sc) { sc.traverse((x) => { if (x.geometry) x.geometry.dispose(); if (x.material) x.material.dispose(); }); }
+    function csNewScene(bg) {
+      if (cs.scene) disposeScene(cs.scene);
+      const sc = new THREE.Scene(); sc.background = new THREE.Color(bg);
+      sc.add(new THREE.HemisphereLight(0xffffff, 0x555555, 0.9));
+      const d = new THREE.DirectionalLight(0xffffff, 0.7); d.position.set(5, 10, 6); sc.add(d);
+      cs.scene = sc; cs.puffs = []; cs.o = {};
+      cs.cam = new THREE.PerspectiveCamera(55, camera.aspect, 0.1, 500);
+      return sc;
+    }
+    function csRocket() {
+      const g = new THREE.Group();
+      const body = cyl(0.7, 0.8, 4, 0xf3f4f6, 18); body.position.y = 2.6; g.add(body);
+      const nose = cone(0.7, 1.6, 0xef4444, 18); nose.position.y = 5.4; g.add(nose);
+      const band = cyl(0.82, 0.82, 0.3, 0xef4444, 18); band.position.y = 1.2; g.add(band);
+      const win = sph(0.32, 0x93c5fd); win.scale.z = 0.4; win.position.set(0, 3.6, 0.72); g.add(win);
+      for (let i = 0; i < 4; i++) { const a = i * Math.PI / 2 + Math.PI / 4; const fin = box(0.1, 1.3, 0.9, 0xef4444); fin.position.set(Math.cos(a) * 0.95, 1.0, Math.sin(a) * 0.95); fin.rotation.y = -a; g.add(fin); }
+      const noz = cone(0.5, 0.6, 0x6b7280, 14); noz.position.y = 0.35; g.add(noz);
+      const flame = new THREE.Group(); flame.visible = false; g.add(flame);
+      const f1 = new THREE.Mesh(new THREE.ConeGeometry(0.55, 2.4, 14), new THREE.MeshBasicMaterial({ color: 0xff7a00, transparent: true, opacity: 0.85 })); f1.rotation.x = Math.PI; f1.position.y = -1.1; flame.add(f1);
+      const f2 = new THREE.Mesh(new THREE.ConeGeometry(0.3, 1.4, 12), new THREE.MeshBasicMaterial({ color: 0xfff176 })); f2.rotation.x = Math.PI; f2.position.y = -0.6; flame.add(f2);
+      // 낙하산 (귀환 때)
+      const chute = new THREE.Group(); chute.visible = false; chute.position.y = 6.2; g.add(chute);
+      const can = new THREE.Mesh(new THREE.SphereGeometry(2.4, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshLambertMaterial({ color: 0xf97316, side: THREE.DoubleSide })); can.position.y = 3.2; can.scale.y = 0.7; chute.add(can);
+      const top = new THREE.Mesh(new THREE.SphereGeometry(1.2, 12, 6, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshLambertMaterial({ color: 0xffffff, side: THREE.DoubleSide })); top.position.y = 3.2 + 2.4 * 0.7 - 0.55; top.scale.y = 0.55; chute.add(top);
+      const up = new THREE.Vector3(0, 1, 0);
+      for (let i = 0; i < 6; i++) {
+        const a = i * Math.PI / 3; const d = new THREE.Vector3(Math.cos(a) * 2.4, 3.2, Math.sin(a) * 2.4); const len = d.length();
+        const ln = cyl(0.02, 0.02, len, 0xffffff, 4); ln.position.copy(d).multiplyScalar(0.5); ln.quaternion.setFromUnitVectors(up, d.normalize()); chute.add(ln);
+      }
+      return { g, flame, chute };
+    }
+    function csStars(minY) {
+      const pos = []; for (let i = 0; i < 500; i++) pos.push(-160 + Math.random() * 320, minY + Math.random() * 150, -170 + Math.random() * 140);
+      const sg = new THREE.BufferGeometry(); sg.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+      return new THREE.Points(sg, new THREE.PointsMaterial({ color: 0xffffff, size: 0.8, transparent: true, opacity: 1 }));
+    }
+    function csEarth(r) {
+      const e = new THREE.Mesh(new THREE.SphereGeometry(r, 28, 20), mat(0x2563eb));
+      [[0.5, 0.4, 0.75], [-0.6, 0.1, 0.8], [0.1, -0.5, 0.85], [-0.2, 0.75, 0.6], [0.7, -0.2, -0.6], [-0.5, -0.3, -0.8]].forEach(([x, y, z]) => {
+        const d = new THREE.Vector3(x, y, z).normalize(); const land = new THREE.Mesh(new THREE.SphereGeometry(r * 0.34, 14, 10), mat(0x22c55e)); land.position.copy(d.multiplyScalar(r * 0.78)); e.add(land);
+      });
+      const cl = new THREE.Mesh(new THREE.SphereGeometry(r * 0.22, 12, 8), mat(0xffffff)); cl.scale.set(1.8, 0.5, 0.7); cl.position.set(-r * 0.3, r * 0.45, r * 0.85); e.add(cl);
+      return e;
+    }
+    function csMoon(r) {
+      const m = new THREE.Mesh(new THREE.SphereGeometry(r, 28, 20), mat(0xc4c4cc));
+      [[0.4, 0.5, 0.75], [-0.5, 0.2, 0.85], [0.1, -0.6, 0.8], [-0.3, -0.2, 0.95], [0.75, -0.1, 0.65]].forEach(([x, y, z], i) => {
+        const d = new THREE.Vector3(x, y, z).normalize(); const c = new THREE.Mesh(new THREE.SphereGeometry(r * (0.12 + (i % 3) * 0.05), 12, 8), mat(0x8b8b95)); c.position.copy(d.multiplyScalar(r * 0.93)); m.add(c);
+      });
+      return m;
+    }
+    function csPuff(x, y, z, color, size) {
+      const m = new THREE.Mesh(new THREE.SphereGeometry(size, 10, 8), new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.8 }));
+      m.position.set(x, y, z); cs.scene.add(m);
+      cs.puffs.push({ m, t: 0, vx: (Math.random() - 0.5) * 4, vy: Math.random() * 0.8 });
+    }
+    function csCrater(sc, x, z, r) {
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(r, 0.3, 6, 18), mat(0xb8b8c0)); ring.rotation.x = -Math.PI / 2; ring.scale.z = 0.5; ring.position.set(x, 0.05, z); sc.add(ring);
+    }
+    function csFlame(r, on) { r.flame.visible = on; if (on) r.flame.scale.set(1, 0.8 + Math.random() * 0.5, 1); }
+    function csCamFollow(dt, targetY, z) {
+      cs.o.camY += (targetY - cs.o.camY) * Math.min(1, dt * 4);
+      const sh = cs.shake > 0 ? (Math.random() - 0.5) * 0.3 : 0;
+      cs.cam.position.set(sh, cs.o.camY + sh * 0.5, z); cs.cam.lookAt(0, cs.o.camY, 0);
+    }
+    function csLandFx(text) {
+      cs.shake = 0.35; sfx('combo'); csSay(text, false);
+      for (let i = 0; i < 14; i++) { const a = (i / 14) * Math.PI * 2; csPuff(Math.cos(a) * 1.5, 0.4, Math.sin(a) * 1.5, 0xd1d5db, 0.6); cs.puffs[cs.puffs.length - 1].vx = Math.cos(a) * 5; }
+    }
+    // 1) 발사대 (지구 바닷가 / 달)
+    function csPad(onMoon) {
+      const sc = csNewScene(onMoon ? 0x05060f : 0x8fd3ff);
+      const ground = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), mat(onMoon ? 0x85858f : 0xf2d59b)); ground.rotation.x = -Math.PI / 2; sc.add(ground);
+      if (!onMoon) { const sea = new THREE.Mesh(new THREE.PlaneGeometry(200, 400), mat(0x38bdf8)); sea.rotation.x = -Math.PI / 2; sea.position.set(106, 0.02, 0); sc.add(sea); }
+      else { [[-7, -6, 1.6], [6, -10, 2.2], [-12, -20, 2.6], [10, -3, 1.2], [3, -25, 3]].forEach(([x, z, r]) => csCrater(sc, x, z, r)); const e = csEarth(3); e.position.set(-9, 16, -45); sc.add(e); }
+      const pad = cyl(2.4, 2.6, 0.4, 0x6b7280, 20); pad.position.y = 0.2; sc.add(pad);
+      if (!onMoon) {
+        const tw = box(0.5, 7.5, 0.5, 0x9ca3af); tw.position.set(-2.8, 3.75, -0.5); sc.add(tw);
+        [2.5, 5].forEach((y) => { const arm = box(1.6, 0.2, 0.2, 0xef4444); arm.position.set(-2.0, y, -0.5); sc.add(arm); });
+        for (let i = 0; i < 10; i++) {
+          const c = new THREE.Group();
+          for (let k = 0; k < 3; k++) { const p = new THREE.Mesh(new THREE.SphereGeometry(1.4 + Math.random(), 10, 8), new THREE.MeshBasicMaterial({ color: 0xffffff })); p.position.set(k * 1.6, Math.random() * 0.6, 0); c.add(p); }
+          c.position.set(-14 + Math.random() * 24, 16 + i * 5, -5 - Math.random() * 6); sc.add(c);
+        }
+      }
+      const stars = csStars(onMoon ? 0 : 30); stars.material.opacity = onMoon ? 1 : 0; sc.add(stars);
+      const r = csRocket(); r.g.position.y = 0.4; sc.add(r.g);
+      cs.o = { r, stars, onMoon, lift: -1, camY: 3.5 };
+      const sky0 = new THREE.Color(0x8fd3ff); const sky1 = new THREE.Color(0x05060f);
+      cs.upd = (dt) => {
+        const o = cs.o;
+        if (o.lift >= 0) {
+          o.lift += dt;
+          r.g.position.y = 0.4 + 0.5 * (onMoon ? 30 : 40) * o.lift * o.lift;
+          csFlame(r, true);
+          if (o.lift < 0.9) { cs.shake = 0.1; if (Math.random() < 0.7) csPuff((Math.random() - 0.5) * 2, 0.6, (Math.random() - 0.5) * 2, onMoon ? 0xd1d5db : 0xe5e7eb, 0.7); }
+          if (!onMoon) { const k = Math.max(0, Math.min(1, r.g.position.y / 60)); sc.background.copy(sky0).lerp(sky1, k); stars.material.opacity = k; }
+        }
+        csCamFollow(dt, Math.max(3.5, r.g.position.y + 2.5), 15);
+      };
+    }
+    // 2) 우주 비행: toMoon 이면 지구가 작아지고 달이 커짐, 아니면 반대
+    function csSpace(toMoon, dur) {
+      const sc = csNewScene(0x05060f);
+      sc.add(csStars(-80));
+      const earth = csEarth(9); sc.add(earth);
+      const moonM = csMoon(4); sc.add(moonM);
+      const r = csRocket(); r.g.scale.setScalar(0.35); sc.add(r.g); r.flame.visible = true;
+      cs.cam.position.set(0, 0, 14); cs.cam.lookAt(0, 0, -10);
+      cs.o = { r };
+      const lerp = (a, b, s) => a + (b - a) * s;
+      cs.upd = (dt, pt) => {
+        const s = Math.max(0, Math.min(1, pt / dur));
+        if (toMoon) {
+          earth.position.set(lerp(-5, -8, s), lerp(-7, -9, s), lerp(-8, -80, s));
+          moonM.position.set(lerp(9, 5, s), lerp(7, 4, s), lerp(-95, -22, s));
+          r.g.position.set(lerp(-2.5, 3.5, s), lerp(-3, 2.5, s), lerp(0, -6, s)); r.g.rotation.z = -0.8;
+        } else {
+          moonM.position.set(lerp(5, 9, s), lerp(-4, -7, s), lerp(-6, -80, s)); moonM.scale.setScalar(1.6);
+          earth.position.set(lerp(-9, -5, s), lerp(9, 5, s), lerp(-110, -30, s));
+          r.g.position.set(lerp(2.5, -3.5, s), lerp(-3, 2.5, s), lerp(0, -6, s)); r.g.rotation.z = 0.8;
+        }
+        earth.rotation.y += dt * 0.3; moonM.rotation.y += dt * 0.2;
+        csFlame(r, true);
+      };
+    }
+    // 3) 달 착륙
+    function csLandMoon() {
+      const sc = csNewScene(0x05060f);
+      const ground = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), mat(0x85858f)); ground.rotation.x = -Math.PI / 2; sc.add(ground);
+      [[-7, -6, 1.6], [6, -10, 2.2], [-12, -20, 2.6], [9, -2, 1.2], [2, -28, 3]].forEach(([x, z, rr]) => csCrater(sc, x, z, rr));
+      sc.add(csStars(0));
+      const e = csEarth(3); e.position.set(-9, 16, -45); sc.add(e);
+      const r = csRocket(); sc.add(r.g);
+      cs.o = { r, camY: 8, landed: false };
+      cs.upd = (dt, pt) => {
+        const s = Math.max(0, Math.min(1, pt / 1.0));
+        r.g.position.y = 0.05 + 15 * (1 - s) * (1 - s);
+        csFlame(r, s < 1);
+        if (s >= 1 && !cs.o.landed) { cs.o.landed = true; csLandFx('달나라 도착! 🌙'); }
+        csCamFollow(dt, Math.max(3.5, r.g.position.y + 2.5), 15);
+      };
+    }
+    // 3') 지구(동네) 귀환: 떨어지다가 낙하산 펴고 착지
+    function csLandEarth() {
+      const sc = csNewScene(0x05060f);
+      const ground = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), mat(0x7cc95e)); ground.rotation.x = -Math.PI / 2; sc.add(ground);
+      const road2 = new THREE.Mesh(new THREE.PlaneGeometry(5, 400), mat(0x5b6472)); road2.rotation.x = -Math.PI / 2; road2.position.set(6, 0.02, 0); sc.add(road2);
+      for (let i = 0; i < 9; i++) {
+        const sd = i % 2 ? 1 : -1; const hx = sd * (10 + Math.random() * 10); const hz = -4 - i * 5;
+        const h = box(2.4, 1.8, 2.2, pick3([0xfff1d6, 0xffe4e6, 0xe0f2fe, 0xfef9c3])); h.position.set(hx, 0.9, hz); sc.add(h);
+        const roof = cone(2.1, 1.2, pick3([0xdc2626, 0x2563eb, 0x16a34a]), 4); roof.rotation.y = Math.PI / 4; roof.position.set(hx, 2.4, hz); sc.add(roof);
+      }
+      for (let i = 0; i < 10; i++) {
+        const c = new THREE.Group();
+        for (let k = 0; k < 3; k++) { const p = new THREE.Mesh(new THREE.SphereGeometry(1.4 + Math.random(), 10, 8), new THREE.MeshBasicMaterial({ color: 0xffffff })); p.position.set(k * 1.6, Math.random() * 0.6, 0); c.add(p); }
+        c.position.set(-14 + Math.random() * 24, 14 + i * 5, -5 - Math.random() * 6); sc.add(c);
+      }
+      const stars = csStars(30); sc.add(stars);
+      const r = csRocket(); r.g.position.y = 70; sc.add(r.g);
+      cs.o = { r, camY: 72, landed: false };
+      const sky0 = new THREE.Color(0x8fd3ff); const sky1 = new THREE.Color(0x05060f);
+      cs.upd = (dt, pt) => {
+        const y0 = 70; const yc = 18;
+        if (pt < 1.3) { r.g.position.y = y0 - (y0 - yc) * Math.pow(pt / 1.3, 1.6); }
+        else {
+          if (!r.chute.visible) { r.chute.visible = true; csSay('낙하산 펴기! ☂️', false); sfx('ok'); }
+          const s = Math.max(0, Math.min(1, (pt - 1.3) / 1.5));
+          r.g.position.y = 0.05 + (yc - 0.05) * (1 - s) * (1 - s * 0.35);
+          r.chute.scale.setScalar(Math.min(1, 0.2 + (pt - 1.3) * 4));
+          r.g.rotation.z = s < 1 ? Math.sin(pt * 2.5) * 0.08 : 0;
+          if (s >= 1 && !cs.o.landed) { cs.o.landed = true; r.chute.visible = false; csLandFx('지구 도착! 🏘'); }
+        }
+        const k = Math.max(0, Math.min(1, (r.g.position.y - 8) / 50)); sc.background.copy(sky0).lerp(sky1, k); stars.material.opacity = k;
+        csCamFollow(dt, Math.max(3.5, r.g.position.y + 3), 16);
+      };
+    }
+    const CS_BUILD = {
+      padEarth: () => csPad(false), spaceToMoon: () => csSpace(true, 1.8), landMoon: csLandMoon,
+      padMoon: () => csPad(true), spaceToEarth: () => csSpace(false, 1.8), landEarth: csLandEarth,
+    };
+    function startCutscene(kind, target) {
+      cs.on = true; cs.t = 0; cs.target = target; cs.upd = null; cs.shake = 0;
+      if (kind === 'launch') {
+        cs.parts = [[0, 'padEarth'], [3.6, 'spaceToMoon'], [5.4, 'landMoon']]; cs.end = 7.0;
+        cs.cues = [[0.1, '3', true, 'ok'], [0.7, '2', true, 'ok'], [1.3, '1', true, 'ok'], [1.9, '발사! 🚀', false, 'combo', () => { cs.o.lift = 0; }], [3.7, '지구가 점점 멀어져요 🌏', false]];
+      } else {
+        cs.parts = [[0, 'padMoon'], [1.6, 'spaceToEarth'], [3.4, 'landEarth']]; cs.end = 7.1;
+        cs.cues = [[0.1, '지구로 돌아가요! 🌏', false], [0.7, '', false, 'combo', () => { cs.o.lift = 0; }], [1.7, '안녕, 달나라! 👋', false]];
+      }
+      bgm.stop(); stage.classList.add('cs-on');
+    }
+    function csUpdate(dt) {
+      cs.t += dt;
+      while (cs.parts.length && cs.t >= cs.parts[0][0]) { const p = cs.parts.shift(); cs.partT0 = p[0]; CS_BUILD[p[1]](); }
+      while (cs.cues.length && cs.t >= cs.cues[0][0]) { const c = cs.cues.shift(); if (c[1]) csSay(c[1], c[2]); if (c[3]) sfx(c[3]); if (c[4]) c[4](); }
+      if (cs.shake > 0) cs.shake = Math.max(0, cs.shake - dt);
+      if (cs.upd) cs.upd(dt, cs.t - cs.partT0);
+      cs.puffs = cs.puffs.filter((p) => {
+        p.t += dt; p.m.position.x += p.vx * dt; p.m.position.y += p.vy * dt; p.vx *= 0.96;
+        p.m.scale.setScalar(1 + p.t * 2.5); p.m.material.opacity = Math.max(0, 0.8 - p.t * 0.6);
+        if (p.t > 1.4) { cs.scene.remove(p.m); p.m.geometry.dispose(); p.m.material.dispose(); return false; }
+        return true;
+      });
+      if (cs.t >= cs.end) csFinish();
+    }
+    function csFinish() {
+      cs.on = false; if (cs.scene) disposeScene(cs.scene); cs.scene = null; cs.puffs = []; cs.upd = null;
+      csEl.className = 'run-cs'; stage.classList.remove('cs-on');
+      // 연출 전에 다가오던 문·장애물·코인·하트는 치우고 새로 시작
+      if (gate) { disposeObj(gate.group); gate = null; }
+      passing.forEach(disposeObj); passing = [];
+      logs.forEach((o) => disposeObj(o.g)); logs = [];
+      coinList.forEach((c) => scene.remove(c.m)); coinList = [];
+      heartItems.forEach((h) => disposeObj(h.g)); heartItems = [];
+      nextQIn = 1.0; jumpT = -1; duckT = -1; tripT = 0;
+      setPlace(cs.target);
+      last = performance.now();
+    }
+    onStop(() => { if (cs.scene) disposeScene(cs.scene); });
+
     function loop(ts) {
       const dt = Math.max(0, Math.min(0.05, (ts - last) / 1000)); last = ts;
+      if (cs.on) {
+        if (!paused) csUpdate(dt);
+        if (cs.on) { renderer.render(cs.scene, cs.cam); raf = requestAnimationFrame(loop); return; }
+      }
       if (!paused && !over) {
         elapsed += dt;
+        if (csTest && elapsed > 1) { const tg = csTest === 'launch' ? PLACES.length - 1 : 0; dist = (tg || PLACES.length) * SCENE_EVERY; startCutscene(csTest, tg); csTest = null; }
         if (tripT > 0) tripT = Math.max(0, tripT - dt);
         const speed = BASE * Math.min(2, 1 + Math.floor(elapsed / 15) * 0.08) * (tripT > 0 ? 0.5 : 1);
         const dz = speed * dt;
         dist += dz;
         // 300m 마다 배경 바꾸기
         const want = Math.floor(dist / SCENE_EVERY) % PLACES.length;
-        if (want !== placeIdx) setPlace(want);
+        if (want !== placeIdx) {
+          const pk = PLACES[placeIdx].key; const wk = PLACES[want].key;
+          if (wk === 'moon' && pk !== 'moon') startCutscene('launch', want);        // 지구 → 달: 로켓 발사
+          else if (pk === 'moon' && wk !== 'moon') startCutscene('return', want);  // 달 → 지구: 귀환
+          else setPlace(want);
+        }
         dashes.forEach((d) => { d.position.z += dz; if (d.position.z > 6) d.position.z -= 80; });
         props.forEach((p) => { p.position.z += dz; if (p.position.z > 10) p.position.z -= 104; });
         clouds.forEach((c) => { c.position.x += dt * 0.6; if (c.position.x > 40) c.position.x = -40; });
@@ -1749,6 +2020,23 @@
             o.g.userData.fall.rock.position.y = t * 6; o.g.userData.fall.tail.visible = t > 0.02;
           }
           if (o.g.position.z > 9) { disposeObj(o.g); return false; }
+          return true;
+        });
+        // 하트
+        heartIn -= dt;
+        if (heartIn <= 0) { spawnHeart(); heartIn = 20 + Math.random() * 10; }
+        heartItems = heartItems.filter((h) => {
+          h.g.position.z += dz; h.g.rotation.y += dt * 3; h.g.position.y = 1.1 + Math.sin(elapsed * 4) * 0.15;
+          h.glow.material.opacity = 0.18 + Math.sin(elapsed * 8) * 0.1;
+          if (Math.abs(h.g.position.z) < 0.7 && h.lane === lane) { eatHeart(h); return false; }
+          if (h.g.position.z > 8) { disposeObj(h.g); return false; }
+          return true;
+        });
+        heartBits = heartBits.filter((b) => {
+          const u = b.userData; u.t += dt; u.vy -= 4 * dt;
+          b.position.x += u.vx * dt; b.position.y += u.vy * dt; b.position.z += u.vz * dt + dz * 0.3; b.rotation.y += u.spin * dt;
+          b.scale.setScalar(Math.max(0.01, 1 - u.t / 1.1));
+          if (u.t > 1.1) { disposeObj(b); return false; }
           return true;
         });
         // 코인
