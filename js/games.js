@@ -23,7 +23,7 @@
   const HELP = {
     blocks: ['뜻을 보고 소리를 들은 뒤, 알파벳 블록을 단어 순서대로 눌러요.', 'PC는 키보드로 글자를 쳐도 돼요. 스페이스 = 다시 듣기', '💡 힌트는 다음 글자 블록을 반짝여 줘요.', '힌트를 쓰거나 "모르겠어요"를 누른 단어는 놓친 단어로 남아요.'],
     rain: ['위에서 한글 뜻 카드가 떨어져요.', '바닥에 닿기 전에 그 영단어를 입력칸에 써요. 맞으면 Enter 없이 바로 터져요.', '✍️ 펜으로 쓰기를 켜면 손글씨로 쓸 수 있고, 단어가 조금 천천히 떨어져요.', '카드가 바닥에 3개 닿으면 끝나요. ⏸ 로 잠깐 멈출 수 있어요.'],
-    run: ['형이나 동생을 골라 2차선 길을 달려요. 위에 영어 단어가 나오고 발음도 들려줘요.', '🪵 통나무가 나오면 화면을 위로 밀거나 ⬆ 버튼(PC: ↑ 키·스페이스)으로 점프! 부딪히면 넘어지고 💰 5개를 잃어요.', '달릴수록 동네 → 숲 → 바닷가로 풍경과 음악이 바뀌어요. 🎵 버튼으로 배경음을 끄고 켤 수 있어요.', '앞에서 뜻이 적힌 문 두 개가 다가와요. 맞는 뜻의 문 쪽 차선으로 옮겨서 지나가세요!', '태블릿: 화면 왼쪽·오른쪽을 누르거나 좌우로 밀기. PC: ← → 키', '맞히면 +10점, 3번 연속 ×2, 6번 연속 ×3. 💰 코인은 +2점이에요.', '틀리면 ❤️ 하나를 잃어요. 3개를 다 잃으면 끝! 오래 달릴수록 빨라져요.', '3D 그림이라 인터넷이 필요하고, 오래된 기기에서는 안 될 수도 있어요.'],
+    run: ['형이나 동생을 골라 2차선 길을 달려요. 위에 영어 단어가 나오고 발음도 들려줘요.', '장애물이 나오면 화면을 위로 밀거나 ⬆ 버튼(PC: ↑ 키·스페이스)으로 점프! 허들·통나무는 길 전체를 막아 꼭 뛰어야 하고, 고깔·상자·바위·모래성은 한쪽만 막아서 옆으로 피해도 돼요. 부딪히면 넘어지고 💰 5개를 잃어요.', '달릴수록 동네 → 숲 → 바닷가로 풍경과 음악이 바뀌어요. 🎵 버튼으로 배경음을 끄고 켤 수 있어요.', '앞에서 뜻이 적힌 문 두 개가 다가와요. 맞는 뜻의 문 쪽 차선으로 옮겨서 지나가세요!', '태블릿: 화면 왼쪽·오른쪽을 누르거나 좌우로 밀기. PC: ← → 키', '맞히면 +10점, 3번 연속 ×2, 6번 연속 ×3. 💰 코인은 +2점이에요.', '틀리면 ❤️ 하나를 잃어요. 3개를 다 잃으면 끝! 오래 달릴수록 빨라져요.', '3D 그림이라 인터넷이 필요하고, 오래된 기기에서는 안 될 수도 있어요.'],
     drive: ['화면 위 🎯 뜻을 보고, 그 뜻의 영어 단어가 있는 도로로 차를 옮겨 먹어요. 맞으면 +10점!', '태블릿: 화면 왼쪽·오른쪽을 누르거나 좌우로 밀어서 차선을 바꿔요. PC: ← → 키', '틀린 단어 −10 연료, 💀 −20 연료, ⛽ +25 연료. 연료는 계속 조금씩 닳고, 0이 되면 끝나요.', '3번 연속 맞히면 점수 ×2, 6번 연속이면 ×3. 🛡 방패는 한 번 막아 줘요.', '맞는 단어 5개를 먹으면 🚀 부스터! 누르면(스페이스) 3초 동안 아주 빠르고, 무적에 점수 2배예요.', '시간이 갈수록 빨라지고, 30초마다 낮 → 노을 → 밤 → 비로 풍경이 바뀌어요.'],
     catch: ['화면을 누르거나 손가락으로 끌면 아이가 그쪽으로 달려가요.', 'PC는 ← → 키로 움직이고, 스페이스로 잠깐 멈춰요.', '영단어 +10점 · 과일 🍎🍌🍇 +5점', '못 먹는 것 💀💣🔨🪨🧦👟 등은 피해요. 받으면 −5점!', '영단어를 받으면 뜻을 보여 주고 발음을 들려줘요. 영단어가 다 떨어지면 끝나요.'],
     ox: ['영단어와 뜻이 짝으로 나와요.', '맞는 짝이면 ⭕, 틀린 짝이면 ❌ 를 눌러요.', 'PC는 ← 또는 O 키 = ⭕, → 또는 X 키 = ❌', '틀리면 정답을 보여 주고 2초 쉬어요. 시간이 끝날 때까지 최대한 많이 맞혀요.'],
@@ -1195,13 +1195,56 @@
       $('#rnWord').classList.remove('pop'); void $('#rnWord').offsetWidth; $('#rnWord').classList.add('pop');
       say(target);
     }
-    // ----- 통나무 (두 차선을 가로질러 놓임 → 꼭 뛰어넘기) -----
-    function spawnLog(z) {
-      const g = new THREE.Group();
-      const log = cyl(0.35, 0.35, 5.4, 0x92400e, 12); log.rotation.z = Math.PI / 2; log.position.y = 0.35; g.add(log);
-      [-1, 1].forEach((s) => { const e = cyl(0.3, 0.3, 0.02, 0xd6a76b, 12); e.rotation.z = Math.PI / 2; e.position.set(s * 2.71, 0.35, 0); g.add(e); });
+    // ----- 장애물 (2026-11-25): 배경에 맞게, 두 차선을 막는 것(꼭 점프) + 한 차선만 막는 것(피하거나 점프) -----
+    const OBSTACLES = {
+      // 두 차선
+      hurdle: { icon: '🚧', name: '허들', full: true, make(g) {
+        [-2.6, 2.6].forEach((x) => { const p = box(0.12, 0.9, 0.12, 0xffffff); p.position.set(x, 0.45, 0); g.add(p); });
+        for (let i = 0; i < 8; i++) { const b = box(0.66, 0.22, 0.12, i % 2 ? 0xffffff : 0xef4444); b.position.set(-2.31 + i * 0.66, 0.85, 0); g.add(b); }
+      } },
+      log: { icon: '🪵', name: '통나무', full: true, make(g) {
+        const log = cyl(0.35, 0.35, 5.4, 0x92400e, 12); log.rotation.z = Math.PI / 2; log.position.y = 0.35; g.add(log);
+        [-1, 1].forEach((sd) => { const e = cyl(0.3, 0.3, 0.02, 0xd6a76b, 12); e.rotation.z = Math.PI / 2; e.position.set(sd * 2.71, 0.35, 0); g.add(e); });
+      } },
+      // 한 차선
+      cones: { icon: '🔶', name: '고깔', full: false, make(g) {
+        [-0.7, 0, 0.7].forEach((x) => {
+          const c = cone(0.3, 0.8, 0xf97316, 12); c.position.set(x, 0.4, 0); g.add(c);
+          const band = cyl(0.17, 0.21, 0.14, 0xffffff, 12); band.position.set(x, 0.48, 0); g.add(band);
+          const base = box(0.62, 0.06, 0.62, 0xea580c); base.position.set(x, 0.03, 0); g.add(base);
+        });
+      } },
+      crate: { icon: '📦', name: '나무 상자', full: false, make(g) {
+        const b = box(1.3, 0.9, 0.9, 0xd4a373); b.position.y = 0.45; g.add(b);
+        [[0, 0.88], [0, 0.02]].forEach(([x, y]) => { const r = box(1.32, 0.08, 0.92, 0xa16207); r.position.set(x, y, 0); g.add(r); });
+        [-0.62, 0.62].forEach((x) => { const r = box(0.08, 0.92, 0.92, 0xa16207); r.position.set(x, 0.45, 0); g.add(r); });
+        const d = box(1.5, 0.08, 0.02, 0xa16207); d.rotation.z = 0.6; d.position.set(0, 0.45, 0.46); g.add(d);
+      } },
+      rock: { icon: '🪨', name: '바위', full: false, make(g) {
+        const r = sph(0.75, 0x9ca3af); r.scale.set(1.2, 0.85, 1); r.position.y = 0.5; g.add(r);
+        const r2 = sph(0.4, 0x6b7280); r2.position.set(0.6, 0.3, 0.2); g.add(r2);
+        const moss = sph(0.3, 0x65a30d); moss.scale.y = 0.4; moss.position.set(-0.4, 0.95, 0.1); g.add(moss);
+      } },
+      sandcastle: { icon: '🏰', name: '모래성', full: false, make(g) {
+        const base = box(1.4, 0.45, 1, 0xe9c46a); base.position.y = 0.22; g.add(base);
+        [-0.45, 0, 0.45].forEach((x, i) => {
+          const tw = cyl(0.18, 0.2, i === 1 ? 0.75 : 0.55, 0xf4d58d, 8); tw.position.set(x, 0.45 + (i === 1 ? 0.37 : 0.27), 0); g.add(tw);
+          const tp = cone(0.22, 0.3, 0xe9c46a, 8); tp.position.set(x, 0.45 + (i === 1 ? 0.9 : 0.7), 0); g.add(tp);
+        });
+        const pole = cyl(0.02, 0.02, 0.5, 0xffffff); pole.position.set(0, 1.6, 0); g.add(pole);
+        const flag = box(0.28, 0.16, 0.02, 0xef4444); flag.position.set(0.14, 1.75, 0); g.add(flag);
+      } },
+    };
+    const PLACE_OBS = { town: [['hurdle'], ['cones', 'crate']], forest: [['log'], ['rock']], sea: [['log'], ['sandcastle']] };
+    function spawnObstacle(z) {
+      const [fulls, singles] = PLACE_OBS[PLACES[placeIdx].key];
+      const key = Math.random() < 0.5 ? pick3(fulls) : pick3(singles);
+      const O = OBSTACLES[key];
+      const g = new THREE.Group(); O.make(g);
+      const lanesHit = O.full ? [0, 1] : [Math.random() < 0.5 ? 0 : 1];
+      if (!O.full) g.position.x = lanesHit[0] ? LANE : -LANE;
       g.position.z = z; scene.add(g);
-      logs.push({ g, done: false });
+      logs.push({ g, done: false, lanes: lanesHit, O });
     }
     // ----- 코인 -----
     const coinGeo = new THREE.CylinderGeometry(0.32, 0.32, 0.08, 16);
@@ -1253,10 +1296,10 @@
       hud();
       if (hearts <= 0) end();
     }
-    function trip() {
+    function trip(O) {
       tripT = 1; combo = 0;
       const lost = Math.min(5, coins); coins -= lost;
-      sfx('bad'); msg(`🪵 넘어졌어요! 💰 −${lost}`, false);
+      sfx('bad'); msg(`${O.icon} ${O.name}에 걸려 넘어졌어요! 💰 −${lost}`, false);
       stage.classList.remove('hit'); void stage.offsetWidth; stage.classList.add('hit');
       hud();
     }
@@ -1282,14 +1325,17 @@
           if (!gate.done && gate.group.position.z >= 0) {
             judge();
             // 문을 지난 뒤, 다음 문과 겹치지 않게 통나무 0~1개
-            if (!over && Math.random() < 0.6) spawnLog(-28);
+            if (!over && Math.random() < 0.65) spawnObstacle(-28);
           }
           if (gate && gate.group.position.z > 9) { disposeObj(gate.group); gate = null; nextQIn = 0.6; }
         }
         // 통나무
         logs = logs.filter((o) => {
           o.g.position.z += dz;
-          if (!o.done && o.g.position.z >= -0.3) { o.done = true; if (runner.position.y < 0.55) trip(); else msg('🪵 점프 성공!', true); }
+          if (!o.done && o.g.position.z >= -0.3) {
+            o.done = true;
+            if (o.lanes.indexOf(lane) >= 0) { if (runner.position.y < 0.55) trip(o.O); else msg(`${o.O.icon} 점프 성공!`, true); }
+          }
           if (o.g.position.z > 9) { disposeObj(o.g); return false; }
           return true;
         });
