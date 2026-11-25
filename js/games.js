@@ -35,7 +35,10 @@
   const S = (() => {
     let s = {};
     try { s = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { /* 저장 불가 환경 */ }
-    return { level: 'e', mode: 'today', from: 1, to: 10, topic: '', diff: 'normal', pen: false, penGuide: false, names: ['형', '동생'], best: {}, ...s };
+    const r = { level: 'e', mode: 'all', from: 1, to: 10, topic: '', diff: 'normal', pen: false, penGuide: false, names: ['형', '동생'], best: {}, ...s };
+    // 2026-11-25: 범위 기본값을 '전체'로. 이미 쓰던 기기도 한 번은 전체로 바꿔 준다
+    if (!r.rangeAll) { r.mode = 'all'; r.rangeAll = true; }
+    return r;
   })();
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* 저장 불가 환경 */ } };
 
@@ -54,11 +57,12 @@
   function pool() {
     const lv = level();
     const ok = (w) => w.meaning;
+    if (S.mode === 'all') return lv.words.filter(ok);
     if (S.mode === 'topic') return lv.words.filter((w) => ok(w) && w.topic === S.topic);
     const [a, b] = S.mode === 'today' ? [todayDay(), todayDay()] : [Math.min(S.from, S.to), Math.max(S.from, S.to)];
     return lv.words.filter((w) => ok(w) && w.day >= a && w.day <= b);
   }
-  const rangeLabel = () => S.mode === 'today' ? `Day ${todayDay()}` : S.mode === 'topic' ? S.topic : (S.from === S.to ? `Day ${S.from}` : `Day ${Math.min(S.from, S.to)}~${Math.max(S.from, S.to)}`);
+  const rangeLabel = () => S.mode === 'all' ? `${level().name} 전체` : S.mode === 'today' ? `Day ${todayDay()}` : S.mode === 'topic' ? S.topic : (S.from === S.to ? `Day ${S.from}` : `Day ${Math.min(S.from, S.to)}~${Math.max(S.from, S.to)}`);
   // 퀴즈·떨어지는 카드에 쓸 짧은 뜻: 첫 품사 뜻만, 괄호 설명 빼기
   const short = (w) => w.meaning.split(';')[0].replace(/\s*\([^)]*\)/g, '').trim();
   const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -137,6 +141,7 @@
         </div>
         <div class="setup-row"><span class="setup-label">범위</span>
           <span class="range-opts">
+            <label><input type="radio" name="mode" value="all" ${S.mode === 'all' ? 'checked' : ''}> 전체 (${lv.words.length.toLocaleString()}단어)</label>
             <label><input type="radio" name="mode" value="today" ${S.mode === 'today' ? 'checked' : ''}> 오늘 일차 (Day ${todayDay()})</label>
             <label><input type="radio" name="mode" value="range" ${S.mode === 'range' ? 'checked' : ''}> Day
               <input type="number" id="gFrom" min="1" max="${lv.totalDays}" value="${S.from}"> ~
