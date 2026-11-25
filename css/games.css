@@ -190,6 +190,8 @@ body[data-level="high"] .game-title { font-weight: 900; font-size: 17px; }
 .run-place { position: absolute; left: 14px; bottom: 16px; padding: 6px 14px; border-radius: 99px; background: rgba(255,255,255,.9); color: #1f2937; font-size: 16px; font-weight: 800; z-index: 2; }
 .run-place.show { animation: g-pop .6s; }
 .run-jump { position: absolute; right: 14px; bottom: 16px; width: 76px; height: 76px; border-radius: 50%; border: 4px solid #fff; background: linear-gradient(135deg, #22c55e, #15803d); color: #fff; font-size: 38px; font-weight: 900; z-index: 3; touch-action: manipulation; box-shadow: 0 6px 0 rgba(0,0,0,.25); }
+.run-duck { position: absolute; right: 22px; bottom: 100px; width: 60px; height: 60px; border-radius: 50%; border: 3px solid #fff; background: linear-gradient(135deg, #60a5fa, #1d4ed8); color: #fff; font-size: 30px; font-weight: 900; z-index: 3; touch-action: manipulation; box-shadow: 0 5px 0 rgba(0,0,0,.25); }
+.run-duck:active { -webkit-transform: translateY(3px); transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
 .run-jump:active { -webkit-transform: translateY(4px); transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
 #rnMusic.off, #dMusic.off { opacity: .4; text-decoration: line-through; }
 .run-msg.ok { background: var(--good-soft); color: var(--know-ink); }

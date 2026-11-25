@@ -23,7 +23,7 @@
   const HELP = {
     blocks: ['뜻을 보고 소리를 들은 뒤, 알파벳 블록을 단어 순서대로 눌러요.', 'PC는 키보드로 글자를 쳐도 돼요. 스페이스 = 다시 듣기', '💡 힌트는 다음 글자 블록을 반짝여 줘요.', '힌트를 쓰거나 "모르겠어요"를 누른 단어는 놓친 단어로 남아요.'],
     rain: ['위에서 한글 뜻 카드가 떨어져요.', '바닥에 닿기 전에 그 영단어를 입력칸에 써요. 맞으면 Enter 없이 바로 터져요.', '✍️ 펜으로 쓰기를 켜면 손글씨로 쓸 수 있고, 단어가 조금 천천히 떨어져요.', '카드가 바닥에 3개 닿으면 끝나요. ⏸ 로 잠깐 멈출 수 있어요.'],
-    run: ['형이나 동생을 골라 2차선 길을 달려요. 위에 영어 단어가 나오고 발음도 들려줘요.', '장애물이 나오면 화면을 위로 밀거나 ⬆ 버튼(PC: ↑ 키·스페이스)으로 점프! 허들·통나무는 길 전체를 막아 꼭 뛰어야 하고, 고깔·상자·바위·모래성은 한쪽만 막아서 옆으로 피해도 돼요. 부딪히면 넘어지고 💰 5개를 잃어요.', '달릴수록 동네 → 숲 → 바닷가로 풍경과 음악이 바뀌어요. 🎵 버튼으로 배경음을 끄고 켤 수 있어요.', '앞에서 뜻이 적힌 문 두 개가 다가와요. 맞는 뜻의 문 쪽 차선으로 옮겨서 지나가세요!', '태블릿: 화면 왼쪽·오른쪽을 누르거나 좌우로 밀기. PC: ← → 키', '맞히면 +10점, 3번 연속 ×2, 6번 연속 ×3. 💰 코인은 +2점이에요.', '틀리면 ❤️ 하나를 잃어요. 3개를 다 잃으면 끝! 오래 달릴수록 빨라져요.', '3D 그림이라 인터넷이 필요하고, 오래된 기기에서는 안 될 수도 있어요.'],
+    run: ['형이나 동생을 골라 2차선 길을 달려요. 위에 영어 단어가 나오고 발음도 들려줘요.', '위에 걸린 차단봉·나뭇가지·깃발 줄은 화면을 아래로 밀거나 ⬇ 버튼(PC: ↓ 키)으로 숙여서 지나가요. 💣 폭탄에 부딪히면 ❤️ 하나를 잃으니 옆으로 피하거나 뛰어넘어요!', '장애물이 나오면 화면을 위로 밀거나 ⬆ 버튼(PC: ↑ 키·스페이스)으로 점프! 허들·통나무는 길 전체를 막아 꼭 뛰어야 하고, 고깔·상자·바위·모래성은 한쪽만 막아서 옆으로 피해도 돼요. 부딪히면 넘어지고 💰 5개를 잃어요.', '달릴수록 동네 → 숲 → 바닷가로 풍경과 음악이 바뀌어요. 🎵 버튼으로 배경음을 끄고 켤 수 있어요.', '앞에서 뜻이 적힌 문 두 개가 다가와요. 맞는 뜻의 문 쪽 차선으로 옮겨서 지나가세요!', '태블릿: 화면 왼쪽·오른쪽을 누르거나 좌우로 밀기. PC: ← → 키', '맞히면 +10점, 3번 연속 ×2, 6번 연속 ×3. 💰 코인은 +2점이에요.', '틀리면 ❤️ 하나를 잃어요. 3개를 다 잃으면 끝! 오래 달릴수록 빨라져요.', '3D 그림이라 인터넷이 필요하고, 오래된 기기에서는 안 될 수도 있어요.'],
     drive: ['화면 위 🎯 뜻을 보고, 그 뜻의 영어 단어가 있는 도로로 차를 옮겨 먹어요. 맞으면 +10점!', '태블릿: 화면 왼쪽·오른쪽을 누르거나 좌우로 밀어서 차선을 바꿔요. PC: ← → 키', '틀린 단어 −10 연료, 💀 −20 연료, ⛽ +25 연료. 연료는 계속 조금씩 닳고, 0이 되면 끝나요.', '3번 연속 맞히면 점수 ×2, 6번 연속이면 ×3. 🛡 방패는 한 번 막아 줘요.', '맞는 단어 5개를 먹으면 🚀 부스터! 누르면(스페이스) 3초 동안 아주 빠르고, 무적에 점수 2배예요.', '시간이 갈수록 빨라지고, 30초마다 낮 → 노을 → 밤 → 비로 풍경이 바뀌어요.'],
     catch: ['화면을 누르거나 손가락으로 끌면 아이가 그쪽으로 달려가요.', 'PC는 ← → 키로 움직이고, 스페이스로 잠깐 멈춰요.', '영단어 +10점 · 과일 🍎🍌🍇 +5점', '못 먹는 것 💀💣🔨🪨🧦👟 등은 피해요. 받으면 −5점!', '영단어를 받으면 뜻을 보여 주고 발음을 들려줘요. 영단어가 다 떨어지면 끝나요.'],
     ox: ['영단어와 뜻이 짝으로 나와요.', '맞는 짝이면 ⭕, 틀린 짝이면 ❌ 를 눌러요.', 'PC는 ← 또는 O 키 = ⭕, → 또는 X 키 = ❌', '틀리면 정답을 보여 주고 2초 쉬어요. 시간이 끝날 때까지 최대한 많이 맞혀요.'],
@@ -860,6 +860,7 @@
     });
     $('#dBoost').addEventListener('pointerdown', (e) => { e.preventDefault(); boost(); });
     T().setKey((e) => {
+      if (e.repeat) { if (/^Arrow| $/.test(e.key)) e.preventDefault(); return; }
       if (e.key === 'ArrowLeft') { e.preventDefault(); move(-1); }
       else if (e.key === 'ArrowRight') { e.preventDefault(); move(1); }
       else if (e.key === ' ') { e.preventDefault(); boost(); }
@@ -1012,7 +1013,7 @@
     let hearts = 3; let score = 0; let combo = 0; let bestCombo = 0; let right = 0; let coins = 0; let dist = 0;
     let lane = 0; let runnerX = -LANE; let elapsed = 0; let target = null;
     let gate = null; let nextQIn = 1.0; let coinIn = 1.5;
-    let jumpT = -1; let tripT = 0; let logs = [];
+    let jumpT = -1; let tripT = 0; let logs = []; let duckT = -1; let passing = []; let booms = [];
     let paused = false; let over = false; let raf; let last = performance.now();
     const missed = [];
     const bgm = makeBgm();
@@ -1026,6 +1027,7 @@
           <div class="run-place" id="rnPlace"></div>
           <div class="run-msg" id="rnMsg"></div>
           <button class="run-jump" id="rnJump" aria-label="점프">⬆</button>
+          <button class="run-duck" id="rnDuck" aria-label="숙이기">⬇</button>
         </div>
       </div>`;
     bindQuit(); fullScreen();
@@ -1218,7 +1220,7 @@
       let a = short(target).split(',')[0].trim(); let b = short(wrong).split(',')[0].trim();
       if (a === b) { a = short(target); b = short(wrong); }
       [0, 1].forEach((l) => group.add(makeSign(l === correctLane ? a : b, l ? LANE : -LANE)));
-      group.position.z = -55;
+      group.position.z = -50;
       scene.add(group);
       gate = { group, correctLane, done: false };
       $('#rnEn').textContent = target.word;
@@ -1265,10 +1267,38 @@
         const flag = box(0.28, 0.16, 0.02, 0xef4444); flag.position.set(0.14, 1.75, 0); g.add(flag);
       } },
     };
+    // 위쪽 장애물(꼭 숙이기, 두 차선) — 2026-11-25
+    Object.assign(OBSTACLES, {
+      barrier: { icon: '🚧', name: '차단봉', full: true, duck: true, make(g) {
+        [-2.75, 2.75].forEach((x) => { const p = box(0.16, 2.3, 0.16, 0x374151); p.position.set(x, 1.15, 0); g.add(p); });
+        for (let i = 0; i < 8; i++) { const b = box(0.7, 0.28, 0.14, i % 2 ? 0xffffff : 0xef4444); b.position.set(-2.45 + i * 0.7, 1.95, 0); g.add(b); }
+      } },
+      branch: { icon: '🌿', name: '나뭇가지', full: true, duck: true, make(g) {
+        [-2.9, 2.9].forEach((x) => { const t = cyl(0.25, 0.3, 3, 0x8b5a2b); t.position.set(x, 1.5, 0); g.add(t); });
+        const br = cyl(0.14, 0.18, 5.8, 0x7c4a1e); br.rotation.z = Math.PI / 2; br.position.y = 2.0; g.add(br);
+        for (let i = 0; i < 7; i++) { const l = sph(0.32, i % 2 ? 0x2e7d32 : 0x43a047); l.position.set(-2.4 + i * 0.8, 1.85 + (i % 2) * 0.15, 0); g.add(l); }
+      } },
+      flagline: { icon: '🚩', name: '깃발 줄', full: true, duck: true, make(g) {
+        [-2.85, 2.85].forEach((x) => { const p = cyl(0.06, 0.06, 2.6, 0xffffff); p.position.set(x, 1.3, 0); g.add(p); });
+        const rope = cyl(0.03, 0.03, 5.7, 0x6b7280); rope.rotation.z = Math.PI / 2; rope.position.y = 2.1; g.add(rope);
+        const cols = [0xef4444, 0xfacc15, 0x3b82f6, 0x22c55e, 0xf97316, 0xa855f7];
+        for (let i = 0; i < 12; i++) { const fl = cone(0.18, 0.4, cols[i % 6], 3); fl.rotation.x = Math.PI; fl.position.set(-2.6 + i * 0.47, 1.88, 0); g.add(fl); }
+      } },
+      bomb: { icon: '💣', name: '폭탄', full: false, bomb: true, make(g) {
+        const b = sph(0.5, 0x111827); b.position.y = 0.5; g.add(b);
+        const cap = cyl(0.14, 0.14, 0.14, 0x4b5563); cap.position.y = 1.02; g.add(cap);
+        const fuse = cyl(0.03, 0.03, 0.3, 0xd6a76b); fuse.position.set(0.06, 1.2, 0); fuse.rotation.z = -0.4; g.add(fuse);
+        const spark = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 6), new THREE.MeshBasicMaterial({ color: 0xffa500 })); spark.position.set(0.13, 1.36, 0); g.add(spark);
+        g.userData.spark = spark;
+        const shine = sph(0.12, 0x6b7280); shine.position.set(-0.2, 0.75, 0.38); g.add(shine);
+      } },
+    });
     const PLACE_OBS = { town: [['hurdle'], ['cones', 'crate']], forest: [['log'], ['rock']], sea: [['log'], ['sandcastle']] };
+    const PLACE_DUCK = { town: 'barrier', forest: 'branch', sea: 'flagline' };
     function spawnObstacle(z) {
       const [fulls, singles] = PLACE_OBS[PLACES[placeIdx].key];
-      const key = Math.random() < 0.5 ? pick3(fulls) : pick3(singles);
+      const r = Math.random();
+      const key = r < 0.5 ? (Math.random() < 0.5 ? pick3(fulls) : pick3(singles)) : r < 0.8 ? PLACE_DUCK[PLACES[placeIdx].key] : 'bomb';
       const O = OBSTACLES[key];
       const g = new THREE.Group(); O.make(g);
       const lanesHit = O.full ? [0, 1] : [Math.random() < 0.5 ? 0 : 1];
@@ -1326,6 +1356,16 @@
       hud();
       if (hearts <= 0) end();
     }
+    function explode(o) {
+      const fire = new THREE.Mesh(new THREE.SphereGeometry(0.6, 16, 12), new THREE.MeshBasicMaterial({ color: 0xff7a00, transparent: true, opacity: 0.9 }));
+      fire.position.set(o.g.position.x, 0.8, o.g.position.z); scene.add(fire); booms.push({ m: fire, t: 0 });
+      o.g.visible = false;
+      hearts--; combo = 0; sfx('bad');
+      msg('💣 펑! 폭탄에 부딪혀 ❤️ 하나를 잃었어요', false);
+      stage.classList.remove('hit'); void stage.offsetWidth; stage.classList.add('hit');
+      hud();
+      if (hearts <= 0) end();
+    }
     function trip(O) {
       tripT = 1; combo = 0;
       const lost = Math.min(5, coins); coins -= lost;
@@ -1354,18 +1394,26 @@
           gate.group.position.z += dz;
           if (!gate.done && gate.group.position.z >= 0) {
             judge();
-            // 문을 지난 뒤, 다음 문과 겹치지 않게 통나무 0~1개
-            if (!over && Math.random() < 0.65) spawnObstacle(-28);
+            // 문을 지난 뒤, 다음 문과 겹치지 않게 장애물 0~1개 (2026-11-25: 단어·장애물 약 30% 더 자주)
+            if (!over && Math.random() < 0.65) spawnObstacle(-26);
+            passing.push(gate.group); gate = null; nextQIn = 0.3;
           }
-          if (gate && gate.group.position.z > 9) { disposeObj(gate.group); gate = null; nextQIn = 0.6; }
         }
+        passing = passing.filter((g) => { g.position.z += dz; if (g.position.z > 9) { disposeObj(g); return false; } return true; });
+        booms = booms.filter((b) => { b.t += dt; b.m.scale.setScalar(1 + b.t * 6); b.m.material.opacity = Math.max(0, 0.9 - b.t * 1.8); if (b.t > 0.5) { disposeObj(b.m); return false; } return true; });
         // 통나무
         logs = logs.filter((o) => {
           o.g.position.z += dz;
           if (!o.done && o.g.position.z >= -0.3) {
             o.done = true;
-            if (o.lanes.indexOf(lane) >= 0) { if (runner.position.y < 0.55) trip(o.O); else msg(`${o.O.icon} 점프 성공!`, true); }
+            if (o.lanes.indexOf(lane) >= 0) {
+              const jumping = runner.position.y >= 0.55;
+              if (o.O.duck) { if (duckT >= 0) msg(`${o.O.icon} 숙이기 성공!`, true); else trip(o.O); }
+              else if (o.O.bomb) { if (jumping) msg('💣 폭탄을 뛰어넘었어요!', true); else explode(o); }
+              else if (jumping) msg(`${o.O.icon} 점프 성공!`, true); else trip(o.O);
+            }
           }
+          if (o.g.userData.spark) o.g.userData.spark.visible = Math.sin(elapsed * 30) > 0;
           if (o.g.position.z > 9) { disposeObj(o.g); return false; }
           return true;
         });
@@ -1386,7 +1434,10 @@
         let y = 0;
         if (jumpT >= 0) { jumpT += dt; y = Math.sin(Math.min(1, jumpT / 0.6) * Math.PI) * 1.6; if (jumpT >= 0.6) jumpT = -1; }
         const ph = elapsed * speed * 1.1;
-        if (jumpT >= 0) { armL.rotation.x = -2.4; armR.rotation.x = -2.4; legL.rotation.x = -0.6; legR.rotation.x = 0.6; runner.position.y = y; }
+        if (duckT >= 0) { duckT += dt; if (duckT >= 0.8) duckT = -1; }
+        runner.scale.y = duckT >= 0 ? 0.55 : 1;
+        if (duckT >= 0) { armL.rotation.x = 1.2; armR.rotation.x = 1.2; legL.rotation.x = -0.9; legR.rotation.x = 0.4; runner.position.y = 0; }
+        else if (jumpT >= 0) { armL.rotation.x = -2.4; armR.rotation.x = -2.4; legL.rotation.x = -0.6; legR.rotation.x = 0.6; runner.position.y = y; }
         else {
           const sw = Math.sin(ph) * 0.8;
           armL.rotation.x = sw; armR.rotation.x = -sw; legL.rotation.x = -sw; legR.rotation.x = sw;
@@ -1407,21 +1458,27 @@
 
     // ----- 조작: 좌우 누르기·밀기 / 위로 밀기·⬆ 버튼 / ← → ↑ 스페이스 -----
     const move = (to) => { if (!paused && !over) lane = to; };
-    const jump = () => { if (!paused && !over && jumpT < 0) jumpT = 0; };
+    const jump = () => { if (!paused && !over && jumpT < 0) { duckT = -1; jumpT = 0; } };
+    const duck = () => { if (!paused && !over && jumpT < 0 && duckT < 0) duckT = 0; };
     let x0 = null; let y0 = null;
     stage.addEventListener('pointerdown', (e) => { if (e.target.closest('button')) return; e.preventDefault(); x0 = e.clientX; y0 = e.clientY; });
     stage.addEventListener('pointerup', (e) => {
       if (x0 === null) return;
       const dx = e.clientX - x0; const dy = e.clientY - y0; x0 = null; y0 = null;
       if (dy < -30 && Math.abs(dy) > Math.abs(dx)) jump();
+      else if (dy > 30 && Math.abs(dy) > Math.abs(dx)) duck();
       else if (Math.abs(dx) > 30) move(dx < 0 ? 0 : 1);
       else { const r = stage.getBoundingClientRect(); move(e.clientX - r.left < r.width / 2 ? 0 : 1); }
     });
     $('#rnJump').addEventListener('pointerdown', (e) => { e.preventDefault(); jump(); });
+    $('#rnDuck').addEventListener('pointerdown', (e) => { e.preventDefault(); duck(); });
     T().setKey((e) => {
+      // 키를 누르고 있으면 반복 입력이 쌓여 계속 움직이므로, 처음 한 번만 받는다 (2026-11-25)
+      if (e.repeat) { if (/^Arrow| $/.test(e.key)) e.preventDefault(); return; }
       if (e.key === 'ArrowLeft') { e.preventDefault(); move(0); }
       else if (e.key === 'ArrowRight') { e.preventDefault(); move(1); }
       else if (e.key === 'ArrowUp' || e.key === ' ') { e.preventDefault(); jump(); }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); duck(); }
     });
     $('#rnSay').onclick = () => { if (target) say(target); };
     $('#rnMusic').onclick = () => { bgm.setOn(!bgm.on); hud(); };
