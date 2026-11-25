@@ -23,7 +23,7 @@
   const HELP = {
     blocks: ['뜻을 보고 소리를 들은 뒤, 알파벳 블록을 단어 순서대로 눌러요.', 'PC는 키보드로 글자를 쳐도 돼요. 스페이스 = 다시 듣기', '💡 힌트는 다음 글자 블록을 반짝여 줘요.', '힌트를 쓰거나 "모르겠어요"를 누른 단어는 놓친 단어로 남아요.'],
     rain: ['위에서 한글 뜻 카드가 떨어져요.', '바닥에 닿기 전에 그 영단어를 입력칸에 써요. 맞으면 Enter 없이 바로 터져요.', '✍️ 펜으로 쓰기를 켜면 손글씨로 쓸 수 있고, 단어가 조금 천천히 떨어져요.', '카드가 바닥에 3개 닿으면 끝나요. ⏸ 로 잠깐 멈출 수 있어요.'],
-    run: ['형이나 동생을 골라 2차선 길을 달려요. 위에 영어 단어가 나오고 발음도 들려줘요.', '위에 걸린 차단봉·나뭇가지·깃발 줄은 화면을 아래로 밀거나 ⬇ 버튼(PC: ↓ 키)으로 숙여서 지나가요. 💣 폭탄에 부딪히면 ❤️ 하나를 잃으니 옆으로 피하거나 뛰어넘어요!', '장애물이 나오면 화면을 위로 밀거나 ⬆ 버튼(PC: ↑ 키·스페이스)으로 점프! 허들·통나무는 길 전체를 막아 꼭 뛰어야 하고, 고깔·상자·바위·모래성은 한쪽만 막아서 옆으로 피해도 돼요. 부딪히면 넘어지고 💰 5개를 잃어요.', '달릴수록 동네 → 숲 → 바닷가로 풍경과 음악이 바뀌어요. 🎵 버튼으로 배경음을 끄고 켤 수 있어요.', '앞에서 뜻이 적힌 문 두 개가 다가와요. 맞는 뜻의 문 쪽 차선으로 옮겨서 지나가세요!', '태블릿: 화면 왼쪽·오른쪽을 누르거나 좌우로 밀기. PC: ← → 키', '맞히면 +10점, 3번 연속 ×2, 6번 연속 ×3. 💰 코인은 +2점이에요.', '틀리면 ❤️ 하나를 잃어요. 3개를 다 잃으면 끝! 오래 달릴수록 빨라져요.', '3D 그림이라 인터넷이 필요하고, 오래된 기기에서는 안 될 수도 있어요.'],
+    run: ['형이나 동생을 골라 2차선 길을 달려요. 위에 영어 단어가 나오고 발음도 들려줘요.', '위에 걸린 차단봉·나뭇가지·깃발 줄은 화면을 아래로 밀거나 ⬇ 버튼(PC: ↓ 키)으로 숙여서 지나가요. 💣 폭탄에 부딪히면 ❤️ 하나를 잃으니 옆으로 피하거나 뛰어넘어요!', '장애물이 나오면 화면을 위로 밀거나 ⬆ 버튼(PC: ↑ 키·스페이스)으로 점프! 허들·통나무는 길 전체를 막아 꼭 뛰어야 하고, 고깔·상자·바위·모래성은 한쪽만 막아서 옆으로 피해도 돼요. 부딪히면 넘어지고 💰 5개를 잃어요.', '바닷가 다음엔 물속! 🎐 해파리는 숙이고, 산호초·조개·보물상자는 점프, 🐡 복어는 폭탄처럼 피해요.', '달릴수록 동네 → 숲 → 바닷가 → 물속으로 풍경과 음악이 바뀌어요. 🎵 버튼으로 배경음을 끄고 켤 수 있어요.', '앞에서 뜻이 적힌 문 두 개가 다가와요. 맞는 뜻의 문 쪽 차선으로 옮겨서 지나가세요!', '태블릿: 화면 왼쪽·오른쪽을 누르거나 좌우로 밀기. PC: ← → 키', '맞히면 +10점, 3번 연속 ×2, 6번 연속 ×3. 💰 코인은 +2점이에요.', '틀리면 ❤️ 하나를 잃어요. 3개를 다 잃으면 끝! 오래 달릴수록 빨라져요.', '3D 그림이라 인터넷이 필요하고, 오래된 기기에서는 안 될 수도 있어요.'],
     drive: ['화면 위 🎯 뜻을 보고, 그 뜻의 영어 단어가 있는 도로로 차를 옮겨 먹어요. 맞으면 +10점!', '태블릿: 화면 왼쪽·오른쪽을 누르거나 좌우로 밀어서 차선을 바꿔요. PC: ← → 키', '틀린 단어 −10 연료, 💀 −20 연료, ⛽ +25 연료. 연료는 계속 조금씩 닳고, 0이 되면 끝나요.', '3번 연속 맞히면 점수 ×2, 6번 연속이면 ×3. 🛡 방패는 한 번 막아 줘요.', '맞는 단어 5개를 먹으면 🚀 부스터! 누르면(스페이스) 3초 동안 아주 빠르고, 무적에 점수 2배예요.', '시간이 갈수록 빨라지고, 30초마다 낮 → 노을 → 밤 → 비로 풍경이 바뀌어요.'],
     catch: ['화면을 누르거나 손가락으로 끌면 아이가 그쪽으로 달려가요.', 'PC는 ← → 키로 움직이고, 스페이스로 잠깐 멈춰요.', '영단어 +10점 · 과일 🍎🍌🍇 +5점', '못 먹는 것 💀💣🔨🪨🧦👟 등은 피해요. 받으면 −5점!', '영단어를 받으면 뜻을 보여 주고 발음을 들려줘요. 영단어가 다 떨어지면 끝나요.'],
     ox: ['영단어와 뜻이 짝으로 나와요.', '맞는 짝이면 ⭕, 틀린 짝이면 ❌ 를 눌러요.', 'PC는 ← 또는 O 키 = ⭕, → 또는 X 키 = ❌', '틀리면 정답을 보여 주고 2초 쉬어요. 시간이 끝날 때까지 최대한 많이 맞혀요.'],
@@ -949,6 +949,7 @@
     run: { bpm: 150, wave: 'square', mel: [72, 0, 76, 79, 0, 76, 72, 0, 74, 0, 77, 81, 0, 77, 74, 0, 76, 0, 79, 84, 0, 79, 76, 0, 77, 79, 81, 83, 84, 0, 0, 0], bass: [48, 48, 55, 55, 53, 53, 55, 55], bw: 'triangle', mv: 0.07, drum: true },
     town: { bpm: 120, wave: 'sine', mel: [72, 76, 79, 76, 74, 77, 81, 77, 76, 79, 84, 79, 77, 74, 72, 0], bass: [48, 55, 53, 55], bw: 'triangle', mv: 0.16, pluck: true },
     forest: { bpm: 84, wave: 'sine', mel: [69, 0, 72, 74, 76, 0, 74, 72, 67, 0, 69, 72, 71, 0, 0, 0], bass: [45, 45, 43, 43, 41, 41, 40, 40], bw: 'sine', mv: 0.12, vib: true },
+    deep: { bpm: 72, wave: 'sine', mel: [76, 0, 79, 0, 83, 0, 81, 79, 76, 0, 74, 0, 76, 0, 0, 0, 72, 0, 76, 0, 79, 0, 78, 76, 74, 0, 71, 0, 72, 0, 0, 0], bass: [45, 45, 41, 41, 43, 43, 40, 40], bw: 'sine', mv: 0.11, vib: true, pluck: true, blub: true },
     sea: { bpm: 100, wave: 'triangle', mel: [67, 71, 74, 0, 72, 71, 69, 0, 67, 69, 71, 0, 74, 72, 71, 0], bass: [43, 50, 48, 47], bw: 'sine', mv: 0.12, pluck: true, hat: true },
   };
   function makeBgm() {
@@ -971,6 +972,12 @@
       g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + 0.01); g.gain.exponentialRampToValueAtTime(0.001, t + (pluck ? d * 0.9 : d));
       o.connect(g); g.connect(master); o.start(t); o.stop(t + d + 0.05);
     }
+    function blub(t) {   // 물속 뽀글
+      const o = ctx.createOscillator(); const g = ctx.createGain(); o.type = 'sine';
+      o.frequency.setValueAtTime(380, t); o.frequency.exponentialRampToValueAtTime(950, t + 0.09);
+      g.gain.setValueAtTime(0.07, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+      o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.15);
+    }
     function hat(t) {
       const b = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.05), ctx.sampleRate); const d = b.getChannelData(0);
       for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
@@ -984,6 +991,7 @@
         if (m) note(freq(m), nextT, sp * 1.6, S2.wave, S2.mv, S2.pluck, S2.vib);
         if (step % per === 0) note(freq(S2.bass[Math.floor(step / per) % S2.bass.length]), nextT, sp * per * 0.95, S2.bw, 0.14, false, false);
         if (S2.hat && step % 4 === 2) hat(nextT);
+        if (S2.blub && step % 8 === 5) { blub(nextT); if (step % 16 === 13) blub(nextT + 0.1); }
         if (S2.drum) { if (step % 4 === 0) kick(nextT); if (step % 2 === 1) hat(nextT); }
         nextT += sp; step++;
       }
@@ -1042,7 +1050,7 @@
     const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 250);
     camera.position.set(0, 4.2, 8.6);
     camera.lookAt(0, 1.2, -8);
-    scene.add(new THREE.HemisphereLight(0xffffff, 0x6aa35a, 0.9));
+    const hemi = new THREE.HemisphereLight(0xffffff, 0x6aa35a, 0.9); scene.add(hemi);
     const sun = new THREE.DirectionalLight(0xffffff, 0.7); sun.position.set(5, 10, 4); scene.add(sun);
 
     const mat = (color) => new THREE.MeshLambertMaterial({ color });
@@ -1064,7 +1072,7 @@
       c.position.set(-30 + i * 10, 13 + Math.random() * 5, -80 - Math.random() * 20); scene.add(c); clouds.push(c);
     }
 
-    // ----- 배경 3종 (달릴수록 동네 → 숲 → 바다) -----
+    // ----- 배경 4종 (달릴수록 동네 → 숲 → 바닷가 → 물속) -----
     const PLACES = [
       { key: 'town', name: '🏘 동네 길', sky: 0x9fd6ff, grass: 0x7cc95e,
         make(side) {
@@ -1134,17 +1142,167 @@
           return g;
         },
         far(f) {
-          const sea = new THREE.Mesh(new THREE.PlaneGeometry(120, 260), mat(0x38bdf8)); sea.rotation.x = -Math.PI / 2; sea.position.set(63, 0.015, 0); f.add(sea);
+          const sea = new THREE.Mesh(new THREE.PlaneGeometry(120, 260), new THREE.MeshLambertMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.62 }));
+          sea.rotation.x = -Math.PI / 2; sea.position.set(63, 0.32, 0); f.add(sea);
+          const seabed = new THREE.Mesh(new THREE.PlaneGeometry(120, 260), mat(0x1e6f8f)); seabed.rotation.x = -Math.PI / 2; seabed.position.set(63, 0.02, 0); f.add(seabed);
           const lh = cyl(0.8, 1.1, 7, 0xffffff); lh.position.set(30, 3.5, -90); f.add(lh);
           [1, 3, 5].forEach((y) => { const b = cyl(0.85, 1, 0.8, 0xdc2626); b.position.set(30, y, -90); f.add(b); });
           const lt = sph(0.7, 0xfef08a); lt.position.set(30, 7.5, -90); f.add(lt);
           const boat = box(2, 0.5, 0.8, 0x7c2d12); boat.position.set(18, 0.3, -60); f.add(boat);
           const sail = cone(1.2, 2.4, 0xffffff, 3); sail.position.set(18, 1.8, -60); f.add(sail);
         } },
+      // 물속 (2026-11-25): 해초·산호·불가사리, 가라앉은 배, 빛줄기
+      { key: 'deep', name: '🐠 바닷속 길', sky: 0x1f6fa3, grass: 0xb9a06a, road: 0x4b6478, fog: [22, 80], hemi: 0x9fdcff, light: [0.6, 0.4],
+        make(side) {
+          const g = new THREE.Group(); const k = Math.random();
+          if (k < 0.45) {   // 흔들리는 해초
+            const weeds = [];
+            for (let i = 0; i < 3; i++) {
+              const w = new THREE.Group(); const h = 1.6 + Math.random() * 1.6;
+              const st = cyl(0.07, 0.12, h, pick3([0x15803d, 0x16a34a, 0x4d7c0f]), 6); st.position.y = h / 2; w.add(st);
+              const lf = sph(0.16, 0x22c55e); lf.scale.set(1.8, 0.5, 0.6); lf.position.set(0.12, h * 0.6, 0); w.add(lf);
+              w.position.set(i * 0.4 - 0.4, 0, Math.random() * 0.4); w.userData.ph = Math.random() * 6; g.add(w); weeds.push(w);
+            }
+            g.userData.weeds = weeds;
+          } else if (k < 0.75) {   // 산호
+            const c = pick3([0xf472b6, 0xfb923c, 0xf87171, 0xc084fc]);
+            for (let i = 0; i < 4; i++) {
+              const h = 0.6 + Math.random() * 0.8;
+              const b = cyl(0.08, 0.12, h, c, 6); b.position.set(Math.cos(i * 1.6) * 0.3, h / 2, Math.sin(i * 1.6) * 0.3); b.rotation.z = (i - 1.5) * 0.3; g.add(b);
+              const t = sph(0.14, c); t.position.set(b.position.x - Math.sin(b.rotation.z) * h / 2, h * 0.95, b.position.z); g.add(t);
+            }
+          } else {   // 바위 + 불가사리
+            const r = sph(0.7, 0x64748b); r.scale.set(1.3, 0.6, 1); r.position.y = 0.25; g.add(r);
+            const star = new THREE.Group();
+            for (let i = 0; i < 5; i++) { const a = box(0.36, 0.06, 0.1, 0xf97316); a.position.set(Math.cos(i * 1.2566) * 0.16, 0, -Math.sin(i * 1.2566) * 0.16); a.rotation.y = i * 1.2566; star.add(a); }
+            star.position.set(0.3, 0.64, 0.2); g.add(star);
+          }
+          g.position.x = side * (3.8 + Math.random() * 6);
+          return g;
+        },
+        far(f) {
+          const hull = box(9, 2.4, 3, 0x5b3a1e); hull.position.set(-20, 0.9, -85); hull.rotation.z = 0.18; f.add(hull);
+          const mast = cyl(0.2, 0.2, 7, 0x4a2f17); mast.position.set(-19, 4.2, -85); mast.rotation.z = 0.35; f.add(mast);
+          [[0x2b5f7a, 22, 9], [0x356f8a, 38, 13], [0x24546d, -42, 11]].forEach(([c, x, h]) => { const m = cone(14, h, c, 7); m.position.set(x, h / 2 - 1, -100); f.add(m); });
+          for (let i = 0; i < 6; i++) {
+            const ray = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 30), new THREE.MeshBasicMaterial({ color: 0xe0f7ff, transparent: true, opacity: 0.12, depthWrite: false, fog: false }));
+            ray.position.set(-15 + i * 6, 12, -30 - i * 8); ray.rotation.z = 0.35; f.add(ray);
+          }
+        } },
     ];
     function disposeObj(o) {
       if (o.parent) o.parent.remove(o);
       o.traverse((x) => { if (x.geometry) x.geometry.dispose(); if (x.material) { if (x.material.map) x.material.map.dispose(); x.material.dispose(); } });
+    }
+    // ----- 새 (모든 배경) · 물고기 (바닷가) — 2026-11-25 -----
+    function makeBird(white) {
+      const g = new THREE.Group();
+      const col = white ? 0xffffff : pick3([0x374151, 0x7c4a1e, 0x1f2937]);
+      const body = sph(0.28, col); body.scale.set(1, 0.7, 1.6); g.add(body);
+      const head = sph(0.16, col); head.position.set(0, 0.08, 0.42); g.add(head);
+      const beak = cone(0.06, 0.18, 0xf59e0b, 6); beak.rotation.x = Math.PI / 2; beak.position.set(0, 0.06, 0.6); g.add(beak);
+      const wing = (sd) => { const w = new THREE.Group(); const m = box(0.9, 0.04, 0.4, col); m.position.x = sd * 0.45; w.add(m); g.add(w); return w; };
+      const wl = wing(-1); const wr = wing(1);
+      g.userData = { wl, wr, col, parts: [body, head, wl.children[0], wr.children[0]], phase: Math.random() * 6, dir: Math.random() < 0.5 ? -1 : 1, speed: 2 + Math.random() * 2 };
+      g.rotation.y = g.userData.dir > 0 ? Math.PI / 2 : -Math.PI / 2;
+      return g;
+    }
+    const birds = [];
+    function resetBird(b, first) {
+      const u = b.userData;
+      b.position.set(first ? -24 + Math.random() * 48 : -u.dir * (26 + Math.random() * 8), 6 + Math.random() * 5, -15 - Math.random() * 45);
+    }
+    for (let i = 0; i < 6; i++) { const b = makeBird(false); resetBird(b, true); scene.add(b); birds.push(b); }
+    function makeFish() {
+      const g = new THREE.Group();
+      const col = pick3([0xf97316, 0xfacc15, 0xef4444, 0xa855f7, 0x22d3ee]);
+      const body = sph(0.3, col); body.scale.set(0.6, 0.8, 1.4); g.add(body);
+      const tail = cone(0.22, 0.4, col, 4); tail.rotation.x = -Math.PI / 2; tail.position.z = -0.55; g.add(tail);
+      const eye = sph(0.05, 0x111827); eye.position.set(0.14, 0.08, 0.26); g.add(eye);
+      g.userData = { phase: Math.random() * 6, vx: (Math.random() < 0.5 ? -1 : 1) * (0.4 + Math.random() * 0.6) };
+      return g;
+    }
+    let fishes = []; let jumpers = []; let splashes = []; let jumpIn = 2;
+    // 물속: 거품·물고기 떼 (2026-11-25)
+    let deep = false; let schools = [];
+    const bubbleGeo = new THREE.SphereGeometry(0.08, 8, 6);
+    const bubbles = [];
+    function resetBubble(b, first) {
+      if (!first && Math.random() < 0.3) b.position.set(runner.position.x + 0.15, 2.3 * runner.scale.y, 0.2);   // 달리는 친구 산소통에서 뽀글
+      else b.position.set(-9 + Math.random() * 18, first ? Math.random() * 8 : 0, -4 - Math.random() * 40);
+      b.scale.setScalar(0.6 + Math.random() * 1.4); b.userData.v = 0.8 + Math.random() * 1.2; b.userData.ph = Math.random() * 6;
+    }
+    for (let i = 0; i < 28; i++) { const b = new THREE.Mesh(bubbleGeo, new THREE.MeshBasicMaterial({ color: 0xe0f7ff, transparent: true, opacity: 0.55 })); b.visible = false; resetBubble(b, true); scene.add(b); bubbles.push(b); }
+    function placeSchool(g, first) { g.position.set(first ? -12 + Math.random() * 24 : -g.userData.dir * (18 + Math.random() * 6), 2.5 + Math.random() * 3, -12 - Math.random() * 35); }
+    function makeSchool() {
+      const g = new THREE.Group(); const dir = Math.random() < 0.5 ? -1 : 1; const col = pick3([0xfacc15, 0x22d3ee, 0xf97316, 0xe5e7eb]);
+      for (let i = 0; i < 7; i++) {
+        const fsh = makeFish(); fsh.scale.setScalar(0.6);
+        fsh.children.forEach((m) => { if (m.material.color.getHex() !== 0x111827) m.material.color.set(col); });
+        fsh.position.set((i % 3) * 0.7 - Math.random() * 0.3, Math.floor(i / 3) * 0.5 + Math.random() * 0.2, Math.random() * 0.8); g.add(fsh);
+      }
+      g.rotation.y = dir > 0 ? Math.PI / 2 : -Math.PI / 2;
+      g.userData = { dir, speed: 1.5 + Math.random() * 1.5 };
+      placeSchool(g, true); scene.add(g); return g;
+    }
+    function setDeep(on) {
+      deep = on;
+      birds.forEach((b) => { b.visible = !on; });
+      clouds.forEach((c) => { c.visible = !on; });
+      bubbles.forEach((b) => { b.visible = on; });
+      schools.forEach(disposeObj); schools = [];
+      if (on) for (let i = 0; i < 3; i++) schools.push(makeSchool());
+    }
+    function updateDeep(dt, dz) {
+      bubbles.forEach((b) => { const u = b.userData; u.ph += dt * 3; b.position.y += u.v * dt; b.position.x += Math.sin(u.ph) * dt * 0.3; b.position.z += dz * 0.6; if (b.position.y > 9 || b.position.z > 6) resetBubble(b, false); });
+      schools.forEach((g) => {
+        const u = g.userData; g.position.x += u.dir * u.speed * dt; g.position.z += dz * 0.5;
+        g.children.forEach((fsh, i) => { fsh.rotation.y = Math.sin(elapsed * 6 + i) * 0.25; });
+        if (Math.abs(g.position.x) > 26 || g.position.z > 6) placeSchool(g, false);
+      });
+      props.forEach((p) => { if (p.userData.weeds) p.userData.weeds.forEach((w) => { w.rotation.z = Math.sin(elapsed * 1.6 + w.userData.ph) * 0.18; }); });
+    }
+    function setSeaLife(on) {
+      fishes.forEach(disposeObj); fishes = [];
+      jumpers.forEach((j) => disposeObj(j.m)); jumpers = [];
+      // 바닷가에서는 하얀 갈매기
+      birds.forEach((bd) => bd.userData.parts.forEach((m) => m.material.color.set(on ? 0xffffff : bd.userData.col)));
+      if (!on) return;
+      for (let i = 0; i < 14; i++) { const fsh = makeFish(); fsh.position.set(4 + Math.random() * 14, 0.15, -i * 6.5); fsh.rotation.y = fsh.userData.vx > 0 ? Math.PI / 2 : -Math.PI / 2; scene.add(fsh); fishes.push(fsh); }
+    }
+    function updateLife(dt, dz) {
+      birds.forEach((b) => {
+        const u = b.userData; u.phase += dt * 10;
+        const flap = Math.sin(u.phase) * 0.7; u.wl.rotation.z = flap; u.wr.rotation.z = -flap;
+        b.position.x += u.dir * u.speed * dt; b.position.y += Math.sin(u.phase * 0.2) * dt * 0.3; b.position.z += dz * 0.25;
+        if (Math.abs(b.position.x) > 36 || b.position.z > 5) resetBird(b, false);
+      });
+      fishes.forEach((fsh) => {
+        const u = fsh.userData; u.phase += dt * 6;
+        fsh.position.z += dz; fsh.position.x += u.vx * dt; fsh.rotation.y += Math.sin(u.phase) * dt * 0.6;
+        if (fsh.position.x < 3.6 || fsh.position.x > 20) { u.vx = -u.vx; fsh.rotation.y += Math.PI; }
+        if (fsh.position.z > 10) fsh.position.z -= 92;
+      });
+      if (deep) updateDeep(dt, dz);
+      if (fishes.length) {
+        jumpIn -= dt;
+        if (jumpIn <= 0) {
+          jumpIn = 2.5 + Math.random() * 3;
+          const j = makeFish(); j.position.set(5 + Math.random() * 8, 0.3, -18 - Math.random() * 12); j.rotation.y = Math.PI / 2;
+          scene.add(j); jumpers.push({ m: j, vy: 5.5 + Math.random() * 1.5, done: false });
+        }
+      }
+      jumpers = jumpers.filter((j) => {
+        j.vy -= 12 * dt; j.m.position.y += j.vy * dt; j.m.position.z += dz; j.m.position.x += dt * 1.5;
+        j.m.rotation.z = -Math.atan2(j.vy, 3);
+        if (j.m.position.y < 0.3 && j.vy < 0) {
+          const ring = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.06, 6, 16), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.9 }));
+          ring.rotation.x = Math.PI / 2; ring.position.set(j.m.position.x, 0.34, j.m.position.z); scene.add(ring); splashes.push({ m: ring, t: 0 });
+          disposeObj(j.m); return false;
+        }
+        return true;
+      });
+      splashes = splashes.filter((sp) => { sp.t += dt; sp.m.position.z += dz; sp.m.scale.setScalar(1 + sp.t * 4); sp.m.material.opacity = Math.max(0, 0.9 - sp.t * 1.5); if (sp.t > 0.6) { disposeObj(sp.m); return false; } return true; });
     }
     let placeIdx = -1; let props = []; let far = null;
     function setPlace(i) {
@@ -1152,13 +1310,20 @@
       props.forEach(disposeObj); props = [];
       if (far) disposeObj(far);
       far = new THREE.Group(); scene.add(far); PL.far(far);
-      scene.background = new THREE.Color(PL.sky); scene.fog = new THREE.Fog(PL.sky, 35, 95);
-      grass.material.color.set(PL.grass);
+      const fg = PL.fog || [35, 95];
+      scene.background = new THREE.Color(PL.sky); scene.fog = new THREE.Fog(PL.sky, fg[0], fg[1]);
+      grass.material.color.set(PL.grass); road.material.color.set(PL.road || 0x5b6472); hemi.color.set(PL.hemi || 0xffffff);
+      const li = PL.light || [0.9, 0.7]; hemi.intensity = li[0]; sun.intensity = li[1];
       for (let k = 0; k < 26; k++) { const p = PL.make(k % 2 ? 1 : -1); p.position.z = -k * 4; scene.add(p); props.push(p); }
+      setSeaLife(PL.key === 'sea');
+      setDeep(PL.key === 'deep');
       const pl = $('#rnPlace'); pl.textContent = PL.name; pl.classList.remove('show'); void pl.offsetWidth; pl.classList.add('show');
       bgm.play(PL.key);
     }
-    setPlace(0);
+    // 확인용: 주소에 ?runplace=1(숲)·2(바닷가)·3(물속) 을 붙이면 그 배경에서 시작 (평소에는 동네부터)
+    const startPlace = Math.min(PLACES.length - 1, +((/[?&]runplace=(\d)/.exec(location.search) || [])[1] || 0));
+    dist = startPlace * SCENE_EVERY;
+    setPlace(startPlace);
 
     // ----- 달리는 아이 — 캐릭터 A '블록 다듬기' (2026-11-25 선택) -----
     // 앞(+z)을 보도록 만든 뒤 180° 돌려서, 뒤에서 따라가는 카메라에 뒷모습이 보이게 한다
@@ -1172,6 +1337,14 @@
     add(box(0.66, 0.4, 0.08, HAIR), 0, 2.2, -0.3);
     [-0.14, 0.14].forEach((x) => { add(box(0.08, 0.11, 0.02, DARK), x, 2.12, 0.3); add(box(0.1, 0.05, 0.02, BLUSH), x * 1.6, 2.0, 0.3); });
     add(box(0.16, 0.04, 0.02, 0xb45309), 0, 1.96, 0.3);
+    // 물속 장비 (물안경·산소통) — 물속 배경에서만 보임
+    const gear = new THREE.Group(); runner.add(gear); gear.visible = false;
+    const gm = (m, x, y, z) => { m.position.set(x, y, z); gear.add(m); return m; };
+    gm(box(0.6, 0.24, 0.06, 0x0ea5e9), 0, 2.13, 0.32);
+    [-0.14, 0.14].forEach((x) => { gm(box(0.2, 0.15, 0.03, 0xbae6fd), x, 2.13, 0.355); gm(box(0.07, 0.09, 0.02, DARK), x, 2.12, 0.375); });
+    gm(box(0.68, 0.08, 0.64, 0x0ea5e9), 0, 2.15, 0);
+    [-0.15, 0.15].forEach((x) => { gm(cyl(0.13, 0.13, 0.68, 0xfacc15, 12), x, 1.45, -0.32); gm(cyl(0.05, 0.05, 0.12, 0x6b7280), x, 1.85, -0.32); });
+    gm(box(0.06, 0.06, 0.4, 0x111827), 0.26, 1.98, -0.1);
     const limb = (x, y, parts) => {
       const g = new THREE.Group(); g.position.set(x, y, 0);
       let yy = 0;
@@ -1293,12 +1466,62 @@
         const shine = sph(0.12, 0x6b7280); shine.position.set(-0.2, 0.75, 0.38); g.add(shine);
       } },
     });
-    const PLACE_OBS = { town: [['hurdle'], ['cones', 'crate']], forest: [['log'], ['rock']], sea: [['log'], ['sandcastle']] };
-    const PLACE_DUCK = { town: 'barrier', forest: 'branch', sea: 'flagline' };
+    // 물속 장애물 (2026-11-25)
+    Object.assign(OBSTACLES, {
+      jelly: { icon: '🎐', name: '해파리', full: true, duck: true, make(g) {
+        [-1.9, 0, 1.9].forEach((x, i) => {
+          const j = new THREE.Group();
+          const bell = new THREE.Mesh(new THREE.SphereGeometry(0.6, 14, 10, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshLambertMaterial({ color: [0xf0abfc, 0xa5f3fc, 0xfda4af][i], transparent: true, opacity: 0.85, side: THREE.DoubleSide }));
+          j.add(bell);
+          for (let k = 0; k < 5; k++) { const t = cyl(0.03, 0.02, 0.5, 0xf5d0fe, 4); t.position.set(Math.cos(k * 1.26) * 0.35, -0.3, Math.sin(k * 1.26) * 0.35); j.add(t); }
+          j.position.set(x, 1.95, 0); g.add(j);
+        });
+        g.userData.bob = true;
+      } },
+      coral: { icon: '🌺', name: '산호초', full: true, make(g) {
+        const cols = [0xf472b6, 0xfb923c, 0xf87171, 0xc084fc, 0xfacc15];
+        for (let i = 0; i < 9; i++) {
+          const c = cols[i % 5]; const x = -2.4 + i * 0.6;
+          const b = cyl(0.1, 0.16, 0.7, c, 6); b.position.set(x, 0.35, 0); b.rotation.z = (i % 2 ? 1 : -1) * 0.25; g.add(b);
+          const t = sph(0.2, c); t.position.set(x + (i % 2 ? -0.09 : 0.09), 0.72, 0); g.add(t);
+        }
+        const base = box(5.4, 0.18, 0.6, 0xa8a29e); base.position.y = 0.09; g.add(base);
+      } },
+      clam: { icon: '🐚', name: '큰 조개', full: false, make(g) {
+        const shell = (top) => new THREE.Mesh(new THREE.SphereGeometry(0.65, 14, 8, 0, Math.PI * 2, top ? 0 : Math.PI / 2, Math.PI / 2), new THREE.MeshLambertMaterial({ color: top ? 0xf9a8d4 : 0xf472b6, side: THREE.DoubleSide }));
+        const bot = shell(false); bot.scale.y = 0.5; bot.position.y = 0.33; g.add(bot);
+        const lid = shell(true); lid.scale.y = 0.5; lid.position.set(0, 0.42, -0.2); lid.rotation.x = -0.6; g.add(lid);
+        const pearl = sph(0.18, 0xffffff); pearl.position.set(0, 0.42, 0.1); g.add(pearl);
+      } },
+      chest: { icon: '💎', name: '보물상자', full: false, make(g) {
+        const b = box(1.3, 0.6, 0.85, 0x7c4a1e); b.position.y = 0.3; g.add(b);
+        const lid = cyl(0.42, 0.42, 1.3, 0x8b5a2b, 12); lid.rotation.z = Math.PI / 2; lid.position.y = 0.62; g.add(lid);
+        [-0.45, 0.45].forEach((x) => { const band = box(0.1, 0.62, 0.88, 0xfacc15); band.position.set(x, 0.3, 0); g.add(band); const ring = cyl(0.44, 0.44, 0.1, 0xfacc15, 12); ring.rotation.z = Math.PI / 2; ring.position.set(x, 0.62, 0); g.add(ring); });
+        const lock = box(0.18, 0.22, 0.04, 0xfacc15); lock.position.set(0, 0.55, 0.44); g.add(lock);
+        g.rotation.y = 0.2;
+      } },
+      puffer: { icon: '🐡', name: '복어', full: false, bomb: true, boom: 0xfde68a,
+        hitMsg: '🐡 따끔! 복어 가시에 찔려 ❤️ 하나를 잃었어요', jumpMsg: '🐡 복어를 뛰어넘었어요!', make(g) {
+        const c = new THREE.Vector3(0, 0.75, 0); const up = new THREE.Vector3(0, 1, 0);
+        const b = sph(0.55, 0xfbbf24); b.position.copy(c); g.add(b);
+        for (let i = 0; i < 18; i++) {
+          const th = Math.acos(1 - 2 * (i + 0.5) / 18); const ph = i * 2.4;
+          const d = new THREE.Vector3(Math.sin(th) * Math.cos(ph), Math.cos(th), Math.sin(th) * Math.sin(ph));
+          const sp = cone(0.06, 0.24, 0x92400e, 4); sp.position.copy(c).addScaledVector(d, 0.6); sp.quaternion.setFromUnitVectors(up, d); g.add(sp);
+        }
+        [-0.2, 0.2].forEach((x) => { const e = sph(0.11, 0xffffff); e.position.set(x, 0.92, 0.47); g.add(e); const p = sph(0.055, 0x111827); p.position.set(x, 0.92, 0.57); g.add(p); });
+        const mouth = sph(0.07, 0xdc2626); mouth.position.set(0, 0.68, 0.54); g.add(mouth);
+        const tail = cone(0.2, 0.35, 0xf59e0b, 4); tail.rotation.x = -Math.PI / 2; tail.position.set(0, 0.75, -0.68); g.add(tail);
+        g.userData.floaty = true;
+      } },
+    });
+    const PLACE_OBS = { town: [['hurdle'], ['cones', 'crate']], forest: [['log'], ['rock']], sea: [['log'], ['sandcastle']], deep: [['coral'], ['clam', 'chest']] };
+    const PLACE_DUCK = { town: 'barrier', forest: 'branch', sea: 'flagline', deep: 'jelly' };
+    const PLACE_BOMB = { deep: 'puffer' };
     function spawnObstacle(z) {
       const [fulls, singles] = PLACE_OBS[PLACES[placeIdx].key];
       const r = Math.random();
-      const key = r < 0.5 ? (Math.random() < 0.5 ? pick3(fulls) : pick3(singles)) : r < 0.8 ? PLACE_DUCK[PLACES[placeIdx].key] : 'bomb';
+      const key = r < 0.5 ? (Math.random() < 0.5 ? pick3(fulls) : pick3(singles)) : r < 0.8 ? PLACE_DUCK[PLACES[placeIdx].key] : (PLACE_BOMB[PLACES[placeIdx].key] || 'bomb');
       const O = OBSTACLES[key];
       const g = new THREE.Group(); O.make(g);
       const lanesHit = O.full ? [0, 1] : [Math.random() < 0.5 ? 0 : 1];
@@ -1357,11 +1580,11 @@
       if (hearts <= 0) end();
     }
     function explode(o) {
-      const fire = new THREE.Mesh(new THREE.SphereGeometry(0.6, 16, 12), new THREE.MeshBasicMaterial({ color: 0xff7a00, transparent: true, opacity: 0.9 }));
+      const fire = new THREE.Mesh(new THREE.SphereGeometry(0.6, 16, 12), new THREE.MeshBasicMaterial({ color: o.O.boom || 0xff7a00, transparent: true, opacity: 0.9 }));
       fire.position.set(o.g.position.x, 0.8, o.g.position.z); scene.add(fire); booms.push({ m: fire, t: 0 });
       o.g.visible = false;
       hearts--; combo = 0; sfx('bad');
-      msg('💣 펑! 폭탄에 부딪혀 ❤️ 하나를 잃었어요', false);
+      msg(o.O.hitMsg || '💣 펑! 폭탄에 부딪혀 ❤️ 하나를 잃었어요', false);
       stage.classList.remove('hit'); void stage.offsetWidth; stage.classList.add('hit');
       hud();
       if (hearts <= 0) end();
@@ -1388,6 +1611,7 @@
         dashes.forEach((d) => { d.position.z += dz; if (d.position.z > 6) d.position.z -= 80; });
         props.forEach((p) => { p.position.z += dz; if (p.position.z > 10) p.position.z -= 104; });
         clouds.forEach((c) => { c.position.x += dt * 0.6; if (c.position.x > 40) c.position.x = -40; });
+        updateLife(dt, dz);
         // 뜻 문
         if (!gate) { nextQIn -= dt; if (nextQIn <= 0) spawnGate(); }
         if (gate) {
@@ -1409,11 +1633,13 @@
             if (o.lanes.indexOf(lane) >= 0) {
               const jumping = runner.position.y >= 0.55;
               if (o.O.duck) { if (duckT >= 0) msg(`${o.O.icon} 숙이기 성공!`, true); else trip(o.O); }
-              else if (o.O.bomb) { if (jumping) msg('💣 폭탄을 뛰어넘었어요!', true); else explode(o); }
+              else if (o.O.bomb) { if (jumping) msg(o.O.jumpMsg || '💣 폭탄을 뛰어넘었어요!', true); else explode(o); }
               else if (jumping) msg(`${o.O.icon} 점프 성공!`, true); else trip(o.O);
             }
           }
           if (o.g.userData.spark) o.g.userData.spark.visible = Math.sin(elapsed * 30) > 0;
+          if (o.g.userData.bob) o.g.children.forEach((j, i) => { j.position.y = 1.95 + Math.sin(elapsed * 3 + i) * 0.12; });
+          if (o.g.userData.floaty) o.g.position.y = Math.sin(elapsed * 3) * 0.12;
           if (o.g.position.z > 9) { disposeObj(o.g); return false; }
           return true;
         });
@@ -1444,6 +1670,7 @@
           runner.position.y = Math.abs(Math.sin(ph)) * 0.12;
         }
         runner.rotation.z = tripT > 0 ? Math.sin(elapsed * 25) * 0.25 : 0;
+        gear.visible = deep;
         camera.position.x = runnerX * 0.35; camera.lookAt(runnerX * 0.2, 1.2, -8);
       }
       renderer.render(scene, camera);
