@@ -1514,20 +1514,21 @@
       const g = c.getContext('2d');
       const r = 36; g.fillStyle = '#ffffff'; g.strokeStyle = '#1f2937'; g.lineWidth = 12;
       g.beginPath(); g.moveTo(r, 6); g.arcTo(506, 6, 506, 250, r); g.arcTo(506, 250, 6, 250, r); g.arcTo(6, 250, 6, 6, r); g.arcTo(6, 6, 506, 6, r); g.closePath(); g.fill(); g.stroke();
-      let t = text; let size = 92;
+      let t = text; let size = 108;   // 2026-11-26: 글씨 크게
       g.fillStyle = '#111827'; g.textAlign = 'center'; g.textBaseline = 'middle';
-      const font = () => `bold ${size}px "Noto Sans KR", "Apple SD Gothic Neo", sans-serif`;
+      const font = () => `900 ${size}px "Noto Sans KR", "Apple SD Gothic Neo", sans-serif`;
       g.font = font();
-      while (g.measureText(t).width > 460 && size > 40) { size -= 6; g.font = font(); }
-      while (g.measureText(t).width > 460 && t.length > 2) t = `${t.slice(0, -2)}…`;
+      while (g.measureText(t).width > 470 && size > 40) { size -= 6; g.font = font(); }
+      while (g.measureText(t).width > 470 && t.length > 2) t = `${t.slice(0, -2)}…`;
       g.fillText(t, 256, 132);
-      return new THREE.CanvasTexture(c);
+      const tex = new THREE.CanvasTexture(c); tex.anisotropy = renderer.capabilities.getMaxAnisotropy();   // 비스듬히 멀리서도 또렷하게
+      return tex;
     }
     function makeSign(text, x) {
       const g = new THREE.Group();
       const post = (px) => { const p = box(0.12, 2.6, 0.12, 0x6b7280); p.position.set(px, 1.3, 0); g.add(p); };
       post(-1.05); post(1.05);
-      const board = new THREE.Mesh(new THREE.PlaneGeometry(2.3, 1.15), new THREE.MeshBasicMaterial({ map: signTexture(text) }));
+      const board = new THREE.Mesh(new THREE.PlaneGeometry(2.3, 1.15), new THREE.MeshBasicMaterial({ map: signTexture(text), fog: false }));
       board.position.set(0, 2.2, 0.07); g.add(board);
       g.position.set(x, 0, 0);
       return g;
@@ -2076,6 +2077,8 @@
         if (!gate) { nextQIn -= dt; if (nextQIn <= 0) spawnGate(); }
         if (gate) {
           gate.group.position.z += dz;
+          // 멀리 있을 때는 표지판을 크게(최대 2.3배) 보여 주고, 다가오면 원래 크기로 (2026-11-26)
+          const farK = Math.max(0, Math.min(1, (-gate.group.position.z - 12) / 36)); gate.group.scale.setScalar(1 + farK * 1.3);
           if (!gate.done && gate.group.position.z >= 0) {
             judge();
             // 문을 지난 뒤, 다음 문과 겹치지 않게 장애물 0~1개 (2026-11-25: 단어·장애물 약 30% 더 자주)
