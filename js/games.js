@@ -751,7 +751,9 @@
       // 단어 줄과 겹치지 않게 위쪽이 비어 있을 때만
       if (items.some((it) => it.y < 60)) return;
       const r = Math.random();
-      const kind = r < 0.42 ? 'fuel' : r < 0.85 ? 'skull' : 'shield';
+      // 2026-11-26: 방패가 너무 자주 나와서 15% → 5%, 이미 방패가 있으면 안 나옴
+      let kind = r < 0.45 ? 'fuel' : r < 0.95 ? 'skull' : 'shield';
+      if (kind === 'shield' && shield) kind = 'fuel';
       addItem(kind, Math.floor(Math.random() * 3), -50, {});
     }
     function removeRow(id) {
