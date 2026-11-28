@@ -152,6 +152,7 @@
             <div class="td-target" id="tdTarget">☄️ 유성을 떨어뜨릴 곳을 톡! <button id="tdTargetX">취소</button></div>
             <div class="td-over" id="tdOver"></div>
           </div>
+          <div class="td-rotate" id="tdRotate">📱↻ 폰을 가로로 돌리면 전장이 더 커져요</div>
           <div class="td-quiz" id="tdQuiz">
             <div class="tq-head"><span id="tqCombo"></span><span id="tqReward"></span></div>
             <div class="tq-q" id="tqQ"></div>
@@ -179,6 +180,7 @@
       else { bw = mw; bh = bw * BH / BW; if (bh > mh - 230) { bh = mh - 230; bw = bh * BW / BH; } }
       bw = Math.floor(bw); bh = Math.floor(bh);
       board.style.width = `${bw}px`; board.style.height = `${bh}px`;
+      $('#tdRotate').classList.toggle('show', !land && mw < 640);
       dpr = Math.min(2, window.devicePixelRatio || 1); scale = bw / BW;
       cv.width = Math.round(bw * dpr); cv.height = Math.round(bh * dpr); cv.style.width = `${bw}px`; cv.style.height = `${bh}px`;
       bg = document.createElement('canvas'); bg.width = cv.width; bg.height = cv.height;

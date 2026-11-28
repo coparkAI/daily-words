@@ -199,6 +199,7 @@
             <div class="q-quiz" id="qQuiz"></div>
             <div class="q-over" id="qOver"></div>
           </div>
+          <div class="q-rotate" id="qRotate">📱↻ 폰을 가로로 돌리면 게임 화면이 더 커져요</div>
           <button class="q-btn q-jump" id="qJump" aria-label="점프"><b>JUMP</b><small>점프</small></button>
           <button class="q-btn q-atk" id="qAtk" aria-label="공격"><b>ATTACK</b><small>부메랑</small></button>
         </div>
@@ -218,8 +219,10 @@
       if (h > room) { h = room; w = h * W / H; }
       screen.style.width = `${Math.floor(w)}px`; screen.style.height = `${Math.floor(h)}px`;
       screen.style.left = `${Math.floor((cw - w) / 2)}px`;
-      screen.style.top = portrait ? '0px' : `${Math.floor((ch - h) / 2)}px`;
+      const topY = portrait ? Math.max(0, Math.floor((ch - 130 - h) / 2)) : Math.floor((ch - h) / 2);   // 세로 화면: 버튼 위 빈 곳의 가운데
+      screen.style.top = `${topY}px`;
       stage.classList.toggle('portrait', portrait);
+      const rot = $('#qRotate'); rot.classList.toggle('show', portrait && cw < 640); rot.style.top = `${topY + Math.floor(h) + 6}px`;
     };
     fit(); window.addEventListener('resize', fit); A.onStop(() => window.removeEventListener('resize', fit));
 

@@ -286,6 +286,8 @@ body[data-level="high"] .game-title { font-weight: 900; font-size: 17px; }
 /* 떨어지는 단어·대결은 화면을 꽉 채우므로 페이지 스크롤을 막는다 */
 body.game-full { overflow: hidden; overscroll-behavior: none; }
 body.game-full #app { padding-bottom: 0; }
+/* 2026-11-28 폰에서 게임 화면이 작다는 의견: 게임 중에는 바깥 여백을 거의 없앰 */
+@media (max-width: 900px), (max-height: 600px) { body.game-full #app { padding: 4px 4px 0; } }
 
 /* ⓘ 조작 방법 */
 .help-btn { font-size: 20px; font-weight: 700; min-width: 40px; padding: 4px 10px; }
@@ -549,3 +551,18 @@ body.game-full #app { padding-bottom: 0; }
 .tq-skill[disabled] { -webkit-filter: grayscale(1) brightness(.7); filter: grayscale(1) brightness(.7); cursor: default; }
 @media (max-width: 760px) { .tds-maps { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 600px) { .tds-maps { grid-template-columns: repeat(2, 1fr); } .tq-q { font-size: 20px; } .tq-opt { font-size: 13px; min-height: 40px; } .td-stat { font-size: 12px; } }
+
+/* 폰 가로 화면(높이가 낮을 때): 위 막대를 줄이고 버튼을 작게 — 게임 화면을 최대한 크게 (2026-11-28) */
+@media (max-height: 520px) {
+  .q-wrap .game-bar, .td-wrap .game-bar { margin-bottom: 2px; }
+  .q-wrap .game-title, .td-wrap .game-title { font-size: 14px; }
+  .q-wrap .game-bar .btn.small, .td-wrap .game-bar .btn.small { padding: 2px 8px; }
+  .q-btn { width: 68px; height: 68px; bottom: 8px; opacity: .8; }
+  .q-btn b { font-size: 12px; } .q-btn small { display: none; }
+  .q-jump { left: 8px; } .q-atk { right: 8px; }
+  .td-main.land .td-quiz { width: 210px; padding: 6px 8px; } .tq-q { font-size: 18px; } .tq-opt { min-height: 36px; font-size: 13px; }
+}
+.q-rotate, .td-rotate { display: none; text-align: center; font-size: 13px; font-weight: 800; color: #cfd2ff; padding: 4px 0; }
+.q-rotate { position: absolute; left: 0; right: 0; }
+.q-rotate.show, .td-rotate.show { display: block; animation: qlow 1.2s infinite alternate; }
+.td-rotate { color: #6a6a8a; }

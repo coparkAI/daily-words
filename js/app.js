@@ -138,11 +138,32 @@
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return null;
       if (!sfx.ctx) {
+        // 2026-11-28 아이폰: 무음(진동) 스위치가 켜져 있으면 Web Audio 가 꺼진다 → '재생' 모드로 바꿔 배경음·효과음이 나오게
+        try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) { /* 지원 안 함 */ }
+        sfx.unlockIOS();
         sfx.ctx = new AC();
         try { const src = sfx.ctx.createBufferSource(); src.buffer = sfx.ctx.createBuffer(1, 1, 22050); src.connect(sfx.ctx.destination); src.start(0); } catch (e) { /* 무시 */ }
       }
-      if (sfx.ctx.state === 'suspended' && sfx.ctx.resume) sfx.ctx.resume();
+      // 아이폰은 잠금·전화·다른 앱 소리 뒤에 오디오가 멈춰(interrupted) 있을 수 있어 다시 깨운다
+      if (sfx.ctx.state !== 'running' && sfx.ctx.resume) { try { sfx.ctx.resume(); } catch (e) { /* 무시 */ } }
       return sfx.ctx;
+    },
+    // 예전 iOS(16 이하)용: 화면을 누른 순간 소리 없는 오디오를 한 번 틀면 무음 스위치와 상관없이 소리가 난다
+    unlockIOS() {
+      const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      if (!ios || sfx.unlocked) return;
+      sfx.unlocked = true;
+      try {
+        const n = 800; const bytes = new Uint8Array(44 + n);
+        const dv = new DataView(bytes.buffer); const str = (o, s) => { for (let i = 0; i < s.length; i++) bytes[o + i] = s.charCodeAt(i); };
+        str(0, 'RIFF'); dv.setUint32(4, 36 + n, true); str(8, 'WAVEfmt '); dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true);
+        dv.setUint32(24, 8000, true); dv.setUint32(28, 8000, true); dv.setUint16(32, 1, true); dv.setUint16(34, 8, true); str(36, 'data'); dv.setUint32(40, n, true);
+        for (let i = 0; i < n; i++) bytes[44 + i] = 128;
+        let bin = ''; for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+        const a = document.createElement('audio'); a.setAttribute('playsinline', ''); a.setAttribute('x-webkit-airplay', 'deny'); a.preload = 'auto';
+        a.src = `data:audio/wav;base64,${btoa(bin)}`;
+        const p = a.play(); if (p && p.catch) p.catch(() => { sfx.unlocked = false; });
+      } catch (e) { sfx.unlocked = false; }
     },
     tone(f, t, d, type = 'sine', v = 0.25, slide) {
       const ctx = sfx.ctx; const t0 = ctx.currentTime + t;
@@ -165,8 +186,11 @@
     },
     ok: () => sfx.play('ok'), bad: () => sfx.play('bad'), combo: () => sfx.play('combo'),
   };
-  document.addEventListener('pointerdown', () => sfx.on && sfx.wake(), { once: true, capture: true });
-  document.addEventListener('touchend', () => sfx.on && sfx.wake(), { once: true, capture: true });
+  // 첫 터치 때 깨우고, 그 뒤에도 오디오가 멈춰 있으면 화면을 누를 때마다 다시 깨운다 (아이폰 잠금 해제 후 등)
+  // (효과음을 꺼도 게임 배경음은 쓰므로, 아이폰 잠금 풀기·다시 깨우기는 항상 한다)
+  const wakeOnTouch = () => { if (!sfx.unlocked) sfx.unlockIOS(); if (sfx.ctx ? sfx.ctx.state !== 'running' : sfx.on) sfx.wake(); };
+  document.addEventListener('pointerdown', wakeOnTouch, { capture: true });
+  document.addEventListener('touchend', wakeOnTouch, { capture: true });
   // 효과음 직후 발음을 이어서 들려줄 때, 코인 소리가 끝날 즈음 시작한다
   const sayAfterSfx = (word) => setTimeout(() => tts.say(word), sfx.on ? 380 : 0);
 
