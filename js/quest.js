@@ -108,6 +108,16 @@
     const fy = GROUND0;
     seg(x, L + 420, fy); fill(x, Math.min(x + 160, L - 60), fy);
     if (!ents.some((e) => e.t === 'chest' && e.x > L - 700)) ents.push({ t: 'chest', x: L - 120, y: fy });
+    // 2026-11-28 버그 수정: 상자·깃발·땅 위 적의 높이를 그 자리의 실제 땅 높이에 맞춘다 (마지막 상자가 계단 아래 땅속에 묻히던 문제)
+    const segAt = (px) => segs.find((g) => px >= g.x0 && px < g.x1) || null;
+    ents.forEach((e) => {
+      if (!(e.t === 'chest' || e.t === 'flag' || (e.t === 'enemy' && e.beh !== 'fly' && !e.fish))) return;
+      let g = segAt(e.x);
+      if (!g) { g = segs.reduce((b, q) => (Math.abs((q.x0 + q.x1) / 2 - e.x) < Math.abs((b.x0 + b.x1) / 2 - e.x) ? q : b), segs[0]); e.x = (g.x0 + g.x1) / 2; }
+      if (e.t === 'chest' || e.t === 'flag') e.x = clamp(e.x, g.x0 + 14, g.x1 - 14);   // 계단 벽에 붙지 않게
+      e.y = g.y;
+      if (e.x0 != null) { e.x0 = Math.max(e.x0, g.x0 + 6); e.x1 = Math.min(e.x1, g.x1 - 6); }
+    });
     ents.forEach((e, i) => { e.id = i; });
     return { segs, plats, ents, props, L, chests: ents.filter((e) => e.t === 'chest').length };
   }
@@ -776,5 +786,5 @@
     hud();
   }
 
-  window.TWQuest = { setup };
+  window.TWQuest = { setup, _buildLevel: buildLevel };   // _buildLevel: 자동 검사용
 })();
