@@ -2335,7 +2335,8 @@
   function playMole(player) {
     stop(); setTheme();
     const P = pool();
-    const D = { easy: { count: 2, stay: 2.8, bomb: 0.15 }, normal: { count: 3, stay: 2.2, bomb: 0.25 }, hard: { count: 3, stay: 1.6, bomb: 0.32 } }[S.diff];
+    // 2026-11-28: 너무 빨리 들어간다는 피드백 → 머무는 시간 약 1.5배, 빨라지는 폭 25% → 15%
+    const D = { easy: { count: 2, stay: 4.2, bomb: 0.15 }, normal: { count: 3, stay: 3.4, bomb: 0.25 }, hard: { count: 3, stay: 2.5, bomb: 0.32 } }[S.diff];
     const TOTAL = 60; const GOLD = 0.12; const FEVER_EVERY = 10; const FEVER_LEN = 5;
     let queue = T().shuffle(P);
     let gameT = 0; let score = 0; let combo = 0; let bestCombo = 0; let right = 0; let golds = 0;
@@ -2420,7 +2421,7 @@
       const moles = [{ kind: 'word', w, ok: true, gold: Math.random() < GOLD }, ...distractors(w, D.count - 1, P).map((x) => ({ kind: 'word', w: x, ok: false }))];
       if (Math.random() < D.bomb) moles.push({ kind: 'bomb' });
       const spots = T().shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8]);
-      const speed = Math.max(0.75, 1 - (gameT / TOTAL) * 0.25);
+      const speed = Math.max(0.85, 1 - (gameT / TOTAL) * 0.15);
       const stay = D.stay * speed;
       let maxEnd = 0;
       round = { w, done: false, wrongOnce: false, pops: T().shuffle(moles).map((st, k) => {
