@@ -5,6 +5,8 @@
      #/game/ox       G-03 스피드 O/X 퀴즈
      #/game/battle   G-04 쌍둥이 대결
      #/game/mole     G-08 단어 두더지 잡기
+     #/game/quest    G-09 단어 대모험 (js/quest.js)
+     #/game/td       G-10 단어 타워 디펜스 (js/td.js)
    app.js 가 window.TW 로 공용 도구(단어 데이터, 소리, 도우미)를 넘겨준다.
 */
 (() => {
@@ -18,6 +20,8 @@
     mole: { icon: '🐹', name: '단어 두더지', desc: '뜻에 맞는 두더지를 뿅!', unit: '점' },
     drive: { icon: '🚗', name: '단어 드라이브', desc: '뜻에 맞는 단어를 먹으며 달리기', unit: '점' },
     run: { icon: '🏃', name: '3D 단어 런', desc: '달리면서 맞는 뜻의 문으로', unit: '점' },
+    quest: { icon: '🗺️', name: '단어 대모험', desc: '달리고 점프해 보스를 물리치기', unit: '점' },
+    td: { icon: '🏰', name: '단어 타워 디펜스', desc: '단어로 골드를 벌어 탑을 짓고 성 지키기', unit: '점' },
     ox: { icon: '⭕', name: '스피드 O/X', desc: '단어와 뜻이 맞는지 빠르게', unit: '개' },
     battle: { icon: '⚔️', name: '쌍둥이 대결', desc: '마주 앉아 먼저 맞히기', unit: '' },
   };
@@ -29,6 +33,8 @@
     drive: ['화면 위 🎯 뜻을 보고, 그 뜻의 영어 단어가 있는 도로로 차를 옮겨 먹어요. 맞으면 +10점!', '태블릿: 화면 왼쪽·오른쪽을 누르거나 좌우로 밀어서 차선을 바꿔요. PC: ← → 키', '틀린 단어 −10 연료, 💀 −20 연료, ⛽ +25 연료. 연료는 계속 조금씩 닳고, 0이 되면 끝나요.', '3번 연속 맞히면 점수 ×2, 6번 연속이면 ×3. 🛡 방패는 한 번 막아 줘요.', '맞는 단어 5개를 먹으면 🚀 부스터! 누르면(스페이스) 3초 동안 아주 빠르고, 무적에 점수 2배예요.', '시간이 갈수록 빨라지고, 30초마다 낮 → 노을 → 밤 → 비로 풍경이 바뀌어요.'],
     catch: ['화면을 누르거나 손가락으로 끌면 아이가 그쪽으로 달려가요.', 'PC는 ← → 키로 움직이고, 스페이스로 잠깐 멈춰요.', '영단어 +10점 · 과일 🍎🍌🍇 +5점', '못 먹는 것 💀💣🔨🪨🧦👟 등은 피해요. 받으면 −5점!', '영단어를 받으면 뜻을 보여 주고 발음을 들려줘요. 영단어가 다 떨어지면 끝나요.'],
     mole: ['형이나 동생을 고르면 60초 동안 두더지 잡기가 시작돼요.', '위에 나온 🎯 뜻을 보고, 그 뜻의 영어 단어 팻말을 든 두더지를 톡! 맞으면 +10점, 발음도 들려줘요.', '틀린 두더지를 때리면 −5점. 헬멧 쓴 💣 폭탄 두더지는 −15점에 1초 동안 어질어질해요.', '반짝이는 ✨ 황금 두더지는 점수 3배! 3번 연속 ×2, 6번 연속 ×3, 10번 연속마다 🔥 5초 피버 타임(점수 2배).', 'PC: 숫자 키패드 7·8·9 / 4·5·6 / 1·2·3 이 구멍 자리예요. 스페이스 = 멈춤'],
+    quest: ['주인공(형·동생)과 스테이지를 골라요. 주인공은 저절로 앞으로 달려요.', '⬆ JUMP(화면 아무 곳 톡 · PC 스페이스/↑): 길게 누르면 더 높이, 공중에서 한 번 더 누르면 2단 점프!', 'ATTACK(PC Z·X): 에너지 부메랑을 던져요. 날아갔다 돌아와요. 적 머리를 밟아도 물리칠 수 있어요.', '📦 단어 보물상자를 부수거나 닿으면 시간이 느려지고 뜻 문제가 나와요(1·2·3 키). 맞히면 3갈래·불꽃 부메랑, 방어막, 스케이트보드, 잔치 중 하나!', 'ENERGY는 계속 줄고, 적·보스 공격에 맞으면 크게 줄어요(−25, 보스 −30). 🍎 과일로 채우고, 0이 되면 ❤️ 하나를 잃어요. 구덩이에 빠지면 ❤️ 하나를 잃고 🚩 체크포인트에서 다시 시작해요.', '스테이지는 10개 — 정글 → 한국 → 중국 → 일본 → 이집트 → 로마 → 영국 → 화산 → 하늘 성 → 우주. 끝에는 보스! 낮게 오는 공격·빨간 경고선이 아래면 점프, 위면 가만히! 보스는 체력이 절반이 되면 변신해요.', '별 3개: 클리어 · 보물상자 모두 정답 · 하트 안 잃기. 깨면 다음 스테이지가 열려요.'],
+    td: ['형이나 동생, 맵을 골라요. 괴물이 길을 따라 성으로 와요. ❤️ 20이 다 없어지면 져요.', '옆 문제판의 단어 문제를 맞히면 💰 골드! 연속으로 맞히면 더 많이 받아요. 틀리면 2초 쉬어요. (PC: 1·2·3 키)', '길가의 ⭕ 터를 톡 → 화살탑·얼음탑·번개탑·대포 중 골라 지어요. 지은 탑을 톡 → 강화(3단계까지) → 진화(두 갈래 중 하나) 또는 팔기.', '대포는 날아다니는 괴물을 못 맞혀요. 번개는 방어를 무시하고, 얼음은 괴물을 느리게 해요.', '단어를 5번 맞힐 때마다 ✨ 마법 1칸: ☄️ 유성(Q, 원하는 곳 톡) · ❄️ 모두 얼리기(W).', '10번째 웨이브는 보스! ▶▶ 2배속, 웨이브 시작 버튼을 일찍 누르면 보너스 골드.'],
     ox: ['영단어와 뜻이 짝으로 나와요.', '맞는 짝이면 ⭕, 틀린 짝이면 ❌ 를 눌러요.', 'PC는 ← 또는 O 키 = ⭕, → 또는 X 키 = ❌', '틀리면 정답을 보여 주고 2초 쉬어요. 시간이 끝날 때까지 최대한 많이 맞혀요.'],
     battle: ['태블릿을 책상에 눕혀 놓고 마주 앉아요. 위쪽 화면은 맞은편 사람 쪽으로 뒤집혀 있어요.', '같은 문제를 먼저 맞히면 1점!', '틀리면 그 문제는 기회가 끝나요. 둘 다 틀리면 정답을 보여 줘요.', '10문제를 풀고 점수가 많은 사람이 이겨요.'],
   };
@@ -2649,6 +2655,23 @@
     ask();
   }
 
+  // ---------- G-09 단어 대모험: js/quest.js 에 도구를 넘겨줌 ----------
+  function questSetup() {
+    if (!window.TWQuest) return renderMenu();
+    window.TWQuest.setup({
+      T, S, save, stop, onStop, pool, distractors, short, topBar, bindQuit, fullScreen, setTheme, showResult, sfx, say, sayAfter,
+      makeBgm, BGM_SONGS, esc, level, rangeLabel, DIFFS, app, setHelpPause: (fn) => { helpPause = fn; },
+    });
+  }
+
+  function tdSetup() {
+    if (!window.TWTd) return renderMenu();
+    window.TWTd.setup({
+      T, S, save, stop, onStop, pool, distractors, short, topBar, bindQuit, fullScreen, setTheme, showResult, sfx, say, sayAfter,
+      makeBgm, BGM_SONGS, esc, level, rangeLabel, DIFFS, app, setHelpPause: (fn) => { helpPause = fn; },
+    });
+  }
+
   // ---------- 공개 ----------
   window.TWGames = {
     stop,
@@ -2657,7 +2680,7 @@
       T().setKey(null);
       if (!T().data[S.level]) S.level = 'e';
       if (sub && pool().length < 4) { T().toast('단어 범위를 먼저 골라 주세요'); return T().go('#/game'); }
-      ({ blocks: playBlocks, rain: playRain, catch: playCatch, drive: playDrive, run: runSetup, ox: playOX, battle: battleSetup, mole: moleSetup }[sub] || renderMenu)();
+      ({ blocks: playBlocks, rain: playRain, catch: playCatch, drive: playDrive, run: runSetup, ox: playOX, battle: battleSetup, mole: moleSetup, quest: questSetup, td: tdSetup }[sub] || renderMenu)();
     },
     // 학습 완료 화면에서 "오늘 단어로 게임"
     useDay(code, day) { S.level = code; S.mode = 'range'; S.from = day; S.to = day; save(); },
