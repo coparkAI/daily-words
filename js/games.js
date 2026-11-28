@@ -4,6 +4,7 @@
      #/game/rain     G-02 떨어지는 단어 막기
      #/game/ox       G-03 스피드 O/X 퀴즈
      #/game/battle   G-04 쌍둥이 대결
+     #/game/mole     G-08 단어 두더지 잡기
    app.js 가 window.TW 로 공용 도구(단어 데이터, 소리, 도우미)를 넘겨준다.
 */
 (() => {
@@ -14,6 +15,7 @@
     blocks: { icon: '🧩', name: '철자 블록', desc: '섞인 알파벳으로 단어 완성', unit: '점' },
     rain: { icon: '☔', name: '떨어지는 단어', desc: '바닥에 닿기 전에 영단어 쓰기', unit: '점' },
     catch: { icon: '🧺', name: '바구니 받기', desc: '영단어·과일은 받고 못 먹는 건 피하기', unit: '점' },
+    mole: { icon: '🐹', name: '단어 두더지', desc: '뜻에 맞는 두더지를 뿅!', unit: '점' },
     drive: { icon: '🚗', name: '단어 드라이브', desc: '뜻에 맞는 단어를 먹으며 달리기', unit: '점' },
     run: { icon: '🏃', name: '3D 단어 런', desc: '달리면서 맞는 뜻의 문으로', unit: '점' },
     ox: { icon: '⭕', name: '스피드 O/X', desc: '단어와 뜻이 맞는지 빠르게', unit: '개' },
@@ -26,6 +28,7 @@
     run: ['형이나 동생을 골라 2차선 길을 달려요. 위에 영어 단어가 나오고 발음도 들려줘요.', '위에 걸린 차단봉·나뭇가지·깃발 줄은 화면을 아래로 밀거나 ⬇ 버튼(PC: ↓ 키)으로 숙여서 지나가요. 💣 폭탄에 부딪히면 ❤️ 하나를 잃으니 옆으로 피하거나 뛰어넘어요!', '장애물이 나오면 화면을 위로 밀거나 ⬆ 버튼(PC: ↑ 키·스페이스)으로 점프! 허들·통나무는 길 전체를 막아 꼭 뛰어야 하고, 고깔·상자·바위·모래성은 한쪽만 막아서 옆으로 피해도 돼요. 부딪히면 넘어지고 💰 5개를 잃어요.', '바닷가 다음엔 물속! 🎐 해파리는 숙이고, 산호초·조개·보물상자는 점프, 🐡 복어는 폭탄처럼 피해요.', '물속 다음엔 달나라! 🛰 인공위성은 숙이고, 크레이터 턱·월면차·달 바위는 점프, ☄️ 운석은 폭탄처럼 피해요. 달에서는 점프가 더 높고 느려요.', '달릴수록 동네 → 숲 → 바닷가 → 물속 → 달나라로 풍경과 음악이 바뀌어요. 🎵 버튼으로 배경음을 끄고 켤 수 있어요.', '앞에서 뜻이 적힌 문 두 개가 다가와요. 맞는 뜻의 문 쪽 차선으로 옮겨서 지나가세요!', '태블릿: 화면 왼쪽·오른쪽을 누르거나 좌우로 밀기. PC: ← → 키', '맞히면 +10점, 3번 연속 ×2, 6번 연속 ×3. 💰 코인은 +2점이에요.', '틀리면 ❤️ 하나를 잃어요. 다 잃으면 끝! 오래 달릴수록 빨라져요.', '가끔 빙글빙글 도는 💖 하트가 나와요. 먹으면 생명 +1 (최대 3개), 가득 차 있으면 +20점!', '3D 그림이라 인터넷이 필요하고, 오래된 기기에서는 안 될 수도 있어요.'],
     drive: ['화면 위 🎯 뜻을 보고, 그 뜻의 영어 단어가 있는 도로로 차를 옮겨 먹어요. 맞으면 +10점!', '태블릿: 화면 왼쪽·오른쪽을 누르거나 좌우로 밀어서 차선을 바꿔요. PC: ← → 키', '틀린 단어 −10 연료, 💀 −20 연료, ⛽ +25 연료. 연료는 계속 조금씩 닳고, 0이 되면 끝나요.', '3번 연속 맞히면 점수 ×2, 6번 연속이면 ×3. 🛡 방패는 한 번 막아 줘요.', '맞는 단어 5개를 먹으면 🚀 부스터! 누르면(스페이스) 3초 동안 아주 빠르고, 무적에 점수 2배예요.', '시간이 갈수록 빨라지고, 30초마다 낮 → 노을 → 밤 → 비로 풍경이 바뀌어요.'],
     catch: ['화면을 누르거나 손가락으로 끌면 아이가 그쪽으로 달려가요.', 'PC는 ← → 키로 움직이고, 스페이스로 잠깐 멈춰요.', '영단어 +10점 · 과일 🍎🍌🍇 +5점', '못 먹는 것 💀💣🔨🪨🧦👟 등은 피해요. 받으면 −5점!', '영단어를 받으면 뜻을 보여 주고 발음을 들려줘요. 영단어가 다 떨어지면 끝나요.'],
+    mole: ['형이나 동생을 고르면 60초 동안 두더지 잡기가 시작돼요.', '위에 나온 🎯 뜻을 보고, 그 뜻의 영어 단어 팻말을 든 두더지를 톡! 맞으면 +10점, 발음도 들려줘요.', '틀린 두더지를 때리면 −5점. 헬멧 쓴 💣 폭탄 두더지는 −15점에 1초 동안 어질어질해요.', '반짝이는 ✨ 황금 두더지는 점수 3배! 3번 연속 ×2, 6번 연속 ×3, 10번 연속마다 🔥 5초 피버 타임(점수 2배).', 'PC: 숫자 키패드 7·8·9 / 4·5·6 / 1·2·3 이 구멍 자리예요. 스페이스 = 멈춤'],
     ox: ['영단어와 뜻이 짝으로 나와요.', '맞는 짝이면 ⭕, 틀린 짝이면 ❌ 를 눌러요.', 'PC는 ← 또는 O 키 = ⭕, → 또는 X 키 = ❌', '틀리면 정답을 보여 주고 2초 쉬어요. 시간이 끝날 때까지 최대한 많이 맞혀요.'],
     battle: ['태블릿을 책상에 눕혀 놓고 마주 앉아요. 위쪽 화면은 맞은편 사람 쪽으로 뒤집혀 있어요.', '같은 문제를 먼저 맞히면 1점!', '틀리면 그 문제는 기회가 끝나요. 둘 다 틀리면 정답을 보여 줘요.', '10문제를 풀고 점수가 많은 사람이 이겨요.'],
   };
@@ -2311,6 +2314,234 @@
   }
 
   // =========================================================
+  // G-08 단어 두더지 잡기 (요구사항 14장, 2026-11-28)
+  // =========================================================
+  function moleSetup() {
+    stop(); setTheme();
+    const pb = (p) => { const v = S.best[`${S.level}-mole-p${p}`]; return v != null ? `최고 ${v.toLocaleString()}점` : '첫 도전!'; };
+    app().innerHTML = `
+      ${topBar('🐹 단어 두더지')}
+      <div class="stage"><article class="card mole-setup">
+        <div class="mole-hero" aria-hidden="true">🐹🔨</div>
+        <p class="q-title">누가 두더지를 잡을까요?</p>
+        <div class="mole-who">
+          ${[0, 1].map((p) => `<button class="btn ${p ? 'soft' : 'primary'} mole-pick" data-p="${p}"><b>${p ? '🔵' : '🔴'} ${esc(S.names[p])}</b><small>${pb(p)}</small></button>`).join('')}
+        </div>
+        <p class="pool-count">${esc(level().name)} · ${esc(rangeLabel())} · ${DIFFS[S.diff]} · 60초</p>
+      </article></div>`;
+    bindQuit(false);
+    app().querySelectorAll('.mole-pick').forEach((b) => (b.onclick = () => playMole(+b.dataset.p)));
+  }
+  function playMole(player) {
+    stop(); setTheme();
+    const P = pool();
+    const D = { easy: { count: 2, stay: 2.8, bomb: 0.15 }, normal: { count: 3, stay: 2.2, bomb: 0.25 }, hard: { count: 3, stay: 1.6, bomb: 0.32 } }[S.diff];
+    const TOTAL = 60; const GOLD = 0.12; const FEVER_EVERY = 10; const FEVER_LEN = 5;
+    let queue = T().shuffle(P);
+    let gameT = 0; let score = 0; let combo = 0; let bestCombo = 0; let right = 0; let golds = 0;
+    let feverLeft = 0; let stunLeft = 0; let paused = false; let over = false;
+    let round = null; let nextRoundAt = 0.4;
+    const missed = [];
+
+    app().innerHTML = `
+      <div class="mole-wrap" id="mWrap">
+        ${topBar(`🐹 단어 두더지 · ${esc(S.names[player])}`, '<span id="mTime">⏱ 60초</span><span id="mScore">0점</span><span id="mCombo"></span><button class="btn ghost small" id="mPause">⏸</button>')}
+        <div class="progress game-progress"><i id="mBar" style="width:100%"></i></div>
+        <div class="mole-target" id="mTarget"><span class="mt-label">🎯 이 뜻의 영어 단어는?</span><span class="mt-mean" id="mMean">준비…</span></div>
+        <div class="mole-field" id="mField">
+          ${Array.from({ length: 9 }, (_, i) => `
+            <div class="hole" data-i="${i}">
+              <div class="hole-back"></div>
+              <div class="mole-win"><div class="mole"><div class="m-sign"></div><div class="m-body"><i class="helmet"></i><i class="eye l"></i><i class="eye r"></i><i class="cheek l"></i><i class="cheek r"></i><i class="nose"></i><i class="teeth"></i></div></div></div>
+              <div class="hole-lip"></div>
+            </div>`).join('')}
+          <div class="mole-stun" id="mStun">💫 어질어질~</div>
+          <div class="mole-fever" id="mFever">🔥 피버 타임! 점수 2배</div>
+        </div>
+        <div class="mole-msg" id="mMsg"></div>
+      </div>`;
+    bindQuit(); fullScreen();
+    const $ = (q) => app().querySelector(q);
+    const field = $('#mField');
+    const holes = [...app().querySelectorAll('.hole')].map((el) => ({ el, mole: el.querySelector('.mole'), sign: el.querySelector('.m-sign'), eyes: el.querySelectorAll('.eye'), st: null }));
+
+    const mult = () => (combo >= 6 ? 3 : combo >= 3 ? 2 : 1);
+    function hud() {
+      $('#mScore').textContent = `${score.toLocaleString()}점`;
+      $('#mCombo').textContent = combo >= 3 ? `🔥×${mult()} 콤보 ${combo}` : '';
+    }
+    let msgT;
+    function msg(html, ok) {
+      const m = $('#mMsg'); if (!m) return;
+      m.innerHTML = html; m.className = `mole-msg show ${ok ? 'ok' : 'bad'}`;
+      clearTimeout(msgT); msgT = setTimeout(() => m.classList.remove('show'), 1400);
+    }
+    onStop(() => clearTimeout(msgT));
+    // 효과: 떠오르는 점수, 별, 뿅망치
+    function fieldXY(el) { const a = el.getBoundingClientRect(); const f = field.getBoundingClientRect(); return [a.left - f.left + a.width / 2, a.top - f.top + a.height * 0.35]; }
+    function popText(h, text, cls) {
+      const [x, y] = fieldXY(h.el);
+      const t = document.createElement('span'); t.className = `mole-pop ${cls}`; t.textContent = text;
+      t.style.left = `${x}px`; t.style.top = `${y}px`; field.appendChild(t);
+      later(() => t.remove(), 900);
+    }
+    function stars(h, gold) {
+      const [x, y] = fieldXY(h.el);
+      for (let k = 0; k < 8; k++) {
+        const s = document.createElement('span'); s.className = 'mole-star'; s.textContent = gold ? '✨' : k % 2 ? '⭐' : '🌟';
+        s.style.left = `${x}px`; s.style.top = `${y}px`; field.appendChild(s);
+        const a = (k / 8) * Math.PI * 2; const d = 50 + Math.random() * 30;
+        requestAnimationFrame(() => requestAnimationFrame(() => { s.style.transform = `translate(${Math.cos(a) * d}px, ${Math.sin(a) * d}px) scale(.4)`; s.style.opacity = '0'; }));
+        later(() => s.remove(), 700);
+      }
+    }
+    function hammer(x, y) {
+      const hm = document.createElement('span'); hm.className = 'mole-hammer'; hm.textContent = '🔨';
+      hm.style.left = `${x}px`; hm.style.top = `${y}px`; field.appendChild(hm);
+      later(() => hm.remove(), 260);
+    }
+
+    // 두더지 올리고 내리기
+    function up(h, st) {
+      h.st = st;
+      h.mole.className = `mole up${st.kind === 'bomb' ? ' bomb' : ''}${st.gold ? ' gold' : ''}`;
+      h.sign.textContent = st.kind === 'bomb' ? '💣' : st.w.word;
+      h.sign.className = `m-sign${st.kind !== 'bomb' && st.w.word.length > 8 ? ' long' : ''}`;
+      h.eyes.forEach((e) => { e.textContent = ''; });
+    }
+    function down(h, delay) {
+      h.st = null;
+      if (delay) later(() => { if (!h.st) h.mole.classList.remove('up'); }, delay);
+      else h.mole.classList.remove('up');
+    }
+    function newRound() {
+      if (!queue.length) queue = T().shuffle(P);
+      const w = queue.shift();
+      const moles = [{ kind: 'word', w, ok: true, gold: Math.random() < GOLD }, ...distractors(w, D.count - 1, P).map((x) => ({ kind: 'word', w: x, ok: false }))];
+      if (Math.random() < D.bomb) moles.push({ kind: 'bomb' });
+      const spots = T().shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+      const speed = Math.max(0.75, 1 - (gameT / TOTAL) * 0.25);
+      const stay = D.stay * speed;
+      let maxEnd = 0;
+      round = { w, done: false, wrongOnce: false, pops: T().shuffle(moles).map((st, k) => {
+        const at = gameT + (k === 0 ? 0 : Math.random() * 0.45);
+        maxEnd = Math.max(maxEnd, at + stay);
+        return { st, hole: spots[k], at, until: at + stay, shown: false };
+      }) };
+      round.end = maxEnd;
+      $('#mMean').textContent = short(w);
+      const tg = $('#mTarget'); tg.classList.remove('pop'); void tg.offsetWidth; tg.classList.add('pop');
+    }
+    function endRound(after) {
+      if (!round) return;
+      round.done = true;
+      round.pops.forEach((p) => { if (holes[p.hole].st === p.st) down(holes[p.hole]); });
+      round = null; nextRoundAt = gameT + after;
+    }
+    function timeoutRound() {
+      const w = round.w;
+      if (!round.wrongOnce) missed.push(w);
+      combo = 0; hud();
+      msg(`😅 정답: <span class="en">${esc(w.word)}</span> = ${esc(short(w))}`, false);
+      endRound(0.9);
+    }
+
+    function whack(i) {
+      if (over || paused || stunLeft > 0) return;
+      const h = holes[i]; const st = h.st;
+      if (!st || st.hit) return;
+      st.hit = true;
+      if (st.kind === 'bomb') {
+        score = Math.max(0, score - 15); combo = 0; sfx('bad');
+        popText(h, '💥 −15', 'bad'); h.mole.classList.add('boom'); down(h, 350);
+        stunLeft = 1; field.classList.add('stunned');
+        msg('💣 쾅! 폭탄 두더지였어요 — 1초 어질어질', false);
+      } else if (st.ok) {
+        combo++; bestCombo = Math.max(bestCombo, combo); right++; if (st.gold) golds++;
+        const pts = 10 * mult() * (st.gold ? 3 : 1) * (feverLeft > 0 ? 2 : 1);
+        score += pts;
+        h.eyes.forEach((e) => { e.textContent = '×'; });
+        h.mole.classList.add('hit'); stars(h, st.gold); popText(h, `+${pts}${st.gold ? ' ✨' : ''}`, st.gold ? 'gold' : 'ok');
+        if (combo % FEVER_EVERY === 0) { feverLeft = FEVER_LEN; sfx('combo'); field.classList.add('fever'); $('#mTarget').classList.add('fever'); }
+        else sfx(combo % 5 === 0 ? 'combo' : 'ok');
+        msg(`${st.gold ? '✨ 황금 두더지! ' : '⭕ '}<span class="en">${esc(st.w.word)}</span> = ${esc(short(st.w))}`, true);
+        sayAfter(st.w);
+        const others = round ? round.pops.filter((p) => p.st !== st) : [];
+        others.forEach((p) => { if (holes[p.hole].st === p.st) down(holes[p.hole]); });
+        h.st = null; later(() => h.mole.classList.remove('up', 'hit'), 380);
+        if (round) { round.done = true; round = null; nextRoundAt = gameT + 0.55; }
+      } else {
+        score = Math.max(0, score - 5); combo = 0; sfx('bad');
+        if (round && !round.wrongOnce) { round.wrongOnce = true; missed.push(round.w); }
+        h.mole.classList.add('oops'); popText(h, '−5', 'bad');
+        h.st = null; later(() => h.mole.classList.remove('up', 'oops'), 420);
+      }
+      hud();
+    }
+    // 입력: 톡 (뿅망치는 누른 자리에)
+    field.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      const f = field.getBoundingClientRect();
+      hammer(e.clientX - f.left, e.clientY - f.top);
+      const hl = e.target.closest && e.target.closest('.hole');
+      if (hl) whack(+hl.dataset.i);
+    });
+    const KEYPAD = { 7: 0, 8: 1, 9: 2, 4: 3, 5: 4, 6: 5, 1: 6, 2: 7, 3: 8 };
+    T().setKey((e) => {
+      if (e.repeat) return;
+      if (KEYPAD[e.key] != null) { const h = holes[KEYPAD[e.key]]; const [x, y] = fieldXY(h.el); hammer(x, y + 20); whack(KEYPAD[e.key]); }
+      else if (e.key === ' ') { e.preventDefault(); setPause(!paused); }
+    });
+    function setPause(p) {
+      if (over) return;
+      paused = p; field.classList.toggle('paused', p);
+      $('#mPause').textContent = p ? '▶' : '⏸';
+      if (p) msg('⏸ 잠깐 멈춤 — ▶ 를 누르면 계속해요', true);
+      last = performance.now();
+    }
+    $('#mPause').onclick = () => setPause(!paused);
+    helpPause = (p) => setPause(p);
+
+    // 시계: 게임 시간으로만 움직임 (멈추면 같이 멈춤)
+    let last = performance.now();
+    every(() => {
+      const now = performance.now(); const dt = Math.min(0.25, (now - last) / 1000); last = now;
+      if (paused || over) return;
+      gameT += dt;
+      if (stunLeft > 0) { stunLeft -= dt; if (stunLeft <= 0) field.classList.remove('stunned'); }
+      if (feverLeft > 0) { feverLeft -= dt; if (feverLeft <= 0) { field.classList.remove('fever'); $('#mTarget').classList.remove('fever'); } }
+      if (!round && gameT >= nextRoundAt) newRound();
+      if (round) {
+        round.pops.forEach((p) => {
+          if (!p.shown && gameT >= p.at) { p.shown = true; up(holes[p.hole], p.st); }
+          if (p.shown && !p.gone && gameT >= p.until) { p.gone = true; if (holes[p.hole].st === p.st) down(holes[p.hole]); }
+        });
+        if (round && gameT >= round.end) timeoutRound();
+      }
+      const left = Math.max(0, TOTAL - gameT);
+      $('#mTime').textContent = `⏱ ${Math.ceil(left)}초`;
+      $('#mTime').classList.toggle('hurry', left <= 10);
+      $('#mBar').style.width = `${(left / TOTAL) * 100}%`;
+      if (left <= 0) finish();
+    }, 50);
+
+    function finish() {
+      if (over) return;
+      over = true;
+      const k = `${S.level}-mole-p${player}`;
+      const mine = !(S.best[k] >= score); if (mine) { S.best[k] = score; save(); }
+      const pb = (p) => { const v = S.best[`${S.level}-mole-p${p}`]; return v != null ? `${v.toLocaleString()}점` : '아직 없음'; };
+      showResult('mole', {
+        big: `${score.toLocaleString()}점`,
+        sub: `${esc(S.names[player])} · 맞힌 단어 ${right}개${golds ? ` · 황금 ${golds}마리` : ''} · 최고 콤보 ${bestCombo}${mine ? ' · 🎉 내 최고 기록!' : ''}<br>🏆 최고 기록 — 🔴 ${esc(S.names[0])} ${pb(0)} · 🔵 ${esc(S.names[1])} ${pb(1)}`,
+        score, missed,
+        again: () => playMole(player),
+        againMissed: null,
+      });
+    }
+  }
+
+  // =========================================================
   // G-04 쌍둥이 대결
   // =========================================================
   function battleSetup() {
@@ -2425,7 +2656,7 @@
       T().setKey(null);
       if (!T().data[S.level]) S.level = 'e';
       if (sub && pool().length < 4) { T().toast('단어 범위를 먼저 골라 주세요'); return T().go('#/game'); }
-      ({ blocks: playBlocks, rain: playRain, catch: playCatch, drive: playDrive, run: runSetup, ox: playOX, battle: battleSetup }[sub] || renderMenu)();
+      ({ blocks: playBlocks, rain: playRain, catch: playCatch, drive: playDrive, run: runSetup, ox: playOX, battle: battleSetup, mole: moleSetup }[sub] || renderMenu)();
     },
     // 학습 완료 화면에서 "오늘 단어로 게임"
     useDay(code, day) { S.level = code; S.mode = 'range'; S.from = day; S.to = day; save(); },
